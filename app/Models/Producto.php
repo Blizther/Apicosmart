@@ -7,13 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    protected $table = 'productos'; // Definir el mombre de la tabla
-    protected $fillable = ['idUser','descripcion', 'unidadMedida', 'stock','precio','imagen'];
-    // Campos permitidos para inserción masiva
+    use HasFactory;
 
-    // Mutador para convertir 'nombre' a mayúsculas antes de guardar
-    public function setDescripcionAttribute($value)
+    protected $table = 'productos';
+
+    protected $fillable = [
+        'idUser','descripcion','unidadMedida','stock','precio','estado','imagen'
+    ];
+
+    // Relación: un producto pertenece a un usuario (vendedor)
+    public function vendedor()
     {
-        $this->attributes['descripcion'] = strtoupper($value);
+        return $this->belongsTo(User::class, 'idUser', 'id');
+    }
+
+    // Relación: un producto puede estar en muchos detalles de venta
+    public function detalles()
+    {
+        return $this->hasMany(Detalle::class, 'idProducto', 'id');
     }
 }

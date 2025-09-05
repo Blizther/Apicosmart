@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Detalle extends Model
 {
     use HasFactory;
+
+   protected $table = 'detalles';
+    protected $fillable = ['idVenta', 'idProducto', 'cantidad', 'precio_unitario', 'subtotal'];
+
+    
 }

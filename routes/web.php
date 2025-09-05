@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ControllerProducto;
@@ -40,6 +41,23 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/productos/{id}/editarproducto', [ControllerProducto::class, 'editarProducto'])->name('productos.editar');
     // Actualizar producto (se utiliza el metodo put)
     Route::put('/productos/editarproducto/{id}', [ControllerProducto::class, 'actualizarProducto'])->name('productos.actualizar');
+
+    // Vista de venta del usuario (listado de sus productos + carrito)
+    Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario'])->name('venta.usuario');
+
+    // Vista principal de ventas (solo mis productos + mi carrito)
+    Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario'])
+        ->name('venta.usuario');
+
+    // Carrito
+    Route::post('/ventaUsuario/cart/add',    [VentaController::class, 'cartAdd'])->name('venta.cart.add');
+    Route::post('/ventaUsuario/cart/update', [VentaController::class, 'cartUpdate'])->name('venta.cart.update');
+    Route::post('/ventaUsuario/cart/remove', [VentaController::class, 'cartRemove'])->name('venta.cart.remove');
+
+    // Checkout
+    Route::post('/ventaUsuario/checkout',    [VentaController::class, 'store'])->name('venta.checkout');
+
+
 
 
 
