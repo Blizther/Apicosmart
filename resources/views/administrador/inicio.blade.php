@@ -22,17 +22,7 @@
 </head>
 
 <body>
-    <h1>Dashboard ADMINISTRADORES</h1>
-    <h1>Bienvenido {{ auth()->user()->name }}</h1>
-    <p>Rol: {{ auth()->user()->rol }}</p>
-    @if(auth()->user()->rol === 'administrador')
-    <a href="{{ route('users.index') }}">Administrar Usuarios</a>
-    @endif
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit">Cerrar sesión</button>
-    </form>
     <div id="wrapper">
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
@@ -54,11 +44,14 @@
                             </ul>
                         </div>
                         <div class="logo-element">
-                            IN+
+
                         </div>
                     </li>
 
-                    @if(auth()->user()->role == 'admin')
+                    @if(auth()->user()->rol === 'administrador')
+                    <li>
+                        <a href="{{ route('users.index') }}"><i class="fa fa-user"></i><span class="nav-label">Administrar Usuarios</span></a>
+                    </li>
 
                     <li>
                         <a href="/users"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span></a>

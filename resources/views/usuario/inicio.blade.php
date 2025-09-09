@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    
+
     <div id="wrapper">
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
@@ -44,14 +44,14 @@
                             </ul>
                         </div>
                         <div class="logo-element">
-                            
+
                         </div>
                     </li>
 
                     @if(auth()->user()->rol == 'usuario')
 
                     <li>
-                        <a href="<?php echo asset('')?>productos"><i class="fa fa-user"></i> <span class="nav-label">Productos</span></a>
+                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-user"></i> <span class="nav-label">Productos</span></a>
                     </li>
 
                     @endif
@@ -63,12 +63,12 @@
                         <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
 
-                    <li class="active">
+                    <li class="">
                         <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="<?php echo asset('')?>ventaUsuario">Registro de ventas</a></li>
-                            <li><a href="<?php echo asset('')?>stockUsuario">Stock</a></li>
-                            <li><a href="<?php echo asset('')?>reporteUsuario">Reportes de venta </a></li>
+                            <li><a href="<?php echo asset('') ?>ventaUsuario">Registro de ventas</a></li>
+                            <li><a href="<?php echo asset('') ?>stockUsuario">Stock</a></li>
+                            <li><a href="<?php echo asset('') ?>reporteUsuario">Reportes de venta </a></li>
 
                         </ul>
                     </li>

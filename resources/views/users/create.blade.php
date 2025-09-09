@@ -1,89 +1,107 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('administrador.inicio')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Registro de Usuario</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f5f5f5;
-        }
+@section('content')
+<div class="container mt-4">
 
-        .form-container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Registro de Usuario</h2>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">← Volver</a>
+    </div>
 
-        input[type=text],
-        input[type=email],
-        input[type=tel] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #5D4037;
-            color: white;
-            padding: 10px;
-            border: none;
-            width: 100%;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="form-container">
-        <h2>Registro de Usuario</h2>
-        @if ($errors->any())
-        <strong>Error:</strong> Corrige los siguientes campos:
-        <ul>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Corrige los siguientes campos:</strong>
+        <ul class="mb-0">
             @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
             @endforeach
         </ul>
-        @endif
-
-        <form action="{{ route('users.store') }}" method="POST">
-            @csrf
-            <label for="nombre">Nombres</label>
-            <input type="text" id="nombre" name="nombre" required>
-
-            <label for="primerApellido">Apellido Paterno</label>
-            <input type="text" id="primerApellido" name="primerApellido" required>
-
-            <label for="segundoApellido">Apellido Materno</label>
-            <input type="text" id="segundoApellido" name="segundoApellido" required>
-
-            <label for="email">Correo Electronico</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="nombreUsuario">Nombre de Usuario</label>
-            <input type="text" id="nombreUsuario" name="nombreUsuario" required>
-
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
-
-            <label for="password_confirmation">Confirmar Contraseña</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" required>
-
-            <label for="telefono">Teléfono</label>
-            <input type="tel" id="telefono" name="telefono" required>
-
-            <button type="submit">Registrar</button>
-        </form>
     </div>
-</body>
+    @endif
 
-</html>
+    <div class="card shadow">
+        <div class="card-body">
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
 
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombres</label>
+                    <input type="text" id="nombre" name="nombre"
+                        class="form-control @error('nombre') is-invalid @enderror"
+                        value="{{ old('nombre') }}" required>
+                    @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="primerApellido" class="form-label">Apellido Paterno</label>
+                    <input type="text" id="primerApellido" name="primerApellido"
+                        class="form-control @error('primerApellido') is-invalid @enderror"
+                        value="{{ old('primerApellido') }}" required>
+                    @error('primerApellido') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="segundoApellido" class="form-label">Apellido Materno</label>
+                    <input type="text" id="segundoApellido" name="segundoApellido"
+                        class="form-control @error('segundoApellido') is-invalid @enderror"
+                        value="{{ old('segundoApellido') }}" required>
+                    @error('segundoApellido') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="email" name="email"
+                        class="form-control @error('email') is-invalid @enderror"
+                        value="{{ old('email') }}" required>
+                    @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="nombreUsuario" class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="nombreUsuario" name="nombreUsuario"
+                        class="form-control @error('nombreUsuario') is-invalid @enderror"
+                        value="{{ old('nombreUsuario') }}" required>
+                    @error('nombreUsuario') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password"
+                        class="form-control @error('password') is-invalid @enderror"
+                        required>
+                    @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation"
+                        class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono"
+                        class="form-control @error('telefono') is-invalid @enderror"
+                        value="{{ old('telefono') }}" required>
+                    @error('telefono') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <!-- ROL -->
+                <div class="mb-3">
+                    <label for="rol" class="form-label">Rol</label>
+                    <select id="rol" name="rol" class="form-select @error('rol') is-invalid @enderror" required>
+                        <option value="usuario" {{ old('rol','usuario') === 'usuario' ? 'selected' : '' }}>Usuario</option>
+                        <option value="administrador" {{ old('rol','usuario') === 'administrador' ? 'selected' : '' }}>Administrador</option>
+                    </select>
+                    @error('rol') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+@endsection

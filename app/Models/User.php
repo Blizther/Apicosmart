@@ -18,8 +18,7 @@ class User extends Authenticatable
         'telefono',
         'nombreUsuario',
         'password',
-        'rol',
-        'estado',
+        'rol'
     ];
 
     protected $hidden = [
