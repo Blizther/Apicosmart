@@ -17,6 +17,8 @@ class ControllerProducto extends Controller
 {
     $idUser = Auth::id(); // ID del usuario logueado
     $productos = Producto::where('idUser', $idUser)->get();
+
+    //$productos = Producto::all(); MODIFICADO
     return view('productos.productos', compact('productos'));
 }
     public function nuevoproducto()

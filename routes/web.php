@@ -3,6 +3,8 @@
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ControllerApiario;
+use App\Http\Controllers\ControllerColmena;
 use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
@@ -35,12 +37,41 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/productos/crearproducto', [ControllerProducto::class, 'nuevoproducto']);
     // Guardar nuevo producto - es post no get
     Route::post('/productos/guardarproducto', [ControllerProducto::class, 'nuevoproductobd'])->middleware('auth');
+    //Route::post('/productos/guardarproducto', [ControllerProducto::class, 'nuevoproductobd']); MODIFICADO
     //Ruta para eliminado (enviando id por direccion url)
     Route::delete('/productos/eliminarproducto/{id}', [ControllerProducto::class, 'eliminarproductobd'])->name('productos.destroy');
     // Mostrar formulario de edición (es get por que muestra formulario de edición)
     Route::get('/productos/{id}/editarproducto', [ControllerProducto::class, 'editarProducto'])->name('productos.editar');
     // Actualizar producto (se utiliza el metodo put)
     Route::put('/productos/editarproducto/{id}', [ControllerProducto::class, 'actualizarProducto'])->name('productos.actualizar');
+
+    //SECCION APIARIO
+    Route::get('/apiario', [ControllerApiario::class, 'index'])->name('apiario.index');
+    // Mostrar formulario de creación
+    Route::get('/apiario/crearapiario', [ControllerApiario::class, 'create'])->name('apiario.create');
+    // Guardar nuevo producto - es post no get
+    Route::post('/apiario/guardarapiario', [ControllerApiario::class, 'store'])->name('apiario.store');
+    //Ruta para eliminado (enviando id por direccion url)
+    Route::delete('/apiario/eliminarapiario/{id}', [ControllerApiario::class, 'destroy'])->name('apiario.destroy');
+    // Mostrar formulario de edición (es get por que muestra formulario de edición)
+    Route::get('/apiario/{id}/editarapiario', [ControllerApiario::class, 'edit'])->name('apiario.edit');
+    // Actualizar producto (se utiliza el metodo put)
+    Route::put('/apiario/editarapiario/{id}', [ControllerApiario::class, 'update'])->name('apiario.update');
+
+    //SECCION COLMENA
+    Route::get('/colmena', [ControllerColmena::class, 'index'])->name('colmena.index');
+    // Mostrar formulario de creación
+    Route::get('/colmena/crearcolmena', [ControllerColmena::class, 'create'])->name('colmena.create');
+    // Guardar nuevo producto - es post no get
+    Route::post('/colmena/guardarcolmena', [ControllerColmena::class, 'store'])->name('colmena.store');
+    //Ruta para eliminado (enviando id por direccion url)
+    Route::delete('/colmena/eliminarcolmena/{id}', [ControllerColmena::class, 'destroy'])->name('colmena.destroy');
+    // Mostrar formulario de edición (es get por que muestra formulario de edición)
+    Route::get('/colmena/{id}/editarcolmena', [ControllerColmena::class, 'edit'])->name('colmena.edit');
+    // Actualizar producto (se utiliza el metodo put)
+    Route::put('/colmena/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmena.update');
+
+
 
     // Vista de venta del usuario (listado de sus productos + carrito)
     Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario'])->name('venta.usuario');

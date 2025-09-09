@@ -9,6 +9,8 @@
     <title>@yield('title', 'Sistema de Sensores')</title>
 
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+    <script src="{{asset('js/bootstrap.min.js')}}"></script> <!-- MODIFICADO -->
+
     <link href="{{asset('font-awesome/css/font-awesome.css')}}" rel="stylesheet">
 
     <!-- Toastr style -->
@@ -53,7 +55,12 @@
                     <li>
                         <a href="<?php echo asset('') ?>productos"><i class="fa fa-user"></i> <span class="nav-label">Productos</span></a>
                     </li>
-
+                    <li>
+                        <a href="{{ route('apiario.index') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
+                    </li>
+                    <li>
+                        <a href="{{route('colmena.index')}}"><i class="fa fa-user"></i> <span class="nav-label">Colmenas</span></a>
+                    </li>
                     @endif
 
                     <li>
