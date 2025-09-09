@@ -18,7 +18,7 @@
 
     <!-- Gritter -->
     <link href="{{asset('js/plugins/gritter/jquery.gritter.css')}}" rel="stylesheet">
-
+    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script> <!-- MODIFICADO -->
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
 </head>
