@@ -3,32 +3,11 @@
 <!-- Sale & Revenue Start -->
 <div class="container-fluid pt-4 px-4">
 
-    <div class="row g-4">
-        <div class="col-sm-12">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('successdelete'))
-                <div class="alert alert-success">
-                    {{ session('successdelete') }}
-                </div>
-            @endif
-
-            @if (session('successedit'))
-                <div class="alert alert-success">
-                    {{ session('successedit') }}
-                </div>
-            @endif
-        </div>
-    </div>
 
     <div class="row g-4">
         <div class="col-sm-12">
             <a href="{{ route('colmenas.create')}}">
-                <button type="submit" class="btn btn-success">AGREGAR COLMENA</button>
+                <button type="submit" class="btn btn-success">AGREGAR INSPECCIÓN</button>
             </a>
         </div>
     </div>
@@ -37,7 +16,7 @@
     <div class="row g-4">
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <h1>Panel de colmenas</h1>
+                <h1>Control de inspección</h1>
             </div>
         </div>
 

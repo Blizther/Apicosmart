@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Colmena extends Model
 {
     use HasFactory;
      protected $table = 'colmena';
     protected $primaryKey = 'idColmena';
-    protected $fillable = ['idColmena', 'codigo', 'estado','creadoPor', 'idReina','cantidadMarco'];
+    protected $fillable = ['idColmena', 'codigo', 'estado','creadoPor', 'idReina','cantidadMarco', 'idApiario'];
 
     public $timestamps =false;
     protected $casts=[

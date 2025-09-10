@@ -59,7 +59,7 @@
                         <a href="{{ route('apiario.index') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
                     </li>
                     <li>
-                        <a href="{{route('colmena.index')}}"><i class="fa fa-user"></i> <span class="nav-label">Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}"><i class="fa fa-user"></i> <span class="nav-label">Colmenas</span></a>
                     </li>
                     @endif
 
