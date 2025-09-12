@@ -4,7 +4,7 @@
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-sm-12">
-            <a href="{{route('apiario.index')}}">
+            <a href="{{route('colmenas.index')}}">
                 <button type="submit" class="btn btn-warning">VOLVER A LISTA</button>
             </a>
         </div>

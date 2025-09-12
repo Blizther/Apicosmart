@@ -20,8 +20,10 @@ class Apiario extends Model
     ];
 
      // Relación: un apiario tiene muchas colmenas
+    // App\Models\Apiario.php
     public function colmenas()
     {
         return $this->hasMany(Colmena::class, 'idApiario', 'idApiario');
     }
+
 }

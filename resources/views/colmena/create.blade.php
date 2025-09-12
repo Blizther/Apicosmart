@@ -20,7 +20,7 @@
 
     <div class="row g-4">
         <div class="col-sm-12">
-            <a href="{{ route('colmena.index')}}">
+            <a href="{{ route('colmenas.index')}}">
                 <button type="submit" class="btn btn-warning">VOLVER A LISTA</button>
             </a>
         </div>
@@ -39,26 +39,48 @@ Cuando se usa la directiva @csrf dentro de un formulario Blade, Laravel genera u
 sin ese código el guardado no se activa 
 -->
 
-        <form action="{{ route('colmena.store')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('colmenas.store')}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="col-sm-12">
                 <div class="bg-light rounded h-100 p-2 row">
                     <h6 class="mb-4 col-12">Complete el formulario</h6>
 
-                    <div class="form-floating mb-3 col-12 col-md-6">
-                        <label for="nombre">Código</label>
-                        <input type="text" class="form-control" id="nombre"
-                            placeholder="Nombres" name="nombre" value="{{ old('nombre') }}" required autocomplete="off">
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="codigo">Código o Nro</label>
+                        <input type="text" class="form-control" id="codigo"
+                            placeholder="Código" name="codigo" value="{{ old('codigo') }}" required autocomplete="off" readonly>
                     </div>
-                    <div class="form-floating mb-3 col-12 col-md-6">
-                        <label for="departamento">Fecha de Fabricación</label>
-                        <input type="text" class="form-control" id="departamento"
-                            placeholder="Departamento" name="departamento" value="{{ old('departamento') }}" required autocomplete="off">
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="fechaFabricacion">Fecha de Fabricación</label>
+                        <input type="date" class="form-control" id="fechaFabricacion"
+                            placeholder="Fecha de Fabricacion" name="fechaFabricacion" value="{{ old('fechaFabricacion') }}" required autocomplete="off">
                     </div>
-                    <div class="form-floating mb-3 col-12 col-md-6">
-                        <label for="municipio">Cantidad de Marcos</label>
-                        <input type="text" class="form-control" id="municipio"
-                            placeholder="Municipio" name="municipio" value="{{ old('municipio') }}" required autocomplete="off">
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="estado">Estado</label>
+                        <select name="estado" id="estado"  class="form-control" required>
+                        <option value="activo" {{ old('estado') == 'activo' ? 'selected' : '' }}>ACTIVO</option>
+                        <option value="inactivo" {{ old('estado') == 'inactivo' ? 'selected' : '' }}>INACTIVO</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-md-6">
+                    <label for="apiario" class="form-label">Selecciona un Apiario</label>
+                    <select id="apiario" name="apiario" class="form-control" required>
+                        <option value="">-- Selecciona --</option>
+                        @foreach($apiarios as $apiario)
+                            <option 
+                                value="{{ $apiario->idApiario }}" 
+                                data-total="{{ $apiario->colmenas_count }}">
+                                {{ $apiario->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="cantidadMarco">Cantidad de Marco</label>
+                        <input type="number" class="form-control" id="cantidadMarco"
+                            placeholder="Cantidad de Marco" name="cantidadMarco" value="{{ old('cantidadMarco') ?? 0 }}" required autocomplete="off" min="0">
                     </div>
                     
                     
@@ -73,53 +95,15 @@ sin ese código el guardado no se activa
 </div>
 
 <script>
-  $('.submit').prop('disabled', true);
-    let map;
-    let marker;
-    let selectedLatLng = null;
-
-    function initMap() {
-        // Centro inicial del mapa (puedes cambiarlo)
-        const initialPosition = { lat: -17.38950, lng: -66.15680 }; // Cochabamba, Bolivia
-
-        // Crear mapa
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: initialPosition,
-            zoom: 13,
-        });
-
-        // Detectar clic en el mapa
-        map.addListener("click", (e) => {
-            selectedLatLng = e.latLng;
-
-            // Si ya hay un marcador, moverlo
-            if (marker) {
-                marker.setPosition(selectedLatLng);
-            } else {
-                marker = new google.maps.Marker({
-                    position: selectedLatLng,
-                    map: map,
-                });
-            }
-        });
-
-        // Botón para guardar
-        document.getElementById("saveBtn").addEventListener("click", () => {
-            if (selectedLatLng) {
-                const lat = selectedLatLng.lat();
-                const lng = selectedLatLng.lng();
-                $("#latitud").val(lat);
-                $("#longitud").val(lng);
-
-                //alert("Ubicación guardada: " + lat + ", " + lng);
-                $('.submit').prop('disabled', false);
-            } else {
-                alert("Primero selecciona una ubicación en el mapa");
-            }
-        });
-    }
-
-    window.onload = initMap;
+    document.getElementById('apiario').addEventListener('change', function () {
+        let total = this.options[this.selectedIndex].getAttribute('data-total');
+        if (total !== null) {
+            document.getElementById('codigo').value = parseInt(total) + 1;
+        } else {
+            document.getElementById('codigo').value = '';
+        }
+    });
 </script>
+
 <!-- Sale & Revenue End -->
 @endsection
