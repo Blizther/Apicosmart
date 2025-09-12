@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Colmena;
+use App\Models\InspeccionColmena;
 use App\Models\Apiario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -101,6 +102,13 @@ class ControllerColmena extends Controller
         return redirect()->to('/colmenas')->with('successdelete', 'Colmena eliminada exitosamente.');
     }
     public function verinspeccion(string $id){
+
+        $colmenas=InspeccionColmena::where('idColmena',$id)->get();
+        return view('colmena.verinspeccion',compact('colmenas','id'));
+    }
+     public function agregarinspeccion(string $id){
+
         
+        return view('colmena.agregarinspeccion',['id'=>$id]);
     }
 }

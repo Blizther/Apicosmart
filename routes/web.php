@@ -61,6 +61,7 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     //SECCION COLMENA
     Route::resource('/colmenas', ControllerColmena::class);
     Route::get('/colmenas/{id}/verInspeccion', [ControllerColmena::class, 'verinspeccion'])->name('colmenas.verinspeccion');
+    Route::get('/colmenas/{id}/agregarinspeccion', [ControllerColmena::class, 'agregarinspeccion'])->name('colmenas.agregarinspeccion');
 
 
 

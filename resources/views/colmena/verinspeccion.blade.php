@@ -5,10 +5,16 @@
 
 
     <div class="row g-4">
-        <div class="col-sm-12">
-            <a href="{{ route('colmenas.create')}}">
-                <button type="submit" class="btn btn-success">AGREGAR INSPECCIÓN</button>
-            </a>
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a href="{{ route('colmenas.index')}}">
+                    <button type="submit" class="btn btn-info">Volver</button>
+                </a>
+                <a href="{{ route('colmenas.agregarinspeccion',['id'=>$id])}}">
+                    <button type="submit" class="btn btn-success">AGREGAR INSPECCIÓN</button>
+                </a>
+            </div>
+            
         </div>
     </div>
 
@@ -26,12 +32,16 @@
                     <thead>
                         <tr>
                             <th scope="col">NRO</th>
-                            <th scope="col">Código</th>
-                            <th scope="col">Nombre de Apiario</th>
-                            <th scope="col">Fecha Fabricación</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Cantidad de Marcos</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">Fecha de inspección</th>
+                            <th scope="col">Temperamento</th>
+                            <th scope="col">Intensidad de Importación</th>
+                            <th scope="col">Estado de la Reyna</th>
+                            <th scope="col">Celdas Reales</th>
+                            <th scope="col">Patron de Postura</th>
+                            <th scope="col">Enfermedades/Plaga</th>
+                            <th scope="col">Reserva de miel</th>
+                            <th scope="col">Reserva de polen</th>
+                            <th scope="col">Notas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,25 +51,19 @@
                         @foreach ($colmenas as $colmena)
                             <tr>
                                 <th scope="row"><?php echo $correlativo; ?></th>
-                                <td>{{ $colmena->codigo }}</td>
-                                <td>{{ $colmena->apiario->nombre }}</td>
-                                <td>{{ \Carbon\Carbon::parse($colmena->fechaFabricacion)->format('d/m/Y H:i:s') }}</td>
-                                <td>{{ $colmena->estado }}</td>
-                                <td>{{ $colmena->cantidadMarco }}</td>
+                                <td>{{ \Carbon\Carbon::parse($colmena->fechaInspección)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $colmena->temperamento }}</td>
+                                <td>{{ $colmena->intensidadImportacion }}</td>
+                                <td>{{ $colmena->estadoReyna }}</td>
+                                <td>{{ $colmena->celdasReales }}</td>
+                                <td>{{ $colmena->patronPostura }}</td>
+                                <td>{{ $colmena->enfermedadPlaga }}</td>
+                                <td>{{ $colmena->reservaMiel }}</td>
+                                <td>{{ $colmena->reservaPolen }}</td>
+                                <td>{{ $colmena->estadoReyna }}</td>
+                                <td>{{ $colmena->notas }}</td>
                                 
-                                <td>
-                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>
-                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">Editar</a>
-                                    <!-- Botón Eliminar -->
-                                    <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Estás seguro de que deseas eliminar esta colmena?')">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </td>
+                               
                             </tr>
                         <?php
                         $correlativo++;

@@ -69,7 +69,7 @@
                                 <td>{{ $colmena->cantidadMarco }}</td>
                                 
                                 <td>
-                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>
+                                    <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>
                                     <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">Editar</a>
                                     <!-- Botón Eliminar -->
                                     <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" method="POST" style="display:inline;">
