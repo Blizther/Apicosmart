@@ -87,7 +87,16 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
 
     // Checkout
     Route::post('/ventaUsuario/checkout',    [VentaController::class, 'store'])->name('venta.checkout');
+    // reportes
+     // Lista de reportes
+    Route::get('/reporteUsuario', [ControllerVentaUsuario::class, 'metodoReporteUsuario'])
+        ->name('venta.reporte');              // <-- ESTE name
 
+    // Detalle de venta
+    Route::get('/reporteUsuario/{venta}', [ControllerVentaUsuario::class, 'mostrarVenta'])
+        ->whereNumber('venta')
+        ->name('venta.reporte.detalle');
+    
 
 
 

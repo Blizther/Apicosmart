@@ -14,5 +14,16 @@ class Venta extends Model
     protected $fillable = ['idUser', 'fecha', 'total', 'estado'];
 
     // Relación: una venta pertenece a un usuario (vendedor)
+     public function detalles()
+    {
+        // detalles.idVenta → ventas.id
+        return $this->hasMany(Detalle::class, 'idVenta');
+    }
+
+    public function usuario()
+    {
+        // ventas.idUser → users.id
+        return $this->belongsTo(User::class, 'idUser');
+    }
     
 }

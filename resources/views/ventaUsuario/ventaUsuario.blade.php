@@ -25,6 +25,7 @@
           <table class="table table-sm">
             <thead>
               <tr>
+                <th>Imagen</th>
                 <th>Descripción</th>
                 <th>UM</th>
                 <th>Stock</th>
@@ -36,6 +37,17 @@
               @php($i=1)
               @forelse($productos as $p)
                 <tr>
+                  <td>
+                    @if($p->imagen)
+                      <img src="{{ asset($p->imagen) }}"
+                           alt="{{ $p->descripcion }}"
+                           style="width:60px; height:60px; object-fit:cover; border-radius:6px;">
+                    @else
+                      <img src="{{ asset('images/no-image.png') }}"
+                           alt="Sin imagen"
+                           style="width:60px; height:60px; object-fit:cover; border-radius:6px;">
+                    @endif
+                  </td>
                   <td>{{ $p->descripcion }}</td>
                   <td>{{ $p->unidadMedida }}</td>
                   <td>{{ $p->stock }}</td>
@@ -50,7 +62,7 @@
                   </td>
                 </tr>
               @empty
-                <tr><td colspan="5">No tienes productos registrados.</td></tr>
+                <tr><td colspan="6">No tienes productos registrados.</td></tr>
               @endforelse
             </tbody>
           </table>
@@ -74,31 +86,31 @@
               </tr>
             </thead>
             <tbody>
-            @forelse($cart as $item)
-              @php($sub = $item['precio'] * $item['cantidad'])
-              <tr>
-                <td>{{ $item['descripcion'] }}</td>
-                <td>
-                  <form method="POST" action="{{ route('venta.cart.update') }}" class="d-inline-flex align-items-center" style="gap:6px;">
-                    @csrf
-                    <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
-                    <input type="number" name="cantidad" min="1" value="{{ $item['cantidad'] }}" class="form-control form-control-sm" style="width:80px;">
-                    <button class="btn btn-secondary btn-sm" type="submit">OK</button>
-                  </form>
-                </td>
-                <td>{{ number_format($item['precio'],2) }}</td>
-                <td>{{ number_format($sub,2) }}</td>
-                <td>
-                  <form method="POST" action="{{ route('venta.cart.remove') }}">
-                    @csrf
-                    <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
-                    <button class="btn btn-danger btn-sm" type="submit">Quitar</button>
-                  </form>
-                </td>
-              </tr>
-            @empty
-              <tr><td colspan="5">Tu carrito está vacío.</td></tr>
-            @endforelse
+              @forelse($cart as $item)
+                @php($sub = $item['precio'] * $item['cantidad'])
+                <tr>
+                  <td>{{ $item['descripcion'] }}</td>
+                  <td>
+                    <form method="POST" action="{{ route('venta.cart.update') }}" class="d-inline-flex align-items-center" style="gap:6px;">
+                      @csrf
+                      <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
+                      <input type="number" name="cantidad" min="1" value="{{ $item['cantidad'] }}" class="form-control form-control-sm" style="width:80px;">
+                      <button class="btn btn-secondary btn-sm" type="submit">OK</button>
+                    </form>
+                  </td>
+                  <td>{{ number_format($item['precio'],2) }}</td>
+                  <td>{{ number_format($sub,2) }}</td>
+                  <td>
+                    <form method="POST" action="{{ route('venta.cart.remove') }}">
+                      @csrf
+                      <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
+                      <button class="btn btn-danger btn-sm" type="submit">Quitar</button>
+                    </form>
+                  </td>
+                </tr>
+              @empty
+                <tr><td colspan="5">Tu carrito está vacío.</td></tr>
+              @endforelse
             </tbody>
             <tfoot>
               <tr>

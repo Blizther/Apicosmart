@@ -12,5 +12,13 @@ class Detalle extends Model
    protected $table = 'detalles';
     protected $fillable = ['idVenta', 'idProducto', 'cantidad', 'precio_unitario', 'subtotal'];
 
-    
+    public function venta()
+    {
+        return $this->belongsTo(Venta::class, 'idVenta');
+    }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'idProducto');
+    }
 }

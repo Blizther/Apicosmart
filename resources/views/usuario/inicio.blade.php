@@ -63,9 +63,7 @@
                     </li>
                     @endif
 
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
-                    </li>
+                    
                     <li>
                         <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
@@ -73,7 +71,7 @@
                     <li class="">
                         <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="<?php echo asset('') ?>ventaUsuario">Registro de ventas</a></li>
+                            <li><a href="<?php echo asset('') ?>ventaUsuario">Realizar ventas</a></li>
                             <li><a href="<?php echo asset('') ?>stockUsuario">Stock</a></li>
                             <li><a href="<?php echo asset('') ?>reporteUsuario">Reportes de venta </a></li>
 
@@ -662,7 +660,7 @@
 
             </div>
 
-
+                            
 
         </div>
     </div>
