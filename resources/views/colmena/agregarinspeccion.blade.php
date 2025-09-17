@@ -34,17 +34,14 @@
         </div>
     </div>
 
-        <!--
-@csrf es una directiva en Laravel que se utiliza para incluir un token de seguridad CSRF (Cross-Site Request Forgery) dentro de los formularios HTML. 
-Cuando se usa la directiva @csrf dentro de un formulario Blade, Laravel genera un campo oculto (<input type="hidden">) con un token único que será verificado al recibir la solicitud en el servidor.
-sin ese código el guardado no se activa 
--->
-
-        <form action="{{ route('colmenas.store')}}" method="POST" enctype="multipart/form-data">
-            @csrf
+        <form action="{{ route('inspeccion.store')}}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <input type="hidden" name="colmena_id" value="{{ $id }}">
+                
             <div class="col-12">
-                <div class=row">
+                <div class="row">
                     <h6 class="col-12">Complete el formulario</h6>
+                    
 
                     <div class="col-12 col-md-6">
                         <label for="temperamento">Temperamento</label>

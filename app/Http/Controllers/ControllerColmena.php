@@ -15,10 +15,11 @@ class ControllerColmena extends Controller
     public function index()
     {
         //
-        $colmenas = Colmena::with('apiario')->orderBy('idApiario','desc')->get();
-        
-
-
+       $colmenas = Colmena::with('apiario') 
+                   ->where('creadoPor', Auth::id())
+                   ->where('estado', 'activo')
+                   ->orderBy('idApiario','desc')
+                   ->get();
         return view('colmena.index',compact('colmenas'));
     }
 
@@ -80,14 +81,21 @@ class ControllerColmena extends Controller
     public function edit(string $id)
     {
         //
+        $colmena=Colmena::findOrFail($id);
+        return view('colmena.edit',compact('colmena'));
     }
 
-    /**
+    /*
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
         //
+        $colmena=Colmena::findOrFail($id);
+        $colmena->codigo=$request->codigo;
+        $colmena->cantidadMarco=$request->cantidadMarco;
+        $colmena->save();
+         return redirect()->to('/colmenas')->with('success', 'Colmena ACTUALIZADO exitosamente.');
     }
 
     /**
@@ -97,8 +105,9 @@ class ControllerColmena extends Controller
     {
         //
         $colmenas = Colmena::findOrFail($id);
-    
-        $colmenas->delete();
+        $colmenas->estado = "inactivo";
+
+        $colmenas->save();
         return redirect()->to('/colmenas')->with('successdelete', 'Colmena eliminada exitosamente.');
     }
     public function verinspeccion(string $id){

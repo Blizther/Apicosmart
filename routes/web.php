@@ -8,6 +8,7 @@ use App\Http\Controllers\ControllerColmena;
 use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ControllerInspeccionColmena;
 
 
 Route::get('/', function () {
@@ -16,6 +17,7 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 
 // creando rutas protegidas por rol
@@ -62,7 +64,9 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::resource('/colmenas', ControllerColmena::class);
     Route::get('/colmenas/{id}/verInspeccion', [ControllerColmena::class, 'verinspeccion'])->name('colmenas.verinspeccion');
     Route::get('/colmenas/{id}/agregarinspeccion', [ControllerColmena::class, 'agregarinspeccion'])->name('colmenas.agregarinspeccion');
-
+    Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
+    Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
+    Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)
