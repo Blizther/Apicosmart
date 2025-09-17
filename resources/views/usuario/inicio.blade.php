@@ -8,7 +8,7 @@
 
     <title>@yield('title', 'ApicoSmart')</title>
 
-     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/bootstrap.min.js')}}"></script> <!-- MODIFICADO -->
 
@@ -28,267 +28,310 @@
     <style>
         /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */
 
-/* Contenedor lateral */
-.navbar-default.navbar-static-side {
-  background: #3A4F26;           /* verde */
-  box-shadow: inset -1px 0 0 rgba(0,0,0,.25);
-}
+        /* Contenedor lateral */
+        .navbar-default.navbar-static-side {
+            background: #3A4F26;
+            /* verde */
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+        }
 
-/* Área colapsable (para que herede el fondo) */
-.navbar-static-side .sidebar-collapse {
-  background: #3A4F26;
-}
+        /* Área colapsable (para que herede el fondo) */
+        .navbar-static-side .sidebar-collapse {
+            background: #3A4F26;
+        }
 
-/* Header del perfil */
-#side-menu .nav-header {
-  background: linear-gradient(180deg, #3A4F26 0%, #334522 100%);
-  padding: 25px 20px 20px;
-  border-bottom: 1px solid rgba(0,0,0,.35);
-}
+        /* Header del perfil */
+        #side-menu .nav-header {
+            background: linear-gradient(180deg, #3A4F26 0%, #334522 100%);
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, .35);
+        }
 
-/* Foto redonda con aro amarillo */
-#side-menu .nav-header .img-circle {
-  border: 3px solid #F9B233;     /* amarillo */
-  padding: 2px;
-}
+        /* Foto redonda con aro amarillo */
+        #side-menu .nav-header .img-circle {
+            border: 3px solid #F9B233;
+            /* amarillo */
+            padding: 2px;
+        }
 
-/* Nombre y rol */
-#side-menu .nav-header .font-bold,
-#side-menu .nav-header .text-muted {
-  color: #EDD29C;                /* beige */
-}
-#side-menu .nav-header .text-muted { 
-  opacity: .85;
-}
+        /* Nombre y rol */
+        #side-menu .nav-header .font-bold,
+        #side-menu .nav-header .text-muted {
+            color: #EDD29C;
+            /* beige */
+        }
 
-/* Enlaces de primer nivel */
-#side-menu > li > a {
-  color: #EDD29C;
-  background: transparent;
-  padding: 12px 20px;
-  border-left: 4px solid transparent;
-  transition: background .18s ease, color .18s ease, border-color .18s ease, padding-left .18s ease;
-}
+        #side-menu .nav-header .text-muted {
+            opacity: .85;
+        }
 
-/* Iconos existentes (si los usas), que hereden el color */
-#side-menu > li > a > i {
-  color: inherit;
-  width: 18px;
-  text-align: center;
-  margin-right: 8px;
-  opacity: .95;
-}
-
-/* Hover/Focus */
-#side-menu > li > a:hover,
-#side-menu > li > a:focus {
-  background: rgba(0,0,0,.12);
-  color: #FFFFFF;
-  border-left-color: #F9B233;   /* acento */
-  padding-left: 24px;           /* pequeño desplazamiento */
-}
-
-/* Activo (li .active lo pone metisMenu/inspinia) */
-#side-menu > li.active > a,
-#side-menu > li.mm-active > a {
-  background: rgba(0,0,0,.22);
-  color: #FFFFFF;
-  border-left-color: #F9B233;
-  font-weight: 600;
-}
-
-/* Flecha de submenu */
-#side-menu .fa.arrow {
-  color: #EDD29C;
-  transition: transform .18s ease, color .18s ease;
-}
-#side-menu li.mm-active > a .fa.arrow { 
-  transform: rotate(90deg);
-  color: #F9B233;
-}
-
-/* Submenú */
-#side-menu .nav-second-level {
-  background: #334522;          /* un verde más oscuro */
-  padding: 6px 0;
-}
-#side-menu .nav-second-level li a {
-  color: #EAD7AA;               /* beige suave */
-  padding: 9px 20px 9px 44px;   /* indentado */
-  font-size: 13.5px;
-  border-left: 4px solid transparent;
-}
-#side-menu .nav-second-level li a:hover {
-  background: rgba(0,0,0,.14);
-  color: #FFFFFF;
-  border-left-color: #F9B233;
-}
-
-/* Separadores sutiles entre items */
-#side-menu > li {
-  border-bottom: 1px solid rgba(0,0,0,.18);
-}
-#side-menu > li:last-child {
-  border-bottom: none;
-}
-
-/* Badge/puntos que ya tengas: hazlos resaltar sin cambiar tu HTML */
-#side-menu .nav-label::after {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-left: 8px;
-  background: transparent; /* por defecto nada */
-}
-/* Ejemplo: resalta "Colmenas" y "Sensores" si ya los marcas con .has-alert en su <li> */
-#side-menu li.has-alert > a .nav-label::after {
-  background: #F9B233; /* amarillo como alerta */
-  box-shadow: 0 0 0 3px rgba(249,178,51,.15);
-}
-
-/* Dropdown del perfil */
-#side-menu .dropdown-menu {
-  background: #2B3B1E;          /* más oscuro */
-  border: 1px solid rgba(0,0,0,.35);
-}
-#side-menu .dropdown-menu > li > a {
-  color: #EAD7AA;
-}
-#side-menu .dropdown-menu > li > a:hover {
-  background: rgba(0,0,0,.25);
-  color: #FFF;
-}
-
-/* Scrollbar del sidebar (webkit) */
-.navbar-static-side ::-webkit-scrollbar {
-  width: 10px;
-}
-.navbar-static-side ::-webkit-scrollbar-track {
-  background: #2F421F;
-}
-.navbar-static-side ::-webkit-scrollbar-thumb {
-  background: #445C2D;
-  border: 2px solid #2F421F;
-  border-radius: 8px;
-}
-.navbar-static-side ::-webkit-scrollbar-thumb:hover {
-  background: #4E6734;
-}
-
-/* Estado "minimizado" de Inspinia (cuando clic en el botón hamburguesa) */
-.mini-navbar .navbar-static-side {
-  width: 70px;
-}
-.mini-navbar #side-menu > li > a {
-  padding-left: 18px;
-  text-align: left;
-}
-.mini-navbar #side-menu > li > a .nav-label {
-  display: none;
-}
-.mini-navbar #side-menu > li > a > i {
-  margin-right: 0;
-}
-
-/* ===== Fix azul por defecto de Inspinia ===== */
-
-/* Item padre activo (p.ej. "Ventas") */
-.navbar-static-side #side-menu > li.active > a,
-.navbar-static-side #side-menu > li.mm-active > a {
-  background: rgba(0,0,0,.22) !important; /* verde oscurecido */
-  color: #FFFFFF !important;
-  border-left-color: #F9B233 !important;   /* acento amarillo */
-}
-
-/* Fondo del contenedor de submenú abierto */
-.navbar-static-side #side-menu .nav-second-level {
-  background: #334522 !important;          /* verde más oscuro */
-}
-
-/* Enlaces del submenú (quitar azul de hover/activo) */
-.navbar-static-side #side-menu .nav-second-level > li > a {
-  background: transparent !important;
-  color: #EAD7AA !important;               /* beige */
-  border-left: 4px solid transparent !important;
-}
-.navbar-static-side #side-menu .nav-second-level > li > a:hover,
-.navbar-static-side #side-menu .nav-second-level > li.active > a,
-.navbar-static-side #side-menu .nav-second-level > li.mm-active > a {
-  background: rgba(0,0,0,.14) !important;
-  color: #FFFFFF !important;
-  border-left-color: #F9B233 !important;
-}
-
-/* Cualquier activo genérico dentro del sidebar que aún herede azul */
-.navbar-static-side .nav > li.active > a {
-  background-color: rgba(0,0,0,.22) !important;
-  color: #FFF !important;
-}
-/* ==== Mata-azul definitivo solo para el sidebar ==== */
-
-/* Fondo del contenedor lateral completo */
-.navbar-default.navbar-static-side,
-.navbar-default.navbar-static-side .sidebar-collapse,
-.navbar-default.navbar-static-side #side-menu,
-.navbar-default.navbar-static-side .nav.metismenu {
-  background: #3A4F26 !important;
-}
-
-/* Item padre activo (ej. Ventas) */
-.navbar-default.navbar-static-side #side-menu > li.active > a,
-.navbar-default.navbar-static-side #side-menu > li.mm-active > a {
-  background: rgba(0,0,0,.22) !important;
-  color: #fff !important;
-  border-left-color: #F9B233 !important;
-}
-
-/* Asegurar que el <li> activo no pinte azul por detrás */
-.navbar-default.navbar-static-side #side-menu > li.active,
-.navbar-default.navbar-static-side #side-menu > li.mm-active {
-  background: transparent !important;
-}
-
-/* Submenú abierto (todos los estados de metismenu/Bootstrap) */
-.navbar-default.navbar-static-side #side-menu .nav-second-level,
-.navbar-default.navbar-static-side #side-menu .nav-second-level.collapse,
-.navbar-default.navbar-static-side #side-menu .nav-second-level.collapse.in,
-.navbar-default.navbar-static-side #side-menu .nav-second-level.mm-collapse,
-.navbar-default.navbar-static-side #side-menu .nav-second-level.mm-show {
-  background: #334522 !important;
-  border-left: 0 !important;
-}
-
-/* Enlaces del submenú: normal/hover/activo */
-.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a {
-  background: transparent !important;
-  color: #EAD7AA !important;
-  border-left: 4px solid transparent !important;
-}
-.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a:hover,
-.navbar-default.navbar-static-side #side-menu .nav-second-level > li.active > a,
-.navbar-default.navbar-static-side #side-menu .nav-second-level > li.mm-active > a,
-.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a:focus {
-  background: rgba(0,0,0,.14) !important;
-  color: #fff !important;
-  border-left-color: #F9B233 !important;
-}
-
-/* Cualquier activo genérico dentro del sidebar */
-.navbar-default.navbar-static-side .nav > li.active > a,
-.navbar-default.navbar-static-side .nav > li > a.active {
-  background: rgba(0,0,0,.22) !important;
-  color: #fff !important;
-}
-
-/* Fondo de “espacios vacíos” bajo el último item */
-.navbar-default.navbar-static-side .nav {
-  min-height: 100%;
-  background: #3A4F26 !important;
-}
+        /* Enlaces de primer nivel */
+        #side-menu>li>a {
+            color: #EDD29C;
+            /* color del texto */
+            background-color: transparent;
+            /* más explícito */
+            padding: 12px 20px;
+            border-left: 4px solid transparent;
+            /* borde inicial invisible */
+            transition:
+                background-color 0.18s ease,
+                color 0.18s ease,
+                border-color 0.18s ease,
+                padding-left 0.18s ease;
+            /* animación suave */
+            display: block;
+            /* hace que toda el área sea clicable */
+            text-decoration: none;
+            /* quita subrayado */
+        }
 
 
+        /* Iconos existentes (si los usas), que hereden el color */
+        #side-menu>li>a>i {
+            color: inherit;
+            width: 18px;
+            text-align: center;
+            margin-right: 8px;
+            opacity: .95;
+        }
+
+        /* Hover/Focus */
+        #side-menu>li>a:hover,
+        #side-menu>li>a:focus {
+            background: rgba(0, 0, 0, .12);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+            /* acento */
+            padding-left: 24px;
+            /* pequeño desplazamiento */
+        }
+
+        /* Activo (li .active lo pone metisMenu/inspinia) */
+        #side-menu>li.active>a,
+        #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+            font-weight: 600;
+        }
+
+        /* Flecha de submenu */
+        #side-menu .fa.arrow {
+            color: #EDD29C;
+            transition: transform .18s ease, color .18s ease;
+        }
+
+        #side-menu li.mm-active>a .fa.arrow {
+            transform: rotate(90deg);
+            color: #F9B233;
+        }
+
+        /* Submenú */
+        #side-menu .nav-second-level {
+            background: #334522;
+            /* un verde más oscuro */
+            padding: 6px 0;
+        }
+
+        #side-menu .nav-second-level li a {
+            color: #EAD7AA;
+            /* beige suave */
+            padding: 9px 20px 9px 44px;
+            /* indentado */
+            font-size: 13.5px;
+            border-left: 4px solid transparent;
+        }
+
+        #side-menu .nav-second-level li a:hover {
+            background: rgba(0, 0, 0, .14);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+        }
+
+        /* Separadores sutiles entre items */
+        #side-menu>li {
+            border-bottom: 1px solid rgba(0, 0, 0, .18);
+        }
+
+        #side-menu>li:last-child {
+            border-bottom: none;
+        }
+
+        /* Badge/puntos que ya tengas: hazlos resaltar sin cambiar tu HTML */
+        #side-menu .nav-label::after {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-left: 8px;
+            background: transparent;
+            /* por defecto nada */
+        }
+
+        /* Ejemplo: resalta "Colmenas" y "Sensores" si ya los marcas con .has-alert en su <li> */
+        #side-menu li.has-alert>a .nav-label::after {
+            background: #F9B233;
+            /* amarillo como alerta */
+            box-shadow: 0 0 0 3px rgba(249, 178, 51, .15);
+        }
+
+        /* Dropdown del perfil */
+        #side-menu .dropdown-menu {
+            background: #2B3B1E;
+            /* más oscuro */
+            border: 1px solid rgba(0, 0, 0, .35);
+        }
+
+        #side-menu .dropdown-menu>li>a {
+            color: #EAD7AA;
+        }
+
+        #side-menu .dropdown-menu>li>a:hover {
+            background: rgba(0, 0, 0, .25);
+            color: #FFF;
+        }
+
+        /* Scrollbar del sidebar (webkit) */
+        .navbar-static-side ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .navbar-static-side ::-webkit-scrollbar-track {
+            background: #2F421F;
+        }
+
+        .navbar-static-side ::-webkit-scrollbar-thumb {
+            background: #445C2D;
+            border: 2px solid #2F421F;
+            border-radius: 8px;
+        }
+
+        .navbar-static-side ::-webkit-scrollbar-thumb:hover {
+            background: #4E6734;
+        }
+
+        /* Estado "minimizado" de Inspinia (cuando clic en el botón hamburguesa) */
+        .mini-navbar .navbar-static-side {
+            width: 70px;
+        }
+
+        .mini-navbar #side-menu>li>a {
+            padding-left: 18px;
+            text-align: left;
+        }
+
+        .mini-navbar #side-menu>li>a .nav-label {
+            display: none;
+        }
+
+        .mini-navbar #side-menu>li>a>i {
+            margin-right: 0;
+        }
+
+        /* ===== Fix azul por defecto de Inspinia ===== */
+
+        /* Item padre activo (p.ej. "Ventas") */
+        .navbar-static-side #side-menu>li.active>a,
+        .navbar-static-side #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22) !important;
+            /* verde oscurecido */
+            color: #FFFFFF !important;
+            border-left-color: #F9B233 !important;
+            /* acento amarillo */
+        }
+
+        /* Fondo del contenedor de submenú abierto */
+        .navbar-static-side #side-menu .nav-second-level {
+            background: #334522 !important;
+            /* verde más oscuro */
+        }
+
+        /* Enlaces del submenú (quitar azul de hover/activo) */
+        .navbar-static-side #side-menu .nav-second-level>li>a {
+            background: transparent !important;
+            color: #EAD7AA !important;
+            /* beige */
+            border-left: 4px solid transparent !important;
+        }
+
+        .navbar-static-side #side-menu .nav-second-level>li>a:hover,
+        .navbar-static-side #side-menu .nav-second-level>li.active>a,
+        .navbar-static-side #side-menu .nav-second-level>li.mm-active>a {
+            background: rgba(0, 0, 0, .14) !important;
+            color: #FFFFFF !important;
+            border-left-color: #F9B233 !important;
+        }
+
+        /* Cualquier activo genérico dentro del sidebar que aún herede azul */
+        .navbar-static-side .nav>li.active>a {
+            background-color: rgba(0, 0, 0, .22) !important;
+            color: #FFF !important;
+        }
+
+        /* ==== Mata-azul definitivo solo para el sidebar ==== */
+
+        /* Fondo del contenedor lateral completo */
+        .navbar-default.navbar-static-side,
+        .navbar-default.navbar-static-side .sidebar-collapse,
+        .navbar-default.navbar-static-side #side-menu,
+        .navbar-default.navbar-static-side .nav.metismenu {
+            background: #3A4F26 !important;
+        }
+
+        /* Item padre activo (ej. Ventas) */
+        .navbar-default.navbar-static-side #side-menu>li.active>a,
+        .navbar-default.navbar-static-side #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22) !important;
+            color: #fff !important;
+            border-left-color: #F9B233 !important;
+        }
+
+        /* Asegurar que el <li> activo no pinte azul por detrás */
+        .navbar-default.navbar-static-side #side-menu>li.active,
+        .navbar-default.navbar-static-side #side-menu>li.mm-active {
+            background: transparent !important;
+        }
+
+        /* Submenú abierto (todos los estados de metismenu/Bootstrap) */
+        .navbar-default.navbar-static-side #side-menu .nav-second-level,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse.in,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-collapse,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-show {
+            background: #334522 !important;
+            border-left: 0 !important;
+        }
+
+        /* Enlaces del submenú: normal/hover/activo */
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a {
+            background: transparent !important;
+            color: #EAD7AA !important;
+            border-left: 4px solid transparent !important;
+        }
+
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:hover,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li.active>a,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li.mm-active>a,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:focus {
+            background: rgba(0, 0, 0, .14) !important;
+            color: #fff !important;
+            border-left-color: #F9B233 !important;
+        }
+
+        /* Cualquier activo genérico dentro del sidebar */
+        .navbar-default.navbar-static-side .nav>li.active>a,
+        .navbar-default.navbar-static-side .nav>li>a.active {
+            background: rgba(0, 0, 0, .22) !important;
+            color: #fff !important;
+        }
+
+        /* Fondo de “espacios vacíos” bajo el último item */
+        .navbar-default.navbar-static-side .nav {
+            min-height: 100%;
+            background: #3A4F26 !important;
+        }
     </style>
 </head>
 
@@ -335,7 +378,7 @@
 
                     <li>
                         <a href="#"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Sensores</span></a>
-                    
+
                     <li>
                         <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
@@ -343,12 +386,9 @@
                     <li class="">
                         <a href="#"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Registro de ventas</a></li>
+                            <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a></li>
                             <li><a href="<?php echo asset('') ?>stockUsuario"><i class="fa fa-list-ul"></i> Stock</a></li>
                             <li><a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a></li>
-                            <li><a href="<?php echo asset('') ?>ventaUsuario">Realizar ventas</a></li>
-                            <li><a href="<?php echo asset('') ?>stockUsuario">Stock</a></li>
-                            <li><a href="<?php echo asset('') ?>reporteUsuario">Reportes de venta </a></li>
 
                         </ul>
                     </li>
@@ -473,14 +513,14 @@
 
         </div>
 
-        
-      
+
+
     </div>
 
-    
-                            
 
-        </div>
+
+
+    </div>
     </div>
 
     <!-- Mainly scripts -->
