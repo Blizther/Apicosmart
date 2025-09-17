@@ -8,6 +8,7 @@ use App\Http\Controllers\ControllerColmena;
 use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ControllerInspeccionColmena;
 
 
 Route::get('/', function () {
@@ -16,6 +17,7 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 
 // creando rutas protegidas por rol
@@ -59,18 +61,12 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::put('/apiario/editarapiario/{id}', [ControllerApiario::class, 'update'])->name('apiario.update');
 
     //SECCION COLMENA
-    Route::get('/colmena', [ControllerColmena::class, 'index'])->name('colmena.index');
-    // Mostrar formulario de creación
-    Route::get('/colmena/crearcolmena', [ControllerColmena::class, 'create'])->name('colmena.create');
-    // Guardar nuevo producto - es post no get
-    Route::post('/colmena/guardarcolmena', [ControllerColmena::class, 'store'])->name('colmena.store');
-    //Ruta para eliminado (enviando id por direccion url)
-    Route::delete('/colmena/eliminarcolmena/{id}', [ControllerColmena::class, 'destroy'])->name('colmena.destroy');
-    // Mostrar formulario de edición (es get por que muestra formulario de edición)
-    Route::get('/colmena/{id}/editarcolmena', [ControllerColmena::class, 'edit'])->name('colmena.edit');
-    // Actualizar producto (se utiliza el metodo put)
-    Route::put('/colmena/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmena.update');
-
+    Route::resource('/colmenas', ControllerColmena::class);
+    Route::get('/colmenas/{id}/verInspeccion', [ControllerColmena::class, 'verinspeccion'])->name('colmenas.verinspeccion');
+    Route::get('/colmenas/{id}/agregarinspeccion', [ControllerColmena::class, 'agregarinspeccion'])->name('colmenas.agregarinspeccion');
+    Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
+    Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
+    Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)

@@ -13,7 +13,12 @@ class ControllerApiario extends Controller
      */
     public function index()
     {
-        $apiarios=Apiario::all();
+        //$apiarios=Apiario::all();
+        
+        $idUser = Auth::id(); // ID del usuario logueado
+        $apiarios = Apiario::where('creadoPor', $idUser)
+                    ->where('estado', 'activo')
+                    ->get();
         return view('apiario.index',compact('apiarios'));
     }
 

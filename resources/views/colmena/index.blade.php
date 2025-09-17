@@ -27,7 +27,7 @@
 
     <div class="row g-4">
         <div class="col-sm-12">
-            <a href="{{ route('colmena.create')}}">
+            <a href="{{ route('colmenas.create')}}">
                 <button type="submit" class="btn btn-success">AGREGAR COLMENA</button>
             </a>
         </div>
@@ -64,13 +64,15 @@
                                 <th scope="row"><?php echo $correlativo; ?></th>
                                 <td>{{ $colmena->codigo }}</td>
                                 <td>{{ $colmena->apiario->nombre }}</td>
-                                <td>{{ $colmena->fechaFabricacion }}</td>
+                                <td>{{ \Carbon\Carbon::parse($colmena->fechaFabricacion)->format('d/m/Y H:i:s') }}</td>
                                 <td>{{ $colmena->estado }}</td>
                                 <td>{{ $colmena->cantidadMarco }}</td>
                                 
                                 <td>
+                                    <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>
+                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">Editar</a>
                                     <!-- Botón Eliminar -->
-                                    <form action="{{ route('apiario.destroy', $colmena->idColmena) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm"
@@ -78,8 +80,6 @@
                                             Eliminar
                                         </button>
                                     </form>
-
-                                    <a href="{{ route('apiario.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">Editar</a>
                                 </td>
                             </tr>
                         <?php

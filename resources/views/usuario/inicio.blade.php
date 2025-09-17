@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>@yield('title', 'Sistema de Sensores')</title>
+    <title>@yield('title', 'ApicoSmart')</title>
 
+     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/bootstrap.min.js')}}"></script> <!-- MODIFICADO -->
 
@@ -21,6 +22,274 @@
     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script> <!-- MODIFICADO -->
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
+
+
+    <style>
+        /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */
+
+/* Contenedor lateral */
+.navbar-default.navbar-static-side {
+  background: #3A4F26;           /* verde */
+  box-shadow: inset -1px 0 0 rgba(0,0,0,.25);
+}
+
+/* Área colapsable (para que herede el fondo) */
+.navbar-static-side .sidebar-collapse {
+  background: #3A4F26;
+}
+
+/* Header del perfil */
+#side-menu .nav-header {
+  background: linear-gradient(180deg, #3A4F26 0%, #334522 100%);
+  padding: 25px 20px 20px;
+  border-bottom: 1px solid rgba(0,0,0,.35);
+}
+
+/* Foto redonda con aro amarillo */
+#side-menu .nav-header .img-circle {
+  border: 3px solid #F9B233;     /* amarillo */
+  padding: 2px;
+}
+
+/* Nombre y rol */
+#side-menu .nav-header .font-bold,
+#side-menu .nav-header .text-muted {
+  color: #EDD29C;                /* beige */
+}
+#side-menu .nav-header .text-muted { 
+  opacity: .85;
+}
+
+/* Enlaces de primer nivel */
+#side-menu > li > a {
+  color: #EDD29C;
+  background: transparent;
+  padding: 12px 20px;
+  border-left: 4px solid transparent;
+  transition: background .18s ease, color .18s ease, border-color .18s ease, padding-left .18s ease;
+}
+
+/* Iconos existentes (si los usas), que hereden el color */
+#side-menu > li > a > i {
+  color: inherit;
+  width: 18px;
+  text-align: center;
+  margin-right: 8px;
+  opacity: .95;
+}
+
+/* Hover/Focus */
+#side-menu > li > a:hover,
+#side-menu > li > a:focus {
+  background: rgba(0,0,0,.12);
+  color: #FFFFFF;
+  border-left-color: #F9B233;   /* acento */
+  padding-left: 24px;           /* pequeño desplazamiento */
+}
+
+/* Activo (li .active lo pone metisMenu/inspinia) */
+#side-menu > li.active > a,
+#side-menu > li.mm-active > a {
+  background: rgba(0,0,0,.22);
+  color: #FFFFFF;
+  border-left-color: #F9B233;
+  font-weight: 600;
+}
+
+/* Flecha de submenu */
+#side-menu .fa.arrow {
+  color: #EDD29C;
+  transition: transform .18s ease, color .18s ease;
+}
+#side-menu li.mm-active > a .fa.arrow { 
+  transform: rotate(90deg);
+  color: #F9B233;
+}
+
+/* Submenú */
+#side-menu .nav-second-level {
+  background: #334522;          /* un verde más oscuro */
+  padding: 6px 0;
+}
+#side-menu .nav-second-level li a {
+  color: #EAD7AA;               /* beige suave */
+  padding: 9px 20px 9px 44px;   /* indentado */
+  font-size: 13.5px;
+  border-left: 4px solid transparent;
+}
+#side-menu .nav-second-level li a:hover {
+  background: rgba(0,0,0,.14);
+  color: #FFFFFF;
+  border-left-color: #F9B233;
+}
+
+/* Separadores sutiles entre items */
+#side-menu > li {
+  border-bottom: 1px solid rgba(0,0,0,.18);
+}
+#side-menu > li:last-child {
+  border-bottom: none;
+}
+
+/* Badge/puntos que ya tengas: hazlos resaltar sin cambiar tu HTML */
+#side-menu .nav-label::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 8px;
+  background: transparent; /* por defecto nada */
+}
+/* Ejemplo: resalta "Colmenas" y "Sensores" si ya los marcas con .has-alert en su <li> */
+#side-menu li.has-alert > a .nav-label::after {
+  background: #F9B233; /* amarillo como alerta */
+  box-shadow: 0 0 0 3px rgba(249,178,51,.15);
+}
+
+/* Dropdown del perfil */
+#side-menu .dropdown-menu {
+  background: #2B3B1E;          /* más oscuro */
+  border: 1px solid rgba(0,0,0,.35);
+}
+#side-menu .dropdown-menu > li > a {
+  color: #EAD7AA;
+}
+#side-menu .dropdown-menu > li > a:hover {
+  background: rgba(0,0,0,.25);
+  color: #FFF;
+}
+
+/* Scrollbar del sidebar (webkit) */
+.navbar-static-side ::-webkit-scrollbar {
+  width: 10px;
+}
+.navbar-static-side ::-webkit-scrollbar-track {
+  background: #2F421F;
+}
+.navbar-static-side ::-webkit-scrollbar-thumb {
+  background: #445C2D;
+  border: 2px solid #2F421F;
+  border-radius: 8px;
+}
+.navbar-static-side ::-webkit-scrollbar-thumb:hover {
+  background: #4E6734;
+}
+
+/* Estado "minimizado" de Inspinia (cuando clic en el botón hamburguesa) */
+.mini-navbar .navbar-static-side {
+  width: 70px;
+}
+.mini-navbar #side-menu > li > a {
+  padding-left: 18px;
+  text-align: left;
+}
+.mini-navbar #side-menu > li > a .nav-label {
+  display: none;
+}
+.mini-navbar #side-menu > li > a > i {
+  margin-right: 0;
+}
+
+/* ===== Fix azul por defecto de Inspinia ===== */
+
+/* Item padre activo (p.ej. "Ventas") */
+.navbar-static-side #side-menu > li.active > a,
+.navbar-static-side #side-menu > li.mm-active > a {
+  background: rgba(0,0,0,.22) !important; /* verde oscurecido */
+  color: #FFFFFF !important;
+  border-left-color: #F9B233 !important;   /* acento amarillo */
+}
+
+/* Fondo del contenedor de submenú abierto */
+.navbar-static-side #side-menu .nav-second-level {
+  background: #334522 !important;          /* verde más oscuro */
+}
+
+/* Enlaces del submenú (quitar azul de hover/activo) */
+.navbar-static-side #side-menu .nav-second-level > li > a {
+  background: transparent !important;
+  color: #EAD7AA !important;               /* beige */
+  border-left: 4px solid transparent !important;
+}
+.navbar-static-side #side-menu .nav-second-level > li > a:hover,
+.navbar-static-side #side-menu .nav-second-level > li.active > a,
+.navbar-static-side #side-menu .nav-second-level > li.mm-active > a {
+  background: rgba(0,0,0,.14) !important;
+  color: #FFFFFF !important;
+  border-left-color: #F9B233 !important;
+}
+
+/* Cualquier activo genérico dentro del sidebar que aún herede azul */
+.navbar-static-side .nav > li.active > a {
+  background-color: rgba(0,0,0,.22) !important;
+  color: #FFF !important;
+}
+/* ==== Mata-azul definitivo solo para el sidebar ==== */
+
+/* Fondo del contenedor lateral completo */
+.navbar-default.navbar-static-side,
+.navbar-default.navbar-static-side .sidebar-collapse,
+.navbar-default.navbar-static-side #side-menu,
+.navbar-default.navbar-static-side .nav.metismenu {
+  background: #3A4F26 !important;
+}
+
+/* Item padre activo (ej. Ventas) */
+.navbar-default.navbar-static-side #side-menu > li.active > a,
+.navbar-default.navbar-static-side #side-menu > li.mm-active > a {
+  background: rgba(0,0,0,.22) !important;
+  color: #fff !important;
+  border-left-color: #F9B233 !important;
+}
+
+/* Asegurar que el <li> activo no pinte azul por detrás */
+.navbar-default.navbar-static-side #side-menu > li.active,
+.navbar-default.navbar-static-side #side-menu > li.mm-active {
+  background: transparent !important;
+}
+
+/* Submenú abierto (todos los estados de metismenu/Bootstrap) */
+.navbar-default.navbar-static-side #side-menu .nav-second-level,
+.navbar-default.navbar-static-side #side-menu .nav-second-level.collapse,
+.navbar-default.navbar-static-side #side-menu .nav-second-level.collapse.in,
+.navbar-default.navbar-static-side #side-menu .nav-second-level.mm-collapse,
+.navbar-default.navbar-static-side #side-menu .nav-second-level.mm-show {
+  background: #334522 !important;
+  border-left: 0 !important;
+}
+
+/* Enlaces del submenú: normal/hover/activo */
+.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a {
+  background: transparent !important;
+  color: #EAD7AA !important;
+  border-left: 4px solid transparent !important;
+}
+.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a:hover,
+.navbar-default.navbar-static-side #side-menu .nav-second-level > li.active > a,
+.navbar-default.navbar-static-side #side-menu .nav-second-level > li.mm-active > a,
+.navbar-default.navbar-static-side #side-menu .nav-second-level > li > a:focus {
+  background: rgba(0,0,0,.14) !important;
+  color: #fff !important;
+  border-left-color: #F9B233 !important;
+}
+
+/* Cualquier activo genérico dentro del sidebar */
+.navbar-default.navbar-static-side .nav > li.active > a,
+.navbar-default.navbar-static-side .nav > li > a.active {
+  background: rgba(0,0,0,.22) !important;
+  color: #fff !important;
+}
+
+/* Fondo de “espacios vacíos” bajo el último item */
+.navbar-default.navbar-static-side .nav {
+  min-height: 100%;
+  background: #3A4F26 !important;
+}
+
+
+    </style>
 </head>
 
 <body>
@@ -30,56 +299,60 @@
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
-                        <div class="dropdown profile-element"> <span>
+                        <div class="dropdown profile-element">
+                            <span>
                                 <img alt="image" class="img-circle img-fluid" src="{{ asset('img/logoApicoSmart.jpg') }}" style="max-width: 70px;" />
-
                             </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{ auth()->user()->nombre }}</strong>
-                                    </span> <span class="text-muted text-xs block">{{ auth()->user()->rol }} <b class="caret"></b></span> </span> </a>
+                                <span class="clear">
+                                    <span class="block m-t-xs">
+                                        <strong class="font-bold">{{ auth()->user()->nombre }}</strong>
+                                    </span>
+                                    <span class="text-muted text-xs block"><i class="fa fa-user"></i> {{ auth()->user()->rol }} <b class="caret"></b></span>
+                                </span>
+                            </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html">Profile</a></li>
-                                <li><a href="contacts.html">Contacts</a></li>
-                                <li><a href="mailbox.html">Mailbox</a></li>
+                                <li><a href="profile.html"><i class="fa fa-id-card-o"></i> Profile</a></li>
+                                <li><a href="contacts.html"><i class="fa fa-address-book-o"></i> Contacts</a></li>
+                                <li><a href="mailbox.html"><i class="fa fa-envelope-o"></i> Mailbox</a></li>
                                 <li class="divider"></li>
-                                <!-- <li><a href="login.html">Logout</a></li> -->
                             </ul>
                         </div>
-                        <div class="logo-element">
-
-                        </div>
+                        <div class="logo-element"></div>
                     </li>
 
                     @if(auth()->user()->rol == 'usuario')
-
                     <li>
-                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-user"></i> <span class="nav-label">Productos</span></a>
+                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label">Productos</span></a>
                     </li>
                     <li>
-                        <a href="{{ route('apiario.index') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
+                        <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label">Apiarios</span></a>
                     </li>
                     <li>
-                        <a href="{{route('colmena.index')}}"><i class="fa fa-user"></i> <span class="nav-label">Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}"><i class="fa fa-archive"></i> <span class="nav-label">Colmenas</span></a>
                     </li>
                     @endif
 
+                    <li>
+                        <a href="#"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Sensores</span></a>
                     
                     <li>
                         <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
 
                     <li class="">
-                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+                            <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Registro de ventas</a></li>
+                            <li><a href="<?php echo asset('') ?>stockUsuario"><i class="fa fa-list-ul"></i> Stock</a></li>
+                            <li><a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a></li>
                             <li><a href="<?php echo asset('') ?>ventaUsuario">Realizar ventas</a></li>
                             <li><a href="<?php echo asset('') ?>stockUsuario">Stock</a></li>
                             <li><a href="<?php echo asset('') ?>reporteUsuario">Reportes de venta </a></li>
 
                         </ul>
                     </li>
-
                 </ul>
-
             </div>
         </nav>
 
@@ -178,7 +451,7 @@
 
                         <li>
                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fa fa-sign-out"></i> Log out
+                                <i class="fa fa-sign-out"></i> SALIR
                             </a>
 
                             <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
@@ -199,467 +472,12 @@
             </div>
 
         </div>
-        <div class="small-chat-box fadeInRight animated">
 
-            <div class="heading" draggable="true">
-                <small class="chat-date pull-right">
-                    02.19.2015
-                </small>
-                Small chat
-            </div>
+        
+      
+    </div>
 
-            <div class="content">
-
-                <div class="left">
-                    <div class="author-name">
-                        Monica Jackson <small class="chat-date">
-                            10:02 am
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        Lorem Ipsum is simply dummy text input.
-                    </div>
-
-                </div>
-                <div class="right">
-                    <div class="author-name">
-                        Mick Smith
-                        <small class="chat-date">
-                            11:24 am
-                        </small>
-                    </div>
-                    <div class="chat-message">
-                        Lorem Ipsum is simpl.
-                    </div>
-                </div>
-                <div class="left">
-                    <div class="author-name">
-                        Alice Novak
-                        <small class="chat-date">
-                            08:45 pm
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        Check this stock char.
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="author-name">
-                        Anna Lamson
-                        <small class="chat-date">
-                            11:24 am
-                        </small>
-                    </div>
-                    <div class="chat-message">
-                        The standard chunk of Lorem Ipsum
-                    </div>
-                </div>
-                <div class="left">
-                    <div class="author-name">
-                        Mick Lane
-                        <small class="chat-date">
-                            08:45 pm
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        I belive that. Lorem Ipsum is simply dummy text.
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="form-chat">
-                <div class="input-group input-group-sm">
-                    <input type="text" class="form-control">
-                    <span class="input-group-btn"> <button
-                            class="btn btn-primary" type="button">Send
-                        </button> </span>
-                </div>
-            </div>
-
-        </div>
-        <div id="small-chat">
-
-            <span class="badge badge-warning pull-right">5</span>
-            <a class="open-small-chat">
-                <i class="fa fa-comments"></i>
-
-            </a>
-        </div>
-        <div id="right-sidebar" class="animated">
-            <div class="sidebar-container">
-
-                <ul class="nav nav-tabs navs-3">
-
-                    <li class="active"><a data-toggle="tab" href="#tab-1">
-                            Notes
-                        </a></li>
-                    <li><a data-toggle="tab" href="#tab-2">
-                            Projects
-                        </a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-3">
-                            <i class="fa fa-gear"></i>
-                        </a></li>
-                </ul>
-
-                <div class="tab-content">
-
-
-                    <div id="tab-1" class="tab-pane active">
-
-                        <div class="sidebar-title">
-                            <h3> <i class="fa fa-comments-o"></i> Latest Notes</h3>
-                            <small><i class="fa fa-tim"></i> You have 10 new message.</small>
-                        </div>
-
-                        <div>
-
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a1.jpg">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-
-                                        There are many variations of passages of Lorem Ipsum available.
-                                        <br>
-                                        <small class="text-muted">Today 4:21 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a2.jpg">
-                                    </div>
-                                    <div class="media-body">
-                                        The point of using Lorem Ipsum is that it has a more-or-less normal.
-                                        <br>
-                                        <small class="text-muted">Yesterday 2:45 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a3.jpg">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        Mevolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                        <br>
-                                        <small class="text-muted">Yesterday 1:10 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a4.jpg">
-                                    </div>
-
-                                    <div class="media-body">
-                                        Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the
-                                        <br>
-                                        <small class="text-muted">Monday 8:37 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a8.jpg">
-                                    </div>
-                                    <div class="media-body">
-
-                                        All the Lorem Ipsum generators on the Internet tend to repeat.
-                                        <br>
-                                        <small class="text-muted">Today 4:21 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a7.jpg">
-                                    </div>
-                                    <div class="media-body">
-                                        Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                                        <br>
-                                        <small class="text-muted">Yesterday 2:45 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a3.jpg">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        The standard chunk of Lorem Ipsum used since the 1500s is reproduced below.
-                                        <br>
-                                        <small class="text-muted">Yesterday 1:10 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar" src="img/a4.jpg">
-                                    </div>
-                                    <div class="media-body">
-                                        Uncover many web sites still in their infancy. Various versions have.
-                                        <br>
-                                        <small class="text-muted">Monday 8:37 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div id="tab-2" class="tab-pane">
-
-                        <div class="sidebar-title">
-                            <h3> <i class="fa fa-cube"></i> Latest projects</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
-                        </div>
-
-                        <ul class="sidebar-list">
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Business valuation</h4>
-                                    It is a long established fact that a reader will be distracted.
-
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
-                                    </div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Contract with Company </h4>
-                                    Many desktop publishing packages and web page editors.
-
-                                    <div class="small">Completion with: 48%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 48%;" class="progress-bar"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Meeting</h4>
-                                    By the readable content of a page when looking at its layout.
-
-                                    <div class="small">Completion with: 14%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="label label-primary pull-right">NEW</span>
-                                    <h4>The generated</h4>
-                                    There are many variations of passages of Lorem Ipsum available.
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Business valuation</h4>
-                                    It is a long established fact that a reader will be distracted.
-
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
-                                    </div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Contract with Company </h4>
-                                    Many desktop publishing packages and web page editors.
-
-                                    <div class="small">Completion with: 48%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 48%;" class="progress-bar"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Meeting</h4>
-                                    By the readable content of a page when looking at its layout.
-
-                                    <div class="small">Completion with: 14%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="label label-primary pull-right">NEW</span>
-                                    <h4>The generated</h4>
-                                    <!--<div class="small pull-right m-t-xs">9 hours ago</div>-->
-                                    There are many variations of passages of Lorem Ipsum available.
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                    <div id="tab-3" class="tab-pane">
-
-                        <div class="sidebar-title">
-                            <h3><i class="fa fa-gears"></i> Settings</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
-                        </div>
-
-                        <div class="setings-item">
-                            <span>
-                                Show notifications
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example">
-                                    <label class="onoffswitch-label" for="example">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Disable Chat
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" checked class="onoffswitch-checkbox" id="example2">
-                                    <label class="onoffswitch-label" for="example2">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Enable history
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example3">
-                                    <label class="onoffswitch-label" for="example3">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Show charts
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example4">
-                                    <label class="onoffswitch-label" for="example4">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Offline users
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example5">
-                                    <label class="onoffswitch-label" for="example5">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Global search
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example6">
-                                    <label class="onoffswitch-label" for="example6">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Update everyday
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example7">
-                                    <label class="onoffswitch-label" for="example7">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sidebar-content">
-                            <h4>Settings</h4>
-                            <div class="small">
-                                I belive that. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                And typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-                                Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
+    
                             
 
         </div>
