@@ -19,12 +19,13 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-sm-12">
-            <a href="{{ route('colmenas.index')}}">
-                <button type="submit" class="btn btn-warning">VOLVER A LISTA</button>
-            </a>
-        </div>
+<div class="col-sm-12">
+        <a href="{{ route('colmenas.index')}}" class="btn btn-warning">
+            <i class="fa fa-arrow-left"></i> Volver a la lista
+        </a>
     </div>
+    </div>
+    
 
     <div class="row g-4">
         <div class="col-sm-12">

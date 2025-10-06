@@ -25,12 +25,11 @@
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-sm-12">
-            <a href="{{ route('colmenas.create')}}">
-                <button type="submit" class="btn btn-success">AGREGAR COLMENA</button>
-            </a>
-        </div>
+    
+    <div class="mb-3">
+        <a href="{{ route('colmenas.create')}}" class="btn btn-success">
+            <i class="fa fa-plus"></i> Agregar colmena
+        </a>
     </div>
 
 
