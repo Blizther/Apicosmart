@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DispositivoWebController;
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -93,12 +94,13 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
         ->whereNumber('venta')
         ->name('venta.reporte.detalle');
     
-
-
-
-
-
     Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario']);
     Route::get('/reporteUsuario', [ControllerVentaUsuario::class, 'metodoReporteUsuario']);
     Route::get('/stockUsuario', [ControllerVentaUsuario::class, 'metodoStockUsuario']);
+
+
+    Route::get('/mis/dispositivos', [DispositivoWebController::class, 'index'])->name('mis.dispositivos');
+    Route::post('/mis/dispositivos', [DispositivoWebController::class, 'store'])->name('mis.dispositivos.store');
+    Route::get('/mis/dispositivos/{id}', [DispositivoWebController::class, 'show'])->name('mis.dispositivos.show');
+
 });

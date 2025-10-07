@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SensorIngestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -165,5 +166,6 @@ Route::prefix('v1')->group(function () {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     });
-
+    Route::get('/health', fn() => response()->json(['ok' => true, 'service' => 'api', 'version' => 'v1']));
+    Route::post('/sensores', [SensorIngestController::class, 'store']);
 });

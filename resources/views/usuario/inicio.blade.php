@@ -375,7 +375,7 @@
                     @endif
 
                     <li>
-                        <a href="#"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Sensores</span></a>
+                        <a href="{{ route('mis.dispositivos') }}"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a></li>
                     <li>
