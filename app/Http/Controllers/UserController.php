@@ -13,10 +13,26 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
+        $q = trim((string) $request->input('q', ''));
+
+        $users = User::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('nombre', 'LIKE', "%{$q}%")
+                        ->orWhere('primerApellido', 'LIKE', "%{$q}%")
+                        ->orWhere('segundoApellido', 'LIKE', "%{$q}%")
+                        ->orWhere('email', 'LIKE', "%{$q}%")
+                        ->orWhere('rol', 'LIKE', "%{$q}%"); // opcional
+                });
+            })
+            ->orderBy('nombre')
+            ->orderBy('primerApellido')
+            ->paginate(10)                      // usa paginación para no cargar todo
+            ->appends(['q' => $q]);             // conserva el término al paginar
+
+        return view('users.index', compact('users', 'q'));
     }
 
     /**

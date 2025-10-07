@@ -365,9 +365,7 @@
                     </li>
 
                     @if(auth()->user()->rol == 'usuario')
-                    <li>
-                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label">Productos</span></a>
-                    </li>
+                    
                     <li>
                         <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label">Apiarios</span></a>
                     </li>
@@ -378,17 +376,17 @@
 
                     <li>
                         <a href="#"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Sensores</span></a>
-
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
-
+                    <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a></li>
+                    <li>
+                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label">Productos</span></a>
+                    </li>
+                <li><a href="<?php echo asset('') ?>stockUsuario"><i class="fa fa-list-ul"></i> Stock</a></li>
+                    <li><a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a></li>
                     <li class="">
                         <a href="#"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a></li>
-                            <li><a href="<?php echo asset('') ?>stockUsuario"><i class="fa fa-list-ul"></i> Stock</a></li>
-                            <li><a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a></li>
+
 
                         </ul>
                     </li>
