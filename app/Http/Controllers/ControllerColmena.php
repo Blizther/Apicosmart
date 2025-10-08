@@ -55,12 +55,13 @@ class ControllerColmena extends Controller
 
         $colmena= new Colmena();
         $colmena->codigo = $request->codigo;
-        $colmena->fechaFabricacion = $request->fechaFabricacion;
+        $colmena->fechaInstalacionFisica = $request->fechaFabricacion;
         $colmena->estado = $request->estado;
         $colmena->idApiario = $request->apiario;
         $colmena->cantidadMarco = $request->cantidadMarco;
         $colmena->creadoPor = $user;
-        $colmena->fechaInstalacion = $fecha;
+        $colmena->modelo = $request->modelo;
+        $colmena->fechaCreacion = $fecha;
         $colmena->save();
             
         // Redireccionar con mensaje

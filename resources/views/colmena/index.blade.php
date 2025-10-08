@@ -51,6 +51,7 @@
                             <th scope="col">Fecha Fabricación</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Cantidad de Marcos</th>
+                            <th scope="col">Modelo</th>
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
@@ -66,6 +67,7 @@
                                 <td>{{ \Carbon\Carbon::parse($colmena->fechaFabricacion)->format('d/m/Y H:i:s') }}</td>
                                 <td>{{ $colmena->estado }}</td>
                                 <td>{{ $colmena->cantidadMarco }}</td>
+                                <td>{{ $colmena->modelo }}</td>
                                 
                                 <td>
                                     <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>

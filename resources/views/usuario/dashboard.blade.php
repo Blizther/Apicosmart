@@ -8,7 +8,9 @@
                         <h5>Total apiarios</h5>
                     </div>
                     <div class="ibox-content">
-                        <h1 class="no-margins">386,200</h1>
+                        <h1 class="no-margins">
+                            {{ Auth::user()->apiarios->count() }}
+                        </h1>
                         <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
                         <small>Total views</small>
                     </div>
@@ -22,7 +24,9 @@
                     </div>
                     <div class="ibox-content">
                         <i class="fa fa-archive"></i>
-                        <h1 class="no-margins">80,800</h1>
+                        <h1 class="no-margins">
+                            {{ Auth::user()->colmenasActivas->count() }}
+                        </h1>
                         <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
                         
                         <small>New orders</small>
