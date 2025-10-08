@@ -34,8 +34,9 @@
 
         /* Logo */
         .logo {
-            width: 100px;
+            width: 180px;
             margin-bottom: 20px;
+            border-radius: 12px;
         }
 
         h2 {

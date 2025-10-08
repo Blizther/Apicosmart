@@ -21,7 +21,10 @@
     {{-- Volver --}}
     <div class="row g-4">
         <div class="col-sm-12">
-            <a href="{{ route('apiario.index')}}" class="btn btn-warning">VOLVER A LISTA</a>
+            <a href="{{ route('apiario.index')}}" class="btn btn-warning">
+                <i class="fa fa-arrow-left"></i>
+                VOLVER A LISTA
+            </a>
         </div>
     </div>
 
@@ -48,19 +51,25 @@
                         placeholder="Nombre" name="nombre" value="{{ old('nombre') }}" required autocomplete="off">
                 </div>
 
-                {{-- Departamento (label arriba) + aquí se muestra la ubicación guardada --}}
+                {{-- vegetacion (label arriba) + aquí se muestra la ubicación guardada --}}
                 <div class="mb-1 col-12 col-md-6">
-                    <label for="departamento" class="form-label">Departamento</label>
-                    <input type="text" class="form-control" id="departamento"
-                        placeholder="Departamento" name="departamento" value="{{ old('departamento') }}" required autocomplete="off">
+                    <label for="vegetacion" class="form-label">Vegetación</label>
+                    <input type="text" class="form-control" id="vegetacion"
+                        placeholder="Vegetación" name="vegetacion" value="{{ old('Vegetación') }}" required autocomplete="off">
                     
                 </div>
 
-                {{-- Municipio (label arriba) --}}
+                {{-- altitud (label arriba) --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="municipio" class="form-label">Municipio</label>
-                    <input type="text" class="form-control" id="municipio"
-                        placeholder="Municipio" name="municipio" value="{{ old('municipio') }}" required autocomplete="off">
+                    <label for="altitud" class="form-label">Altitud</label>
+                    <input type="text" class="form-control" id="altitud"
+                        placeholder="Altitud" name="altitud" value="{{ old('Altitud') }}" required autocomplete="off">
+                </div>
+                {{-- Imagen (label arriba) --}}
+                <div class="mb-3 col-12 col-md-6">
+                    <label for="urlImagen" class="form-label">Imagen</label>
+                    <input type="text" class="form-control" id="urlImagen"
+                        placeholder="Imagen" name="urlImagen" value="{{ old('Imagen') }}" required autocomplete="off">
                 </div>
                 <div class="mb-3 col-12 col-md-6">
                     <label for="ubicacion" class="form-label">Ubicacion</label>

@@ -32,7 +32,7 @@ Route::middleware(['auth', 'rol:administrador'])->group(function () {
 // Rutas para usuario común
 Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/usuario/inicio', function () {
-        return view('usuario.inicio');
+        return view('usuario.dashboard');
     });
     Route::get('/productos', [ControllerProducto::class, 'metodoProductos']);
     // Mostrar formulario de creación

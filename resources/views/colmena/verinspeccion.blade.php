@@ -7,11 +7,13 @@
     <div class="row g-4">
         <div class="col-12">
             <div class="d-flex justify-content-between">
-                <a href="{{ route('colmenas.index')}}">
-                    <button type="submit" class="btn btn-info">Volver</button>
+                <a href="{{ route('colmenas.index')}}" class="btn btn-warning">
+                <i class="fa fa-arrow-left"></i>
+                VOLVER A LISTA
                 </a>
-                <a href="{{ route('colmenas.agregarinspeccion',['id'=>$id])}}">
-                    <button type="submit" class="btn btn-success">AGREGAR INSPECCIÓN</button>
+                
+                <a href="{{ route('colmenas.agregarinspeccion',['id'=>$id])}}" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Agregar inspección
                 </a>
             </div>
             

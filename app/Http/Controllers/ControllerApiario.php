@@ -37,8 +37,9 @@ class ControllerApiario extends Controller
     {
         $request->validate([
             'nombre' => 'required|max:150',
-            'departamento' => 'required|string|max:100',
-            'municipio' => 'required|string|max:100',
+            'vegetacion' => 'string|max:100',
+            'urlImagen' => 'string|max:100',
+            'altitud' => 'numeric',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
         ]);
@@ -48,11 +49,11 @@ class ControllerApiario extends Controller
 
         $apiario= new Apiario();
         $apiario->nombre = $request->nombre;
-        $apiario->departamento = $request->departamento;
-        $apiario->municipio = $request->municipio;
+        $apiario->vegetacion = $request->vegetacion;
+        $apiario->altura = $request->altura;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
-        $apiario->nombre = $request->nombre;
+        $apiario->urlImagen = $request->urlImagen;
         $apiario->creadoPor = $user;
         $apiario->fechaCreacion = $fecha;
         $apiario->save();
@@ -87,8 +88,9 @@ class ControllerApiario extends Controller
     {
         $request->validate([
             'nombre' => 'required|max:150',
-            'departamento' => 'required|string|max:100',
-            'municipio' => 'required|string|max:100',
+            'vegetacion' => 'required|string|max:100',
+            'urlImagen' => 'string|max:100',
+            'altitud' => 'numeric',
             'estado' => 'required|string|max:8',
         ]);
 
