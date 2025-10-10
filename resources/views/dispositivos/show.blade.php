@@ -1,39 +1,50 @@
 @extends('usuario.inicio')
-@section('content')
-<div class="container py-3">
-  <h3>Dispositivo #{{ $disp->id }}</h3>
-  <div class="mb-3"><strong>Serial:</strong> {{ $disp->serial }}</div>
-  <div class="mb-3"><strong>Nombre:</strong> {{ $disp->nombre ?? '—' }}</div>
-  <div class="mb-3"><strong>API-KEY:</strong> <code>{{ $disp->api_key }}</code></div>
 
-  <h4 class="mt-4">Últimas lecturas</h4>
+@section('content')
+<div class="container mt-4">
+  <h3>Lecturas del dispositivo</h3>
+  <p class="text-muted mb-2">
+    Serial: <code>{{ $dispositivo->fabricado->serial ?? '—' }}</code> |
+    Nombre: {{ $dispositivo->nombre ?? '—' }}
+  </p>
+
   <div class="card">
-    <div class="card-body p-0">
-      <table class="table mb-0">
-        <thead>
-          <tr>
-            <th>Fecha/Hora</th>
-            <th>Humedad (%)</th>
-            <th>Peso (kg)</th>
-            <th>Temperatura (°C)</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($lecturas as $l)
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead>
             <tr>
-              <td>{{ $l->ts }}</td>
-              <td>{{ $l->humedad !== null ? number_format($l->humedad, 2) : '—' }}</td>
-              <td>{{ $l->peso !== null ? number_format($l->peso, 3) : '—' }}</td>
-              <td>{{ $l->temperatura !== null ? number_format($l->temperatura, 2) : '—' }}</td>
+              <th>ID</th>
+              <th>Fecha/Hora</th>
+              <th>Temperatura (°C)</th>
+              <th>Humedad (%)</th>
+              <th>Peso (kg)</th>
             </tr>
-          @empty
-            <tr><td colspan="4" class="text-center p-4">Sin lecturas registradas.</td></tr>
-          @endforelse
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @forelse($lecturas as $l)
+              <tr>
+                <td>{{ $l->id }}</td>
+                <td>{{ $l->ts ?? $l->created_at }}</td>
+                <td>{{ $l->temperatura }}</td>
+                <td>{{ $l->humedad }}</td>
+                <td>{{ $l->peso }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="5" class="text-center text-muted">Sin lecturas registradas.</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+
+      {{ $lecturas->links() }}
     </div>
   </div>
 
-  <a href="{{ route('mis.dispositivos') }}" class="btn btn-link mt-3">Volver</a>
+  <div class="mt-3">
+    <a href="{{ route('mis.dispositivos') }}" class="btn btn-secondary">Volver</a>
+  </div>
 </div>
 @endsection

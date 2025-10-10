@@ -7,20 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Dispositivo extends Model
 {
     protected $table = 'dispositivos';
-    protected $primaryKey = 'id';
-    public $timestamps = true;
+    protected $fillable = ['idUser', 'dispositivo_fabricado_id', 'nombre', 'estado'];
 
-    protected $fillable = [
-        'idUser', 'serial', 'api_key', 'nombre', 'estado',
-    ];
-
-    public function usuario()
+    public function fabricado()
     {
-        return $this->belongsTo(User::class, 'idUser', 'id');
+        return $this->belongsTo(DispositivoFabricado::class, 'dispositivo_fabricado_id');
     }
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'idUser');
+    }
     public function lecturas()
     {
-        return $this->hasMany(LecturaSensor::class, 'dispositivo_id', 'id');
+        return $this->hasMany(LecturaSensor::class, 'dispositivo_id');
     }
 }

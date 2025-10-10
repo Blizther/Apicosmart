@@ -9,18 +9,17 @@ return new class extends Migration {
     {
         Schema::create('lecturas_sensores', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('dispositivo_id'); // FK a dispositivos.id
-            $table->timestamp('ts')->useCurrent();        // instante de la lectura
-            $table->decimal('humedad', 5, 2)->nullable();     // %
-            $table->decimal('peso', 8, 3)->nullable();        // kg (o la unidad que uses)
-            $table->decimal('temperatura', 5, 2)->nullable(); // °C
+            $table->unsignedBigInteger('dispositivo_id');
+            $table->timestamp('ts')->useCurrent();
+            $table->decimal('humedad', 5, 2)->nullable();
+            $table->decimal('peso', 8, 3)->nullable();
+            $table->decimal('temperatura', 5, 2)->nullable();
             $table->timestamps();
 
             $table->foreign('dispositivo_id')->references('id')->on('dispositivos')->onDelete('cascade');
             $table->index(['dispositivo_id', 'ts']);
         });
     }
-
     public function down(): void
     {
         Schema::dropIfExists('lecturas_sensores');
