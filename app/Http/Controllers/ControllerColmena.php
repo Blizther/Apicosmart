@@ -28,9 +28,12 @@ class ControllerColmena extends Controller
      */
     public function create()
     {
-        //
-        $apiarios = Apiario::withCount('colmenas')
-        ->get(['idApiario', 'nombre']);
+        // Cargar los apiarios del usuario autenticado con el conteo de colmenas
+        $idUser = Auth::id(); // ID del usuario logueado    
+        $apiarios = Apiario::where('creadoPor', $idUser)
+                    ->where('estado', 'activo')
+                    ->withCount('colmenas') // Contar colmenas relacionadas
+                    ->get();
 
         return view('colmena.create',compact('apiarios'));
     }
