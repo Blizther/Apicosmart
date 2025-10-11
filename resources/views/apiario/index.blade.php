@@ -20,6 +20,7 @@
             <i class="fa fa-plus"></i> Agregar Apiario
         </a>
     </div>
+    <hr>
 
     <div class="row g-4"> <!-- g-4 agrega separación entre filas y columnas -->
     @foreach($apiarios as $index => $apiario)

@@ -19,12 +19,13 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-sm-12">
-            <a href="{{ route('colmenas.index')}}">
-                <button type="submit" class="btn btn-warning">VOLVER A LISTA</button>
-            </a>
-        </div>
+<div class="col-sm-12">
+        <a href="{{ route('colmenas.index')}}" class="btn btn-warning">
+            <i class="fa fa-arrow-left"></i> Volver a la lista
+        </a>
     </div>
+    </div>
+    
 
     <div class="row g-4">
         <div class="col-sm-12">
@@ -81,6 +82,18 @@ sin ese código el guardado no se activa
                         <label for="cantidadMarco">Cantidad de Marco</label>
                         <input type="number" class="form-control" id="cantidadMarco"
                             placeholder="Cantidad de Marco" name="cantidadMarco" value="{{ old('cantidadMarco') ?? 0 }}" required autocomplete="off" min="0">
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="modelo">Modelo</label>
+                        <select name="modelo" id="modelo"  class="form-control" required>
+                        <option value="Langstroth" {{ old('modelo') == 'langstroth' ? 'selected' : '' }}>LANGSTROTH</option>
+                        <option value="Dadant" {{ old('modelo') == 'dadant' ? 'selected' : '' }}>DADANT</option>
+                         <option value="Warre" {{ old('modelo') == 'Warre' ? 'selected' : '' }}>WARRE</option>
+                        <option value="Warre" {{ old('modelo') == 'layens' ? 'selected' : '' }}>Layens</option>
+                        <option value="Top Bar" {{ old('modelo') == 'TopBar' ? 'selected' : '' }}>TOP BAR</option>
+                         <option value="Warre" {{ old('modelo') == 'flowHive' ? 'selected' : '' }}>FLOW HIVE</option>
+                        <option value="Otro" {{ old('modelo') == 'otro' ? 'selected' : '' }}>OTRO</option>
+                        </select>
                     </div>
                     
                     

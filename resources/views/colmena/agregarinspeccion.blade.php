@@ -20,8 +20,10 @@
 
     <div class="row g-4">
         <div class="col-sm-12">
-            <a href="{{ route('colmenas.verinspeccion',['id'=>$id])}}">
-                <button type="submit" class="btn btn-warning">VOLVER A LA LISTA DE INSPECCIONES</button>
+            
+            <a href="{{ route('colmenas.verinspeccion',['id'=>$id])}}" class="btn btn-warning">
+                <i class="fa fa-arrow-left"></i>
+                VOLVER A LA LISTA DE INSPECCIONES
             </a>
         </div>
     </div>

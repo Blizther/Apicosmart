@@ -132,4 +132,19 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado.');
     }
+
+    public function totalApiarios()
+    {
+        $user = Auth::user();
+        $totalApiarios = User::find($user->id)->apiarios()->count();
+
+        return response()->json(['totalApiarios' => $totalApiarios]);
+    }
+    public function totalColmenasActivas()
+    {
+        $user = Auth::user();
+        $totalColmenasActivas = User::find($user->id)->colmenasActivas()->count();
+
+        return response()->json(['totalColmenasActivas' => $totalColmenasActivas]);
+    }
 }

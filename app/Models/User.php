@@ -37,4 +37,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Venta::class, 'idUser', 'id');
     }
+    // Relación: un usuario tiene muchos apiarios
+    public function apiarios()
+    {
+        return $this->hasMany(Apiario::class, 'creadoPor', 'id');
+    }
+    public function colmenasActivas()
+    {
+        return $this->hasManyThrough(
+            Colmena::class,
+            Apiario::class,
+            'creadoPor', // Foreign key on Apiario table
+            'idApiario', // Foreign key on Colmena table
+            'id',        // Local key on User table
+            'idApiario'  // Local key on Apiario table
+        )->where('colmena.estado', 'activo');
+    }
 }

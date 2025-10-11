@@ -69,6 +69,7 @@
         #side-menu>li>a {
             color: #EDD29C;
             /* color del texto */
+            font-size: 16px;
             background-color: transparent;
             /* más explícito */
             padding: 12px 20px;
@@ -94,6 +95,7 @@
             text-align: center;
             margin-right: 8px;
             opacity: .95;
+            font-size: 25px;
         }
 
         /* Hover/Focus */
@@ -332,6 +334,47 @@
             min-height: 100%;
             background: #3A4F26 !important;
         }
+
+        /* === Banner de bienvenida ApicoSmart === */
+.welcome-banner {
+    width: 100%;
+    height: 120px; /* altura del banner */
+    background-image: url("{{ asset('img/fondo2.png') }}"); /* cambia por tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* oscurece un poco para mejor contraste del texto */
+    z-index: 0;
+}
+
+.welcome-text {
+    position: relative;
+    z-index: 1;
+    color: #3A4F26;
+    font-size: 36px; /* tamaño del texto */
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+
+
     </style>
 </head>
 
@@ -365,21 +408,23 @@
                     </li>
 
                     @if(auth()->user()->rol == 'usuario')
+                    <li>
+                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
+                    </li>
                     
                     <li>
-                        <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label">Apiarios</span></a>
+                        <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
                     </li>
                     <li>
-                        <a href="{{route('colmenas.index')}}"><i class="fa fa-archive"></i> <span class="nav-label">Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     @endif
 
                     <li>
-                        <a href="{{ route('mis.dispositivos') }}"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
-                    </li>
-                    <li><a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a></li>
+                        <a href="#"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Sensores</span></a>
+
                     <li>
-                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label">Productos</span></a>
+                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
                     </li>
                 <li><a href="<?php echo asset('') ?>stockUsuario"><i class="fa fa-list-ul"></i> Stock</a></li>
                     <li><a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a></li>
@@ -406,8 +451,8 @@
                         </form>
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
-                        <li>
-                            <span class="m-r-sm text-muted welcome-message">Bienvenido a ApicoSmart</span>
+                        <li class="welcome-container">
+                            <span class="welcome-text">Bienvenido a ApicoSmart</span>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

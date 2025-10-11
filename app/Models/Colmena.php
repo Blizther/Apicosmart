@@ -15,9 +15,9 @@ class Colmena extends Model
 
     public $timestamps =false;
     protected $casts=[
-        'fechaInstalacion'=> 'timestamp', 
-        'fechaFabricacion'=> 'timestamp', 
-        'fechaActualizar'=> 'timestamp', 
+        'fechaInstalacionFisica'=> 'timestamp', 
+        'fechaCreacion'=> 'timestamp', 
+        'fechaModificacion'=> 'timestamp', 
     ];
 
      // Relación: una colmena pertenece a un apiario
