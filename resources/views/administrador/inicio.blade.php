@@ -56,14 +56,6 @@
                         <a href="{{ route('fabricados.index') }}"><i class="fa fa-cogs"></i><span class="nav-label">Ver dispositivos fabricados</span></a>
                     </li>
                     @endif
-
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
-                    </li>
-
                 </ul>
 
             </div>
