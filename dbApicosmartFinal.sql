@@ -120,6 +120,68 @@ INSERT INTO `detalles` VALUES (1,1,1,2,15.00,30.00,'2025-09-05 09:17:47','2025-0
 UNLOCK TABLES;
 
 --
+-- Table structure for table `dispositivos`
+--
+
+DROP TABLE IF EXISTS `dispositivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dispositivos` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `idUser` bigint unsigned NOT NULL,
+  `dispositivo_fabricado_id` bigint unsigned NOT NULL,
+  `nombre` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dispositivo_unico_por_duenio` (`dispositivo_fabricado_id`),
+  KEY `dispositivos_iduser_foreign` (`idUser`),
+  CONSTRAINT `dispositivos_dispositivo_fabricado_id_foreign` FOREIGN KEY (`dispositivo_fabricado_id`) REFERENCES `dispositivos_fabricados` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `dispositivos_iduser_foreign` FOREIGN KEY (`idUser`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dispositivos`
+--
+
+LOCK TABLES `dispositivos` WRITE;
+/*!40000 ALTER TABLE `dispositivos` DISABLE KEYS */;
+INSERT INTO `dispositivos` VALUES (1,1,1,'prueba 1',1,'2025-10-09 05:15:03','2025-10-09 05:15:03');
+/*!40000 ALTER TABLE `dispositivos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dispositivos_fabricados`
+--
+
+DROP TABLE IF EXISTS `dispositivos_fabricados`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dispositivos_fabricados` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `serial` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `api_key_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dispositivos_fabricados_serial_unique` (`serial`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dispositivos_fabricados`
+--
+
+LOCK TABLES `dispositivos_fabricados` WRITE;
+/*!40000 ALTER TABLE `dispositivos_fabricados` DISABLE KEYS */;
+INSERT INTO `dispositivos_fabricados` VALUES (1,'ABCD-ASER4-45AL-12PL','$2y$10$pd5JtqSzfBTRzPjFNRD7Cu2XN7/wQzVRRpZTFEoTgZZcTzJTFQgPi',1,'2025-10-09 05:14:42','2025-10-09 05:15:03'),(3,'XDF4-ASER4-45AL-12PL','$2y$10$A8YZxFkdF.brAzi8RbL56eifMoG5d3R5hNyjJV9.kyJoEeeeHBM.2',0,'2025-10-09 05:23:21','2025-10-09 05:23:21');
+/*!40000 ALTER TABLE `dispositivos_fabricados` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `failed_jobs`
 --
 
@@ -149,6 +211,37 @@ LOCK TABLES `failed_jobs` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `lecturas_sensores`
+--
+
+DROP TABLE IF EXISTS `lecturas_sensores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lecturas_sensores` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `dispositivo_id` bigint unsigned NOT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `humedad` decimal(5,2) DEFAULT NULL,
+  `peso` decimal(8,3) DEFAULT NULL,
+  `temperatura` decimal(5,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lecturas_sensores_dispositivo_id_ts_index` (`dispositivo_id`,`ts`),
+  CONSTRAINT `lecturas_sensores_dispositivo_id_foreign` FOREIGN KEY (`dispositivo_id`) REFERENCES `dispositivos` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lecturas_sensores`
+--
+
+LOCK TABLES `lecturas_sensores` WRITE;
+/*!40000 ALTER TABLE `lecturas_sensores` DISABLE KEYS */;
+/*!40000 ALTER TABLE `lecturas_sensores` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -160,7 +253,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +262,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_reset_tokens_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2025_08_15_053502_create_productos_table',1),(6,'2025_08_15_055505_create_ventas_table',1),(7,'2025_08_15_060842_create_detalles_table',1);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_reset_tokens_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2025_08_15_053502_create_productos_table',1),(6,'2025_08_15_055505_create_ventas_table',1),(7,'2025_08_15_060842_create_detalles_table',1),(12,'2025_10_07_184000_create_dispositivos_fabricados_table',2),(13,'2025_10_07_184100_create_dispositivos_table',2),(14,'2025_10_07_184200_create_lecturas_sensores_table',2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,4 +462,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-03 18:19:58
+-- Dump completed on 2025-10-08 21:53:51
