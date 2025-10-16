@@ -68,6 +68,8 @@ sin ese código el guardado no se activa
                     <label for="apiario" class="form-label">Selecciona un Apiario</label>
                     <select id="apiario" name="apiario" class="form-control" required>
                         <option value="">-- Selecciona --</option>
+                        apiarios del usuario autenticado
+                        
                         @foreach($apiarios as $apiario)
                             <option 
                                 value="{{ $apiario->idApiario }}" 

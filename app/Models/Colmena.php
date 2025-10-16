@@ -11,7 +11,7 @@ class Colmena extends Model
     use HasFactory;
      protected $table = 'colmena';
     protected $primaryKey = 'idColmena';
-    protected $fillable = ['idColmena', 'codigo', 'estado','creadoPor', 'idReina','cantidadMarco', 'idApiario'];
+    protected $fillable = ['idColmena', 'codigo', 'estado','creadoPor', 'idReina','cantidadMarco','modelo', 'idApiario'];
 
     public $timestamps =false;
     protected $casts=[

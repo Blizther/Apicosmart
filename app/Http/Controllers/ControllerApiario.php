@@ -50,7 +50,7 @@ class ControllerApiario extends Controller
         $apiario= new Apiario();
         $apiario->nombre = $request->nombre;
         $apiario->vegetacion = $request->vegetacion;
-        $apiario->altura = $request->altura;
+        $apiario->altitud = $request->altitud;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
         $apiario->urlImagen = $request->urlImagen;

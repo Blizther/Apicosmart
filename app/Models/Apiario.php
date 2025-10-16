@@ -11,7 +11,7 @@ class Apiario extends Model
 
     protected $table = 'apiario';
     protected $primaryKey = 'idApiario';
-    protected $fillable = ['idApiario', 'nombre', 'latitud', 'longitud', 'departamento', 'municipio', 'estado','creadoPor'];
+    protected $fillable = ['idApiario', 'nombre', 'latitud', 'longitud', 'vegetacion', 'altitud','urlImagen', 'estado','creadoPor'];
 
     public $timestamps =false;
     protected $casts=[
