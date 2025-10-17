@@ -438,12 +438,10 @@
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                        <form role="search" class="navbar-form-custom" action="http://webapplayers.com/inspinia_admin-v2.7.1/search_results.html">
-                            <div class="form-group">
-                                <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                            </div>
-                        </form>
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" title="Max/Min menú lateral"><i class="fa fa-bars"></i> </a>
+                        <a class="minimalize-styl-only btn btn-success " href="{{ url('/usuario/inicio') }}" title="Ir a Inicio"><i class="fa fa-home"></i> </a>
+                        
+
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li class="welcome-container">
