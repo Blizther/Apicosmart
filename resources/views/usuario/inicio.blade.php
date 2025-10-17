@@ -410,23 +410,23 @@
 
                     @if(auth()->user()->rol == 'usuario')
                     <li>
-                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
+                        <a href="<?php echo asset('') ?>productos" title="Productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
                     </li>
 
                     <li>
-                        <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
+                        <a href="{{ route('apiario.index') }}" title="Apiarios"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
                     </li>
                     <li>
-                        <a href="{{route('colmenas.index')}}"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     <li>
-                        <a href="{{ route('mis.dispositivos') }}"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
+                        <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li class="">
-                        <a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a>
+                        <a href="<?php echo asset('') ?>ventaUsuario" title="Realizar venta"><i class="fa fa-pencil-square-o"></i><span class="nav-label"> Realizar venta</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a>
+                        <a href="<?php echo asset('') ?>reporteUsuario" title="Reporte venta"><i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span></a>
                     </li>
                     
                     @endif
