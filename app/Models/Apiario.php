@@ -26,4 +26,9 @@ class Apiario extends Model
         return $this->hasMany(Colmena::class, 'idApiario', 'idApiario');
     }
 
+    public function cantidadColmnenasActivas()
+    {
+        return $this->colmenas()->where('estado', 'activo')->count();
+    }
+
 }

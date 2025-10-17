@@ -35,7 +35,7 @@
 
                 <div class="card-body">
                     <h5 class="card-title fw-bold">{{ $apiario->nombre }}</h5>
-                    <p>Total Colmenas: <strong>{{ $apiario->colmenas_count ?? 0 }}</strong></p>
+                    <p>Total Colmenas activas: <strong>{{ $apiario->cantidadColmnenasActivas() ?? 0 }}</strong></p>
                     <p class="text-success">Activas: <strong>{{ $apiario->colmenas_activo ?? 0 }}</strong></p>
                     <p class="text-warning">En tratamiento: <strong>{{ $apiario->colmenas_tratamiento ?? 0 }}</strong></p>
                 </div>
