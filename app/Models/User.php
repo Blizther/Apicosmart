@@ -53,4 +53,12 @@ class User extends Authenticatable
             'idApiario'  // Local key on Apiario table
         )->where('colmena.estado', 'activo');
     }
+    public function inspecciones()
+    {
+        return $this->hasMany(InspeccionColmena::class, 'idUser', 'id');
+    }
+    public function cantidadInspecciones()
+    {
+        return $this->inspecciones()->count();
+    }
 }

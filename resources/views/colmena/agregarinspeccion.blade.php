@@ -43,23 +43,36 @@
             <div class="col-12">
                 <div class="row">
                     <h6 class="col-12">Complete el formulario</h6>
-                    
+                    <div class="col-12 col-md-6">
+                        <label for="temperamento">Estado Operativo</label>
+                        <select name="estadoOperativo" id="estadoOperativo" class="form-control" required>
+                            <option value="activa" {{ old('estadoOperativo') == 'activa' ? 'selected' : '' }}>activa</option>
+                            <option value="inactiva" {{ old('estadoOperativo') == 'inactiva' ? 'selected' : '' }}>inactiva</option>
+                            <option value="zanganera" {{ old('estadoOperativo') == 'zanganera' ? 'selected' : '' }}>zanganera</option>
+                            <option value="huerfana" {{ old('estadoOperativo') == 'huerfana' ? 'selected' : '' }}>huerfana</option>
+                            <option value="enferma" {{ old('estadoOperativo') == 'enferma' ? 'selected' : '' }}>enferma</option>
+                        </select>
+                    </div>
 
                     <div class="col-12 col-md-6">
                         <label for="temperamento">Temperamento</label>
                         <select name="temperamento" id="temperamento" class="form-control" required>
-                            <option value="Manso" {{ old('temperamento') == 'Manso' ? 'selected' : '' }}>Manso</option>
-                            <option value="Moderado" {{ old('temperamento') == 'Moderado' ? 'selected' : '' }}>Moderado</option>
-                            <option value="Agresivo" {{ old('temperamento') == 'Agresivo' ? 'selected' : '' }}>Agresivo</option>
+                            <option value="muy_tranquila" {{ old('temperamento') == 'muy_tranquila' ? 'selected' : '' }}>Muy tranquila</option>
+                            <option value="tranquila" {{ old('temperamento') == 'tranquila' ? 'selected' : '' }}>Tranquila</option>
+                            <option value="mediana" {{ old('temperamento') == 'mediana' ? 'selected' : '' }}>Mediana</option>
+                            <option value="defensiva" {{ old('temperamento') == 'defensiva' ? 'selected' : '' }}>Defensiva</option>
+                            <option value="muy_defensiva" {{ old('temperamento') == 'muy_defensiva' ? 'selected' : '' }}>Muy defensiva</option>
                         </select>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label for="intensidadImportacion">Intensidad de Importación</label>
                         <select name="intensidadImportacion" id="intensidadImportacion" class="form-control" required>
-                            <option value="Alta" {{ old('intensidadImportacion') == 'Alta' ? 'selected' : '' }}>Alta</option>
-                            <option value="Media" {{ old('intensidadImportacion') == 'Media' ? 'selected' : '' }}>Media</option>
+                            <option value="muy_alta" {{ old('intensidadImportacion') == 'Alta' ? 'selected' : '' }}>Muy alta</option>
+                            <option value="alta" {{ old('intensidadImportacion') == 'Alta' ? 'selected' : '' }}>Alta</option>
+                            <option value="media" {{ old('intensidadImportacion') == 'Media' ? 'selected' : '' }}>Media</option>
                             <option value="Baja" {{ old('intensidadImportacion') == 'Baja' ? 'selected' : '' }}>Baja</option>
+                            <option value="muy_baja" {{ old('intensidadImportacion') == 'Muy baja' ? 'selected' : '' }}>Muy baja</option>
                         </select>
                     </div>
 

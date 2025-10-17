@@ -14,8 +14,7 @@
                         <h1 class="no-margins">
                             {{ Auth::user()->apiarios->count() }}
                         </h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
-                        <small>Total views</small>
+                        
                     </div>
                 </div>
             </div>
@@ -30,9 +29,7 @@
                         <h1 class="no-margins">
                             {{ Auth::user()->colmenasActivas->count() }}
                         </h1>
-                        <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
                         
-                        <small>New orders</small>
                     </div>
                 </div>
             </div>
@@ -46,12 +43,9 @@
                     <div class="ibox-content">
                         <img src="{{ asset('img/apicultorInsp.png') }}" alt="Logo" style="width:60px; height:60px;">
                         <h1 class="no-margins">
-                            0   
+                            {{ Auth::user()->cantidadInspecciones() }}  
                         </h1>
-                        <div class="stat-percent font-bold text-danger">44% <i class="fa fa-level-down"></i></div>
-                        <small>New visits</small>
-
-
+                        
                     </div>
                 </div>
             </div>
@@ -66,8 +60,7 @@
                         <h1 class="no-margins">
                             0   
                         </h1>
-                        <div class="stat-percent font-bold text-danger">44% <i class="fa fa-level-down"></i></div>
-                        <small>New visits</small>
+                        
                     </div>
 
                 </div>
