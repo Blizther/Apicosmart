@@ -26,4 +26,5 @@ class Producto extends Model
     {
         return $this->hasMany(Detalle::class, 'idProducto', 'id');
     }
+    
 }

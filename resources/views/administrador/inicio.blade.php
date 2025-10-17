@@ -52,31 +52,10 @@
                     <li>
                         <a href="{{ route('users.index') }}"><i class="fa fa-user"></i><span class="nav-label">Administrar Usuarios</span></a>
                     </li>
-
-                    <!-- <li>
-                        <a href="/users"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span></a>
-                    </li> -->
-
+                    <li>
+                        <a href="{{ route('fabricados.index') }}"><i class="fa fa-cogs"></i><span class="nav-label">Ver dispositivos fabricados</span></a>
+                    </li>
                     @endif
-
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Apiarios</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-diamond"></i> <span class="nav-label">Sensores</span></a>
-                    </li>
-
-                    <!-- <li class="active">
-                        <a href="index-2.html"><i class="fa fa-th-large"></i> <span class="nav-label">Ventas</span> <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="active"><a href="index-2.html">Registro de ventas</a></li>
-
-                            <li><a href="dashboard_2.html">Stock</a></li>
-                            <li><a href="dashboard_3.html">Reportes de venta </a></li>
-
-                        </ul>
-                    </li> -->
-
                 </ul>
 
             </div>
