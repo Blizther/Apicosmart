@@ -73,7 +73,7 @@
                     <div class="ibox-content">
                         <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
                         <h1 class="no-margins">
-                            {{ Auth::user()->colmenasActivas->count() }}
+                            {{ Auth::user()->cantidadProductosActivos() }}
                         </h1>
                         
                     </div>
@@ -114,55 +114,49 @@
                                         <table class="table table-hover no-margins">
                                             <thead>
                                             <tr>
-                                                <th>Status</th>
-                                                <th>Date</th>
-                                                <th>User</th>
-                                                <th>Value</th>
+                                                <th>Estado</th>
+                                                <th>Fecha Fin</th>
+                                                <th>Prioridad</th>
+                                                <th>titulo</th>
+                                                <th>Descripcion</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td><small>Pending...</small></td>
-                                                <td><i class="fa fa-clock-o"></i> 11:20pm</td>
-                                                <td>Samantha</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 24% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="label label-warning">Canceled</span> </td>
-                                                <td><i class="fa fa-clock-o"></i> 10:40am</td>
-                                                <td>Monica</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 66% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 01:30pm</td>
-                                                <td>John</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 54% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 02:20pm</td>
-                                                <td>Agnes</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 12% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 09:40pm</td>
-                                                <td>Janet</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 22% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="label label-primary">Completed</span> </td>
-                                                <td><i class="fa fa-clock-o"></i> 04:10am</td>
-                                                <td>Amelia</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 66% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 12:08am</td>
-                                                <td>Damian</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 23% </td>
-                                            </tr>
+                                            <!-- Recorre las últimas 5 tareas programadas del usuario autenticado -->
+                                            @foreach(Auth::user()->tareasPendientes()->latest()->take(6)->get() as $tarea)
+                                                <tr>
+                                                    <td>
+                                                        <!-- se tienen en cuenta cuatro estados, pendiente, completada, en progreso y cancelada -->
+                                                        @if($tarea->estado == 'pendiente')
+                                                            <span class="label label-primary">Pendiente</span>
+                                                        @elseif($tarea->estado == 'completada')
+                                                            <span class="label label-success">Completada</span>
+                                                        @elseif($tarea->estado == 'enProgreso')
+                                                            <span class="label label-warning">En Progreso</span>
+                                                        @elseif($tarea->estado == 'cancelada')
+                                                            <span class="label label-danger">Cancelada</span>
+                                                        @endif
+                                                        
+                                                    </td>
+                                                    <td>{{ $tarea->fechaVencimiento ? $tarea->fechaVencimiento->format('d/m/Y') : 'N/A' }}</td>
+                                                    <td>
+                                                        <!-- se tienen en cuenta cuatro estados: baja, media, alta y urgente -->
+                                                        @if($tarea->prioridad == 'baja')
+                                                            <span class="label label-info">Baja</span>
+                                                        @elseif($tarea->prioridad == 'media')
+                                                            <span class="label label-primary">Media</span>
+                                                        @elseif($tarea->prioridad == 'alta')
+                                                            <span class="label label-warning">Alta</span>
+                                                        @elseif($tarea->prioridad == 'urgente')
+                                                            <span class="label label-danger">Urgente</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $tarea->titulo }}</td>
+                                                    <td>{{ $tarea->descripcion }}</td> 
+
+                                                    
+                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

@@ -70,4 +70,23 @@ class User extends Authenticatable
     {
         return $this->ultimaInspeccion?->fechaCreacion?->format('d/m/Y');
     }
+    public function cantidadProductosActivos()
+    {
+        return $this->productos()->where('estado', 1)->count();
+    }
+    // Relación: un usuario tiene muchas tareas pendientes
+    public function tareasPendientes()
+    {
+        return $this->hasMany(TareaPendiente::class, 'creadoPor', 'id');
+    }
+    //lista de tareas pendientes sin completar
+    public function tareasPendientesSinCompletar()
+    {
+        return $this->tareasPendientes()->where('estado', 'pendiente')->get();
+    }
+    //lista de todas las tareas pendientes
+    public function todasTareasPendientes()
+    {
+        return $this->tareasPendientes()->get();    
+    }
 }
