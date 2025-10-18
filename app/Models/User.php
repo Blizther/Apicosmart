@@ -61,4 +61,13 @@ class User extends Authenticatable
     {
         return $this->inspecciones()->count();
     }
+    //ultima inspección realizada por el usuario
+    public function ultimaInspeccion()
+    {
+        return $this->hasOne(InspeccionColmena::class, 'idUser', 'id')->latestOfMany();
+    }
+    public function getUltimaInspeccionFechaAttribute()
+    {
+        return $this->ultimaInspeccion?->fechaCreacion?->format('d/m/Y');
+    }
 }

@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid pt-4 px-4">
 <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Total apiarios</h5>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         
@@ -33,8 +33,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         
@@ -49,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>cantidad de sensores</h5>
@@ -63,6 +62,36 @@
                         
                     </div>
 
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        
+                        <h5>total productos</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->colmenasActivas->count() }}
+                        </h1>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        
+                        <h5>total ventas</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->colmenasActivas->count() }}
+                        </h1>
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,60 +171,118 @@
             <div class="col-lg-5">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <span class="label label-warning pull-right">Data has changed</span>
                         <h5>Última inspección</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>236 321.80</h4>
+                                <small class="stats-label">Fecha inspección</small>
+                                <h4> {{ Auth::user()->ultima_inspeccion_fecha ?? 'N/A' }}</h4>
                             </div>
+                            <div class="col-xs-4">
+                                <small class="stats-label">Estado Colmena</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
 
-                            <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>46.11%</h4>
+                                    // Define colores según el estado
+                                    $color = match (strtolower($estado)) {
+                                        'activa' => 'text-success',     // verde
+                                        'zanganera' => 'text-warning',   // amarillo
+                                        'enferma' => 'label-danger',       // rojo
+                                        default => 'text-muted',       // gris (N/A u otro)
+                                    };
+                                @endphp
+                                <h4 class="{{ $color }}">
+                                    {{ $estado }}
+                                </h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>432.021</h4>
+                                <small class="stats-label">Temperamento</small>
+                                <h4> {{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->temperamento : 'N/A' }} </h4>
                             </div>
                         </div>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>643 321.10</h4>
+                                <small class="stats-label">Estado reyna</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->estadoReyna : 'N/A' }}</h4>
                             </div>
 
                             <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>92.43%</h4>
+                                <small class="stats-label">Reserva Miel</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaMiel : 'N/A' }}</h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>564.554</h4>
+                                <small class="stats-label">Reserva polen</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaPolen : 'N/A' }}</h4>
                             </div>
                         </div>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>436 547.20</h4>
+                                <small class="stats-label">Hormigas</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $hormigas = $ultima ? $ultima->hormigas : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($hormigas==0){
+
+                                        $colorHormigas = 'text-success';
+                                        
+                                    }else{
+                                        $colorHormigas='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorHormigas }}">
+                                    {{ $ultima ? ($ultima->hormigas == 0 ? 'No' : 'Sí') : 'N/A' }}   
+                                </h4>
                             </div>
 
                             <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>150.23%</h4>
+                                <small class="stats-label">Varroa</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $varroa = $ultima ? $ultima->varroa : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($varroa==0){
+
+                                        $colorVarroa = 'text-success';
+                                        
+                                    }else{
+                                        $colorVarroa='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorVarroa }}">
+                                    {{ $ultima ? ($ultima->varroa == 0 ? 'No' : 'Sí') : 'N/A' }}
+                                </h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>124.990</h4>
+                                <small class="stats-label">Loque europea</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $loque = $ultima ? $ultima->loque_europea : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($loque==0){
+
+                                        $colorLoque = 'text-success';
+                                        
+                                    }else{
+                                        $colorLoque='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorLoque }}">
+                                    {{ $ultima ? ($ultima->loque_europea == 0 ? 'No' : 'Sí') : 'N/A' }}
+                                </h4>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
 
