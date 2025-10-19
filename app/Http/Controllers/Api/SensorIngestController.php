@@ -12,17 +12,15 @@ use App\Models\LecturaSensor;
 class SensorIngestController extends Controller
 {
     /**
-     * Ingesta desde ESP32.
-     * Headers esperados:
-     *   - X-DEVICE-SERIAL: serial del dispositivo
-     *   - X-API-KEY: api key en texto plano (se valida contra el hash en dispositivos_fabricados)
-     *
-     * Body JSON (application/json):
+     * Headers:
+     *   X-DEVICE-SERIAL
+     *   X-API-KEY
+     * Body JSON:
      *   { "humedad": 00.00, "peso": 00.000, "temperatura": 00.00 }
      */
     public function store(Request $req)
     {
-        // 1) Leer credenciales (header o body como fallback)
+        // 1) Credenciales (mismos nombres; sin cambios)
         $serial = $req->header('X-DEVICE-SERIAL', $req->input('serial'));
         $apiKey = $req->header('X-API-KEY',       $req->input('api_key'));
 
@@ -30,7 +28,7 @@ class SensorIngestController extends Controller
             return response()->json(['message' => 'No autorizado (faltan credenciales)'], 401);
         }
 
-        // 2) Buscar dispositivo fabricado ACTIVO
+        // 2) Fabricado activo (mismos filtros; sin cambios)
         $fabricado = DispositivoFabricado::where('serial', $serial)
             ->where('estado', 1)
             ->first();
@@ -39,12 +37,12 @@ class SensorIngestController extends Controller
             return response()->json(['message' => 'Dispositivo no encontrado o inactivo'], 401);
         }
 
-        // 3) Validar API KEY contra el hash almacenado
+        // 3) API KEY contra hash (sin cambios)
         if (!Hash::check($apiKey, $fabricado->api_key_hash)) {
             return response()->json(['message' => 'API KEY inválida'], 401);
         }
 
-        // 4) Debe existir un propietario (vínculo) activo
+        // 4) Vínculo activo en dispositivos (sin cambios)
         $vinculo = Dispositivo::where('dispositivo_fabricado_id', $fabricado->id)
             ->where('estado', 1)
             ->first();
@@ -53,15 +51,21 @@ class SensorIngestController extends Controller
             return response()->json(['message' => 'El dispositivo no está vinculado a una cuenta'], 401);
         }
 
-        // 5) Guardar lectura
+        // 5) Validación suave de payload (mismos campos; no cambia nombres ni contrato)
+        $data = $req->validate([
+            'humedad'     => ['nullable','numeric'],
+            'peso'        => ['nullable','numeric'],
+            'temperatura' => ['nullable','numeric'],
+        ]);
+
+        // 6) Guardar lectura (mismas columnas)
         $lectura = new LecturaSensor();
         $lectura->dispositivo_id = $vinculo->id;
-        $lectura->humedad        = $req->input('humedad');
-        $lectura->peso           = $req->input('peso');
-        $lectura->temperatura    = $req->input('temperatura');
+        $lectura->humedad        = array_key_exists('humedad', $data)     ? (float)$data['humedad']     : null;
+        $lectura->peso           = array_key_exists('peso', $data)        ? (float)$data['peso']        : null;
+        $lectura->temperatura    = array_key_exists('temperatura', $data) ? (float)$data['temperatura'] : null;
         $lectura->save();
 
-        // 6) Responder al cliente (ESP32)
         return response()->json([
             'ok'         => true,
             'mensaje'    => 'Lectura registrada correctamente',
