@@ -41,7 +41,7 @@ Route::middleware(['auth', 'rol:administrador'])->group(function () {
 Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/usuario/inicio', function () {
         return view('usuario.dashboard');
-    });
+    })->name('usuario.inicio');
     Route::get('/productos', [ControllerProducto::class, 'metodoProductos']);
     // Mostrar formulario de creación
     Route::get('/productos/crearproducto', [ControllerProducto::class, 'nuevoproducto']);

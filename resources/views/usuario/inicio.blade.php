@@ -410,23 +410,23 @@
 
                     @if(auth()->user()->rol == 'usuario')
                     <li>
-                        <a href="<?php echo asset('') ?>productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
+                        <a href="<?php echo asset('') ?>productos" title="Productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
                     </li>
 
                     <li>
-                        <a href="{{ route('apiario.index') }}"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
+                        <a href="{{ route('apiario.index') }}" title="Apiarios"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
                     </li>
                     <li>
-                        <a href="{{route('colmenas.index')}}"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     <li>
-                        <a href="{{ route('mis.dispositivos') }}"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
+                        <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li class="">
-                        <a href="<?php echo asset('') ?>ventaUsuario"><i class="fa fa-pencil-square-o"></i> Realizar Venta</a>
+                        <a href="<?php echo asset('') ?>ventaUsuario" title="Realizar venta"><i class="fa fa-pencil-square-o"></i><span class="nav-label"> Realizar venta</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo asset('') ?>reporteUsuario"><i class="fa fa-bar-chart"></i> Reportes de venta</a>
+                        <a href="<?php echo asset('') ?>reporteUsuario" title="Reporte venta"><i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span></a>
                     </li>
                     
                     @endif
@@ -438,12 +438,10 @@
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                        <form role="search" class="navbar-form-custom" action="http://webapplayers.com/inspinia_admin-v2.7.1/search_results.html">
-                            <div class="form-group">
-                                <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                            </div>
-                        </form>
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" title="Max/Min menú lateral"><i class="fa fa-bars"></i> </a>
+                        <a class="minimalize-styl-only btn btn-success " href="{{ url('/usuario/inicio') }}" title="Ir a Inicio"><i class="fa fa-home"></i> </a>
+                        
+
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li class="welcome-container">

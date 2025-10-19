@@ -36,7 +36,7 @@ class ControllerInspeccionColmena extends Controller
 
         'notas'                  => ['nullable','string'], // TEXT
     ]);
-
+    $data['celdasReales'] = isset($data['celdasReales']) ? implode(', ', $data['celdasReales']) : null;
     // Validaciones mínimas de claves
     if (empty($idColmena) || empty($idUser)) {
         return back()->withErrors('Falta id de colmena o usuario.')->withInput();
@@ -52,7 +52,6 @@ class ControllerInspeccionColmena extends Controller
     $row = [
         'idColmena'             => (int) $idColmena,
         'idUser'                => (int) $idUser,
-        'creadoPor'             => (int) $idUser, // opcional
 
         'temperamento'          => $data['temperamento'] ?? null,
         'IntensidadImportacion' => $data['intensidadImportacion'] ?? null, // mapeo de name -> columna

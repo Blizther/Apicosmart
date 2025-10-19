@@ -53,4 +53,40 @@ class User extends Authenticatable
             'idApiario'  // Local key on Apiario table
         )->where('colmena.estado', 'activo');
     }
+    public function inspecciones()
+    {
+        return $this->hasMany(InspeccionColmena::class, 'idUser', 'id');
+    }
+    public function cantidadInspecciones()
+    {
+        return $this->inspecciones()->count();
+    }
+    //ultima inspección realizada por el usuario
+    public function ultimaInspeccion()
+    {
+        return $this->hasOne(InspeccionColmena::class, 'idUser', 'id')->latestOfMany();
+    }
+    public function getUltimaInspeccionFechaAttribute()
+    {
+        return $this->ultimaInspeccion?->fechaCreacion?->format('d/m/Y');
+    }
+    public function cantidadProductosActivos()
+    {
+        return $this->productos()->where('estado', 1)->count();
+    }
+    // Relación: un usuario tiene muchas tareas pendientes
+    public function tareasPendientes()
+    {
+        return $this->hasMany(TareaPendiente::class, 'creadoPor', 'id');
+    }
+    //lista de tareas pendientes sin completar
+    public function tareasPendientesSinCompletar()
+    {
+        return $this->tareasPendientes()->where('estado', 'pendiente')->get();
+    }
+    //lista de todas las tareas pendientes
+    public function todasTareasPendientes()
+    {
+        return $this->tareasPendientes()->get();    
+    }
 }

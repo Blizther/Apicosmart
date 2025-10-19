@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid pt-4 px-4">
 <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Total apiarios</h5>
@@ -14,12 +14,11 @@
                         <h1 class="no-margins">
                             {{ Auth::user()->apiarios->count() }}
                         </h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
-                        <small>Total views</small>
+                        
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         
@@ -30,14 +29,11 @@
                         <h1 class="no-margins">
                             {{ Auth::user()->colmenasActivas->count() }}
                         </h1>
-                        <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
                         
-                        <small>New orders</small>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         
@@ -46,16 +42,13 @@
                     <div class="ibox-content">
                         <img src="{{ asset('img/apicultorInsp.png') }}" alt="Logo" style="width:60px; height:60px;">
                         <h1 class="no-margins">
-                            0   
+                            {{ Auth::user()->cantidadInspecciones() }}  
                         </h1>
-                        <div class="stat-percent font-bold text-danger">44% <i class="fa fa-level-down"></i></div>
-                        <small>New visits</small>
-
-
+                        
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>cantidad de sensores</h5>
@@ -66,10 +59,39 @@
                         <h1 class="no-margins">
                             0   
                         </h1>
-                        <div class="stat-percent font-bold text-danger">44% <i class="fa fa-level-down"></i></div>
-                        <small>New visits</small>
+                        
                     </div>
 
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        
+                        <h5>total productos</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->cantidadProductosActivos() }}
+                        </h1>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        
+                        <h5>total ventas</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->colmenasActivas->count() }}
+                        </h1>
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,55 +114,49 @@
                                         <table class="table table-hover no-margins">
                                             <thead>
                                             <tr>
-                                                <th>Status</th>
-                                                <th>Date</th>
-                                                <th>User</th>
-                                                <th>Value</th>
+                                                <th>Estado</th>
+                                                <th>Fecha Fin</th>
+                                                <th>Prioridad</th>
+                                                <th>titulo</th>
+                                                <th>Descripcion</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td><small>Pending...</small></td>
-                                                <td><i class="fa fa-clock-o"></i> 11:20pm</td>
-                                                <td>Samantha</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 24% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="label label-warning">Canceled</span> </td>
-                                                <td><i class="fa fa-clock-o"></i> 10:40am</td>
-                                                <td>Monica</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 66% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 01:30pm</td>
-                                                <td>John</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 54% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 02:20pm</td>
-                                                <td>Agnes</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 12% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 09:40pm</td>
-                                                <td>Janet</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 22% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="label label-primary">Completed</span> </td>
-                                                <td><i class="fa fa-clock-o"></i> 04:10am</td>
-                                                <td>Amelia</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 66% </td>
-                                            </tr>
-                                            <tr>
-                                                <td><small>Pending...</small> </td>
-                                                <td><i class="fa fa-clock-o"></i> 12:08am</td>
-                                                <td>Damian</td>
-                                                <td class="text-navy"> <i class="fa fa-level-up"></i> 23% </td>
-                                            </tr>
+                                            <!-- Recorre las últimas 5 tareas programadas del usuario autenticado -->
+                                            @foreach(Auth::user()->tareasPendientes()->latest()->take(6)->get() as $tarea)
+                                                <tr>
+                                                    <td>
+                                                        <!-- se tienen en cuenta cuatro estados, pendiente, completada, en progreso y cancelada -->
+                                                        @if($tarea->estado == 'pendiente')
+                                                            <span class="label label-primary">Pendiente</span>
+                                                        @elseif($tarea->estado == 'completada')
+                                                            <span class="label label-success">Completada</span>
+                                                        @elseif($tarea->estado == 'enProgreso')
+                                                            <span class="label label-warning">En Progreso</span>
+                                                        @elseif($tarea->estado == 'cancelada')
+                                                            <span class="label label-danger">Cancelada</span>
+                                                        @endif
+                                                        
+                                                    </td>
+                                                    <td>{{ $tarea->fechaVencimiento ? $tarea->fechaVencimiento->format('d/m/Y') : 'N/A' }}</td>
+                                                    <td>
+                                                        <!-- se tienen en cuenta cuatro estados: baja, media, alta y urgente -->
+                                                        @if($tarea->prioridad == 'baja')
+                                                            <span class="label label-info">Baja</span>
+                                                        @elseif($tarea->prioridad == 'media')
+                                                            <span class="label label-primary">Media</span>
+                                                        @elseif($tarea->prioridad == 'alta')
+                                                            <span class="label label-warning">Alta</span>
+                                                        @elseif($tarea->prioridad == 'urgente')
+                                                            <span class="label label-danger">Urgente</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $tarea->titulo }}</td>
+                                                    <td>{{ $tarea->descripcion }}</td> 
+
+                                                    
+                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -149,60 +165,118 @@
             <div class="col-lg-5">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <span class="label label-warning pull-right">Data has changed</span>
                         <h5>Última inspección</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>236 321.80</h4>
+                                <small class="stats-label">Fecha inspección</small>
+                                <h4> {{ Auth::user()->ultima_inspeccion_fecha ?? 'N/A' }}</h4>
                             </div>
+                            <div class="col-xs-4">
+                                <small class="stats-label">Estado Colmena</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
 
-                            <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>46.11%</h4>
+                                    // Define colores según el estado
+                                    $color = match (strtolower($estado)) {
+                                        'activa' => 'text-success',     // verde
+                                        'zanganera' => 'text-warning',   // amarillo
+                                        'enferma' => 'label-danger',       // rojo
+                                        default => 'text-muted',       // gris (N/A u otro)
+                                    };
+                                @endphp
+                                <h4 class="{{ $color }}">
+                                    {{ $estado }}
+                                </h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>432.021</h4>
+                                <small class="stats-label">Temperamento</small>
+                                <h4> {{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->temperamento : 'N/A' }} </h4>
                             </div>
                         </div>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>643 321.10</h4>
+                                <small class="stats-label">Estado reyna</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->estadoReyna : 'N/A' }}</h4>
                             </div>
 
                             <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>92.43%</h4>
+                                <small class="stats-label">Reserva Miel</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaMiel : 'N/A' }}</h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>564.554</h4>
+                                <small class="stats-label">Reserva polen</small>
+                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaPolen : 'N/A' }}</h4>
                             </div>
                         </div>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-xs-4">
-                                <small class="stats-label">Pages / Visit</small>
-                                <h4>436 547.20</h4>
+                                <small class="stats-label">Hormigas</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $hormigas = $ultima ? $ultima->hormigas : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($hormigas==0){
+
+                                        $colorHormigas = 'text-success';
+                                        
+                                    }else{
+                                        $colorHormigas='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorHormigas }}">
+                                    {{ $ultima ? ($ultima->hormigas == 0 ? 'No' : 'Sí') : 'N/A' }}   
+                                </h4>
                             </div>
 
                             <div class="col-xs-4">
-                                <small class="stats-label">% New Visits</small>
-                                <h4>150.23%</h4>
+                                <small class="stats-label">Varroa</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $varroa = $ultima ? $ultima->varroa : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($varroa==0){
+
+                                        $colorVarroa = 'text-success';
+                                        
+                                    }else{
+                                        $colorVarroa='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorVarroa }}">
+                                    {{ $ultima ? ($ultima->varroa == 0 ? 'No' : 'Sí') : 'N/A' }}
+                                </h4>
                             </div>
                             <div class="col-xs-4">
-                                <small class="stats-label">Last week</small>
-                                <h4>124.990</h4>
+                                <small class="stats-label">Loque europea</small>
+                                @php
+                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    $loque = $ultima ? $ultima->loque_europea : 'N/A';
+
+                                    // Define colores según el estado
+                                    if($loque==0){
+
+                                        $colorLoque = 'text-success';
+                                        
+                                    }else{
+                                        $colorLoque='label-danger';
+                                    }
+                                @endphp
+                                <h4 class="{{ $colorLoque }}">
+                                    {{ $ultima ? ($ultima->loque_europea == 0 ? 'No' : 'Sí') : 'N/A' }}
+                                </h4>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
 

@@ -11,7 +11,7 @@ class Apiario extends Model
 
     protected $table = 'apiario';
     protected $primaryKey = 'idApiario';
-    protected $fillable = ['idApiario', 'nombre', 'latitud', 'longitud', 'departamento', 'municipio', 'estado','creadoPor'];
+    protected $fillable = ['idApiario', 'nombre', 'latitud', 'longitud', 'vegetacion', 'altitud','urlImagen', 'estado','creadoPor'];
 
     public $timestamps =false;
     protected $casts=[
@@ -24,6 +24,11 @@ class Apiario extends Model
     public function colmenas()
     {
         return $this->hasMany(Colmena::class, 'idApiario', 'idApiario');
+    }
+
+    public function cantidadColmnenasActivas()
+    {
+        return $this->colmenas()->where('estado', 'activo')->count();
     }
 
 }

@@ -200,6 +200,12 @@ ul.nav-second-level {
   font-size: 14px;
   float: left;
 }
+.minimalize-styl-only {
+  padding: 4px 12px;
+  margin: 14px 5px 5px 20px;
+  font-size: 14px;
+  float: left;
+}
 .navbar-form-custom {
   float: left;
   height: 50px;
