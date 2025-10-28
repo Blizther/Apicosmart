@@ -23,7 +23,7 @@
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
-
+    <link rel="icon" type="image/png" href="{{ asset('img/abeja.png') }}">
 
     <style>
         /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */

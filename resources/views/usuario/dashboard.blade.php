@@ -57,7 +57,7 @@
                     <div class="ibox-content">
                         <img src="{{ asset('img/sensorTemperatura.png') }}" alt="Logo" style="width:60px; height:60px;">
                         <h1 class="no-margins">
-                            0   
+                            {{ Auth::user()->dispositivos->count() }}
                         </h1>
                         
                     </div>
@@ -88,7 +88,7 @@
                     <div class="ibox-content">
                         <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">
                         <h1 class="no-margins">
-                            {{ Auth::user()->colmenasActivas->count() }}
+                            {{ Auth::user()->ventasRealizadas->count() }}
                         </h1>
                         
                     </div>
@@ -153,8 +153,6 @@
                                                     </td>
                                                     <td>{{ $tarea->titulo }}</td>
                                                     <td>{{ $tarea->descripcion }}</td> 
-
-                                                    
                                                 </tr>
                                                 @endforeach
                                             </tbody>
