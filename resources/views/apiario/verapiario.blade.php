@@ -23,27 +23,41 @@
     <!-- Información general y mapa -->
     <div class="row g-4 mt-2">
         <!-- Información general -->
-        <div class="col-sm-12 col-md-6">
-            <div class="bg-light rounded p-4">
-                <h3>Información General</h3>
+        <div class="col-sm-12 col-md-12">
+    <div class="bg-light rounded p-4">
+        <h3>Información General</h3>
+        <div class="row align-items-center">
+            <!-- Columna izquierda: datos -->
+            <div class="col-md-8">
                 <p><strong>Vegetación:</strong> {{ $apiario->vegetacion }}</p>
                 <p><strong>Altitud:</strong> {{ $apiario->altitud }} metros</p>
                 <p><strong>Estado:</strong> {{ $apiario->estado ? 'Activo' : 'Inactivo' }}</p>
             </div>
+
+            <!-- Columna derecha: imagen -->
+            @if(!empty($apiario->urlImagen))
+            <div class="col-md-4 text-center">
+                <img src="{{ asset($apiario->urlImagen) }}" 
+                     alt="Imagen del Apiario" 
+                     class="img-fluid rounded shadow-sm" 
+                     style="max-height: 200px; border-radius: 12px; object-fit: cover;">
+            </div>
+            @endif
         </div>
+    </div>
+</div>
 
-        <!-- Ubicación -->
-        <div class="col-sm-12 col-md-6">
+
+        <!-- Ubicación e imagen -->
+        <div class="col-sm-12 col-md-12">
             <div class="bg-light rounded p-4">
-                <h3>Ubicación</h3>
-
-                <!-- Mensaje de colmenas -->
+                <!-- Mensaje si no tiene colmenas -->
                 @if($colmenas->count() == 0)
                     <div class="alert alert-danger">
                         Este apiario no tiene colmenas registradas.
                     </div>
                 @endif
-
+                <h3>Ubicación</h3>
                 <!-- Contenedor del mapa -->
                 <div id="map" style="height: 300px; border-radius: 12px;"></div>
             </div>
@@ -113,15 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var cantidadColmenas = {{ $colmenas->count() ?? 0 }};
 
     if(lat && lng){
-        // Crear mapa centrado en el apiario
         var map = L.map('map').setView([lat, lng], 14);
 
-        // Capa base OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Contenido del popup
         var popupContent = `<strong>{{ $apiario->nombre }}</strong><br>
                             Vegetación: {{ $apiario->vegetacion ?? 'N/A' }}<br>
                             Altitud: {{ $apiario->altitud ?? 'N/A' }} m<br>`;
@@ -131,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
             popupContent += `<span style="color:red; font-weight:bold;">Este apiario no tiene colmenas registradas</span>`;
         }
 
-        // Agregar marcador
         L.marker([lat, lng])
             .addTo(map)
             .bindPopup(popupContent)

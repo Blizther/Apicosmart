@@ -41,18 +41,28 @@
     <div class="row g-4">
         @foreach($apiarios as $index => $apiario)
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card apiario-card h-100 text-center" data-url="{{ route('apiario.verapiario', $apiario->idApiario) }}">
-                    <!-- Imagen del apiario -->
-                    <img src="{{ asset('img/logoApicoSmart.jpg') }}"
-                         class="card-img-top rounded-circle img-rounded mx-auto mt-3" 
-                         style="width:120px; height:120px; object-fit:cover;" 
-                         alt="Imagen de {{ $apiario->nombre }}">
+                <div class="card apiario-card text-center" data-url="{{ route('apiario.verapiario', $apiario->idApiario) }}">
+                    
+                    <!-- Contenedor fijo de imagen -->
+                    <div class="apiario-image-container">
+                        @if($apiario->urlImagen)
+                            <img src="{{ asset($apiario->urlImagen) }}" 
+                                 alt="Imagen del Apiario" 
+                                 class="apiario-image">
+                        @else
+                            <img src="{{ asset('uploads/defaultApiario.jpg') }}" 
+                                 alt="Imagen por defecto del Apiario" 
+                                 class="apiario-image">
+                        @endif
+                    </div>
 
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">{{ $apiario->nombre }}</h5>
-                        <p>Total Colmenas: <strong>{{ $apiario->cantidadColmnenasActivas() ?? 0 }}</strong></p>
-                        <p class="text-success">Activas: <strong>{{ $apiario->colmenas_activo ?? 0 }}</strong></p>
-                        <p class="text-warning">En tratamiento: <strong>{{ $apiario->colmenas_tratamiento ?? 0 }}</strong></p>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fw-bold">{{ $apiario->nombre }}</h5>
+                            <p>Total Colmenas: <strong>{{ $apiario->cantidadColmnenasActivas() ?? 0 }}</strong></p>
+                            <p class="text-success">Activas: <strong>{{ $apiario->cantidadColmenasOperativaActiva() ?? 0 }}</strong></p>
+                            <p class="text-warning">Enfermas: <strong>{{ $apiario->cantidadColmenasEnfermas() ?? 0 }}</strong></p>
+                        </div>
                     </div>
 
                     <div class="card-footer d-flex justify-content-center gap-2">
@@ -91,6 +101,29 @@
     transition: transform 0.2s, box-shadow 0.2s;
     margin-bottom: 30px;
     cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Contenedor de imagen fijo */
+.apiario-image-container {
+    width: 100%;
+    height: 180px; /* altura fija uniforme */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.apiario-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* recorta sin deformar */
 }
 
 .apiario-card:hover {
@@ -142,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hacer la tarjeta clickeable excepto los botones
     document.querySelectorAll('.apiario-card').forEach(card => {
         card.addEventListener('click', function(e) {
-            // Ignorar clics en botones
             if (!e.target.closest('a') && !e.target.closest('button')) {
                 window.location.href = card.dataset.url;
             }

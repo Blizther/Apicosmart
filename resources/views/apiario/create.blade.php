@@ -53,10 +53,20 @@
 
                 {{-- vegetacion (label arriba) + aquí se muestra la ubicación guardada --}}
                 <div class="mb-1 col-12 col-md-6">
-                    <label for="vegetacion" class="form-label">Vegetación</label>
-                    <input type="text" class="form-control" id="vegetacion"
-                        placeholder="Vegetación" name="vegetacion" value="{{ old('Vegetación') }}" required autocomplete="off">
-                    
+                    <label for="vegetacion" class="form-label">Vegetación predominante</label>
+                    <select name="vegetacion" id="vegetacion"  class="form-control" required>
+                        <option value="eucalipto" {{ old('vegetacion') == 'eucalipto' ? 'selected' : '' }}>eucalipto</option>
+                        <option value="tola" {{ old('vegetacion') == 'tola' ? 'selected' : '' }}>tola</option>
+                        <option value="muña" {{ old('vegetacion') == 'muña' ? 'selected' : '' }}>muña</option>
+                        <option value="clavel" {{ old('vegetacion') == 'clavel' ? 'selected' : '' }}>clavel</option>
+                        <option value="margarita" {{ old('vegetacion') == 'margarita' ? 'selected' : '' }}>margarita</option>
+                        <option value="fresia" {{ old('vegetacion') == 'fresia' ? 'selected' : '' }}>fresia</option>
+                        <option value="retama" {{ old('vegetacion') == 'retama' ? 'selected' : '' }}>retama</option>
+                        <option value="chino" {{ old('vegetacion') == 'chino' ? 'selected' : '' }}>chino</option>
+                        <option value="ilusión" {{ old('vegetacion') == 'ilusión' ? 'selected' : '' }}>ilusión</option>
+                        <option value="Otro" {{ old('vegetacion') == 'otro' ? 'selected' : '' }}>OTRO</option>
+                        </select>
+                   
                 </div>
 
                 {{-- altitud (label arriba) --}}
@@ -67,9 +77,8 @@
                 </div>
                 {{-- Imagen (label arriba) --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="urlImagen" class="form-label">Imagen</label>
-                    <input type="text" class="form-control" id="urlImagen"
-                        placeholder="Imagen" name="urlImagen" value="{{ old('Imagen') }}" required autocomplete="off">
+                    <label for="urlImagen">Subir Imagen</label>
+                        <input type="file" name="urlImagen" class="form-control">
                 </div>
                 <div class="mb-3 col-12 col-md-6">
                     <label for="ubicacion" class="form-label">Ubicacion</label>
