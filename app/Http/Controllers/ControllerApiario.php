@@ -125,7 +125,8 @@ class ControllerApiario extends Controller
     {
         $apiario = Apiario::findOrFail($id);
     
-        $apiario->delete();
+        $apiario->estado = "inactivo";
+        $apiario->save();
         return redirect()->to('/apiario')->with('successdelete', 'Apiario eliminado exitosamente.');
     }
     public function vercolmenas(string $id)

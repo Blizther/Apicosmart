@@ -76,6 +76,7 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
+    Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)

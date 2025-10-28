@@ -17,8 +17,8 @@
             </div>
         </div>
         <form action="{{ route('apiario.update',$apiario->idApiario) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
+            @csrf
+            @method('PUT')
 
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -26,8 +26,24 @@
             </div>
             <div class="mb-3">
                 <label for="vegetacion" class="form-label">Vegetación</label>
-                <input type="text" name="vegetacion" class="form-control" value="{{$apiario->vegetacion }}" required>
+                <select name="vegetacion" id="vegetacion" class="form-control" required>
+                    @php
+                    $vegetacionSeleccionada = old('vegetacion', $apiario->vegetacion);
+                    @endphp
+
+                    <option value="eucalipto" {{ $vegetacionSeleccionada == 'eucalipto' ? 'selected' : '' }}>Eucalipto</option>
+                    <option value="tola" {{ $vegetacionSeleccionada == 'tola' ? 'selected' : '' }}>Tola</option>
+                    <option value="muña" {{ $vegetacionSeleccionada == 'muña' ? 'selected' : '' }}>Muña</option>
+                    <option value="clavel" {{ $vegetacionSeleccionada == 'clavel' ? 'selected' : '' }}>Clavel</option>
+                    <option value="margarita" {{ $vegetacionSeleccionada == 'margarita' ? 'selected' : '' }}>Margarita</option>
+                    <option value="fresia" {{ $vegetacionSeleccionada == 'fresia' ? 'selected' : '' }}>Fresia</option>
+                    <option value="retama" {{ $vegetacionSeleccionada == 'retama' ? 'selected' : '' }}>Retama</option>
+                    <option value="chino" {{ $vegetacionSeleccionada == 'chino' ? 'selected' : '' }}>Chino</option>
+                    <option value="ilusión" {{ $vegetacionSeleccionada == 'ilusión' ? 'selected' : '' }}>Ilusión</option>
+                    <option value="otro" {{ $vegetacionSeleccionada == 'otro' ? 'selected' : '' }}>Otro</option>
+                </select>
             </div>
+
             <div class="mb-3">
                 <label for="altitud" class="form-label">Altitud</label>
                 <input type="text" name="altitud" class="form-control" value="{{$apiario->altitud }}" required>

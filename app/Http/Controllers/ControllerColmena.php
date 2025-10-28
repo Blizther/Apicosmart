@@ -98,6 +98,8 @@ class ControllerColmena extends Controller
         $colmena=Colmena::findOrFail($id);
         $colmena->codigo=$request->codigo;
         $colmena->cantidadMarco=$request->cantidadMarco;
+        $colmena->modelo=$request->modelo;
+        $colmena->estadoOperativo=$request->estadoOperativo;
         $colmena->save();
          return redirect()->to('/colmenas')->with('success', 'Colmena ACTUALIZADO exitosamente.');
     }
