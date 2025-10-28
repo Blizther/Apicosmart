@@ -118,4 +118,12 @@ class ControllerApiario extends Controller
         $apiario->delete();
         return redirect()->to('/apiario')->with('successdelete', 'Apiario eliminado exitosamente.');
     }
+    public function vercolmenas(string $id)
+    {   
+        
+        $apiario = Apiario::findOrFail($id);
+        //obtener colmenas asociadas al apiario con estado activo
+        $colmenas = $apiario->colmenas()->where('estado', 'activo')->get();
+        return view('apiario.verapiario', compact('apiario', 'colmenas'));
+    }
 }

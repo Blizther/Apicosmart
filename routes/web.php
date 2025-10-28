@@ -67,6 +67,7 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/apiario/{id}/editarapiario', [ControllerApiario::class, 'edit'])->name('apiario.edit');
     // Actualizar producto (se utiliza el metodo put)
     Route::put('/apiario/editarapiario/{id}', [ControllerApiario::class, 'update'])->name('apiario.update');
+    Route::get('/apiario/{id}/verapiario', [ControllerApiario::class, 'vercolmenas'])->name('apiario.verapiario');
 
     //SECCION COLMENA
     Route::resource('/colmenas', ControllerColmena::class);

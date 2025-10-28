@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>@yield('title', 'ApicoSmart')</title>
+    <link rel="icon" type="image/png" href="{{ asset('img/abeja.png') }}">
 
     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
@@ -23,7 +24,7 @@
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ asset('img/abeja.png') }}">
+    
 
     <style>
         /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */
@@ -376,6 +377,10 @@
             text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
             font-family: "Segoe UI", Arial, sans-serif;
         }
+        #map {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 2px solid #3A4F26;
+}
     </style>
 </head>
 
