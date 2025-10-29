@@ -10,7 +10,7 @@ class InspeccionColmena extends Model
     use HasFactory;
 
      protected $table = 'inspeccioncolmena';
-    protected $primaryKey = 'idColmena';
+    protected $primaryKey = 'id';
     protected $fillable = ['idColmena','idUser','estadoOperativo', 'temperamento', 'intensidadImportacion','estadoReyna','pobalcion', 'celdasReales','patronPostura', 'enfermedadPlaga','reservaPolen','reservaMiel','notas'];
 
     public $timestamps =false;
@@ -18,4 +18,9 @@ class InspeccionColmena extends Model
         'fechaCreacion'=> 'datetime', 
         'fechaActualizar'=> 'datetime',  
     ];
+    public function colmena()
+{
+    return $this->belongsTo(Colmena::class, 'idColmena', 'idColmena');
+}
+
 }
