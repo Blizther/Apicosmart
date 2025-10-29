@@ -422,7 +422,7 @@
 
                     <li>
                         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fa fa-sign-out"></i> Log out
+                            <i class="fa fa-sign-out"></i> SALIR
                         </a>
 
                         <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">

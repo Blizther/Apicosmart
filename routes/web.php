@@ -11,6 +11,7 @@ use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
+use App\Http\Controllers\ControllerCosecha;
 
 Route::get('/', function () {
     return view('welcome');
@@ -79,6 +80,13 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
     Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
+
+    //SECCION COSECHA
+    Route::resource('/cosechas', ControllerCosecha::class);
+    Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
+    Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
+    Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
+    
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)
