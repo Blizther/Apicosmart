@@ -161,122 +161,137 @@
                                 </div>
                             </div>
             <div class="col-lg-5">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Última inspección</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <small class="stats-label">Fecha inspección</small>
-                                <h4> {{ Auth::user()->ultima_inspeccion_fecha ?? 'N/A' }}</h4>
-                            </div>
-                            <div class="col-xs-4">
-                                <small class="stats-label">Estado Colmena</small>
-                                @php
-                                    $ultima = Auth::user()->ultimaInspeccion;
-                                    $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Última inspección</h5>
+        </div>
 
-                                    // Define colores según el estado
-                                    $color = match (strtolower($estado)) {
-                                        'activa' => 'text-success',     // verde
-                                        'zanganera' => 'text-warning',   // amarillo
-                                        'enferma' => 'label-danger',       // rojo
-                                        default => 'text-muted',       // gris (N/A u otro)
-                                    };
-                                @endphp
-                                <h4 class="{{ $color }}">
-                                    {{ $estado }}
-                                </h4>
-                            </div>
-                            <div class="col-xs-4">
-                                <small class="stats-label">Temperamento</small>
-                                <h4> {{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->temperamento : 'N/A' }} </h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <small class="stats-label">Estado reyna</small>
-                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->estadoReyna : 'N/A' }}</h4>
-                            </div>
+        @php
+            $ultima = Auth::user()->ultimaInspeccion; // ya lo usas abajo
+        @endphp
 
-                            <div class="col-xs-4">
-                                <small class="stats-label">Reserva Miel</small>
-                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaMiel : 'N/A' }}</h4>
-                            </div>
-                            <div class="col-xs-4">
-                                <small class="stats-label">Reserva polen</small>
-                                <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaPolen : 'N/A' }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <small class="stats-label">Hormigas</small>
-                                @php
-                                    $ultima = Auth::user()->ultimaInspeccion;
-                                    $hormigas = $ultima ? $ultima->hormigas : 'N/A';
-
-                                    // Define colores según el estado
-                                    if($hormigas==0){
-
-                                        $colorHormigas = 'text-success';
-                                        
-                                    }else{
-                                        $colorHormigas='label-danger';
-                                    }
-                                @endphp
-                                <h4 class="{{ $colorHormigas }}">
-                                    {{ $ultima ? ($ultima->hormigas == 0 ? 'No' : 'Sí') : 'N/A' }}   
-                                </h4>
-                            </div>
-
-                            <div class="col-xs-4">
-                                <small class="stats-label">Varroa</small>
-                                @php
-                                    $ultima = Auth::user()->ultimaInspeccion;
-                                    $varroa = $ultima ? $ultima->varroa : 'N/A';
-
-                                    // Define colores según el estado
-                                    if($varroa==0){
-
-                                        $colorVarroa = 'text-success';
-                                        
-                                    }else{
-                                        $colorVarroa='label-danger';
-                                    }
-                                @endphp
-                                <h4 class="{{ $colorVarroa }}">
-                                    {{ $ultima ? ($ultima->varroa == 0 ? 'No' : 'Sí') : 'N/A' }}
-                                </h4>
-                            </div>
-                            <div class="col-xs-4">
-                                <small class="stats-label">Loque europea</small>
-                                @php
-                                    $ultima = Auth::user()->ultimaInspeccion;
-                                    $loque = $ultima ? $ultima->loque_europea : 'N/A';
-
-                                    // Define colores según el estado
-                                    if($loque==0){
-
-                                        $colorLoque = 'text-success';
-                                        
-                                    }else{
-                                        $colorLoque='label-danger';
-                                    }
-                                @endphp
-                                <h4 class="{{ $colorLoque }}">
-                                    {{ $ultima ? ($ultima->loque_europea == 0 ? 'No' : 'Sí') : 'N/A' }}
-                                </h4>
-                            </div>
-                        </div>
-                    </div>
-                    
+        <!-- NUEVA PRIMERA FILA: info de colmena y apiario -->
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-xs-6">
+                    <small class="stats-label">Colmena</small>
+                    <h4>
+                        {{ $ultima && $ultima->colmena ? $ultima->colmena->codigo : 'N/A' }}
+                    </h4>
+                </div>
+                <div class="col-xs-6">
+                    <small class="stats-label">Apiario</small>
+                    <h4>
+                        {{ $ultima && $ultima->colmena && $ultima->colmena->apiario ? $ultima->colmena->apiario->nombre : 'N/A' }}
+                    </h4>
                 </div>
             </div>
+        </div>
+
+        <!-- FILA ORIGINAL 1 -->
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-xs-4">
+                    <small class="stats-label">Fecha inspección</small>
+                    <h4> {{ Auth::user()->ultima_inspeccion_fecha ?? 'N/A' }}</h4>
+                </div>
+                <div class="col-xs-4">
+                    <small class="stats-label">Estado Colmena</small>
+                    @php
+                        $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
+
+                        $color = match (strtolower($estado)) {
+                            'activa' => 'text-success',     // verde
+                            'zanganera' => 'text-warning',   // amarillo
+                            'enferma' => 'label-danger',     // rojo
+                            default => 'text-muted',         // gris
+                        };
+                    @endphp
+                    <h4 class="{{ $color }}">
+                        {{ $estado }}
+                    </h4>
+                </div>
+                <div class="col-xs-4">
+                    <small class="stats-label">Temperamento</small>
+                    <h4> {{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->temperamento : 'N/A' }} </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILA ORIGINAL 2 -->
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-xs-4">
+                    <small class="stats-label">Estado reyna</small>
+                    <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->estadoReyna : 'N/A' }}</h4>
+                </div>
+
+                <div class="col-xs-4">
+                    <small class="stats-label">Reserva Miel</small>
+                    <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaMiel : 'N/A' }}</h4>
+                </div>
+                <div class="col-xs-4">
+                    <small class="stats-label">Reserva polen</small>
+                    <h4>{{ Auth::user()->ultimaInspeccion() ? Auth::user()->ultimaInspeccion->reservaPolen : 'N/A' }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILA ORIGINAL 3 -->
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-xs-4">
+                    <small class="stats-label">Hormigas</small>
+                    @php
+                        $hormigas = $ultima ? $ultima->hormigas : 'N/A';
+
+                        if($hormigas==0){
+                            $colorHormigas = 'text-success';
+                        }else{
+                            $colorHormigas='label-danger';
+                        }
+                    @endphp
+                    <h4 class="{{ $colorHormigas }}">
+                        {{ $ultima ? ($ultima->hormigas == 0 ? 'No' : 'Sí') : 'N/A' }}   
+                    </h4>
+                </div>
+
+                <div class="col-xs-4">
+                    <small class="stats-label">Varroa</small>
+                    @php
+                        $varroa = $ultima ? $ultima->varroa : 'N/A';
+
+                        if($varroa==0){
+                            $colorVarroa = 'text-success';
+                        }else{
+                            $colorVarroa='label-danger';
+                        }
+                    @endphp
+                    <h4 class="{{ $colorVarroa }}">
+                        {{ $ultima ? ($ultima->varroa == 0 ? 'No' : 'Sí') : 'N/A' }}
+                    </h4>
+                </div>
+                <div class="col-xs-4">
+                    <small class="stats-label">Loque europea</small>
+                    @php
+                        $loque = $ultima ? $ultima->loque_europea : 'N/A';
+
+                        if($loque==0){
+                            $colorLoque = 'text-success';
+                        }else{
+                            $colorLoque='label-danger';
+                        }
+                    @endphp
+                    <h4 class="{{ $colorLoque }}">
+                        {{ $ultima ? ($ultima->loque_europea == 0 ? 'No' : 'Sí') : 'N/A' }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 
         </div>
     @endsection
