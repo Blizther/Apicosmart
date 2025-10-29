@@ -28,20 +28,22 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas para administrador
 Route::middleware(['auth', 'rol:administrador'])->group(function () {
     Route::get('/administrador/inicio', function () {
-        return view('administrador.inicio');
-    });
+        return view('administrador.dashboard'); 
+    })->name('administrador.dashboard');
+    
     Route::resource('users', UserController::class);
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
     Route::get('/administrador/dispositivos-fabricados/crear', [DispositivoFabricadoController::class, 'create'])->name('fabricados.create');
     Route::post('/administrador/dispositivos-fabricados',      [DispositivoFabricadoController::class, 'store'])->name('fabricados.store');
-
 });
+
 
 // Rutas para usuario común
 Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/usuario/inicio', function () {
         return view('usuario.dashboard');
     })->name('usuario.inicio');
+
     Route::get('/productos', [ControllerProducto::class, 'metodoProductos']);
     // Mostrar formulario de creación
     Route::get('/productos/crearproducto', [ControllerProducto::class, 'nuevoproducto']);
