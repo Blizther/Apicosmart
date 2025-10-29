@@ -76,7 +76,9 @@ class ControllerColmena extends Controller
      */
     public function show(string $id)
     {
-        //
+        //se debe mostrar la informacion de una colmena, incluyendo su apiario, la lista de las inspecciones realizadas y los tratamientos
+        $colmena=Colmena::with('apiario','inspecciones','tratamientos')->findOrFail($id);
+        return view('colmena.show',compact('colmena'));
     }
 
     /**

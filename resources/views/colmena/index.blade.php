@@ -68,6 +68,9 @@
                                     <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
                                         Ver Inspecciones
                                     </a>
+                                    <a href="{{ route('colmenas.show', $colmena->idColmena) }}" class="btn btn-info btn-sm">
+                                        Detalles
+                                    </a>
                                     <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
                                         Editar
                                     </a>

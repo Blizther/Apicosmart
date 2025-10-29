@@ -425,6 +425,9 @@
                         <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     <li>
+                        <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
+                    </li>
+                    <li>
                         <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li class="">

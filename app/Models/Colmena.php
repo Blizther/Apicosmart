@@ -25,4 +25,19 @@ class Colmena extends Model
     {
         return $this->belongsTo(Apiario::class, 'idApiario', 'idApiario');
     }
+    // Relación: una colmena tiene muchas inspecciones
+    public function inspecciones()
+    {
+        return $this->hasMany(InspeccionColmena::class, 'idColmena', 'idColmena');
+    }
+    // ultima inspección
+    public function ultimaInspeccion()
+    {
+        return $this->hasOne(InspeccionColmena::class, 'idColmena', 'idColmena')->latestOfMany();
+    }
+    // Relación: una colmena tiene muchos tratamientos
+    public function tratamientos()
+    {
+        return $this->hasMany(Tratamiento::class, 'idColmena', 'idColmena');
+    }
 }

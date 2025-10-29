@@ -53,6 +53,18 @@ class User extends Authenticatable
             'idApiario'  // Local key on Apiario table
         )->where('colmena.estado', 'activo');
     }
+    // lista de colmenas con estado activo y nombre del apiario
+    public function colmenasApiario()
+    {
+        return $this->hasManyThrough(
+            Colmena::class,
+            Apiario::class,
+            'creadoPor', // Foreign key on Apiario table
+            'idApiario', // Foreign key on Colmena table
+            'id',        // Local key on User table
+            'idApiario'  // Local key on Apiario table
+        )->where('colmena.estado', 'activo')->where('apiario.estado', 'activo');
+    }
     public function inspecciones()
     {
         return $this->hasMany(InspeccionColmena::class, 'idUser', 'id');
