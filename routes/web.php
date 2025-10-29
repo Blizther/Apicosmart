@@ -67,6 +67,7 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/apiario/{id}/editarapiario', [ControllerApiario::class, 'edit'])->name('apiario.edit');
     // Actualizar producto (se utiliza el metodo put)
     Route::put('/apiario/editarapiario/{id}', [ControllerApiario::class, 'update'])->name('apiario.update');
+    Route::get('/apiario/{id}/verapiario', [ControllerApiario::class, 'vercolmenas'])->name('apiario.verapiario');
 
     //SECCION COLMENA
     Route::resource('/colmenas', ControllerColmena::class);
@@ -75,6 +76,7 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
+    Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)

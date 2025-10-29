@@ -38,7 +38,7 @@ class ControllerApiario extends Controller
         $request->validate([
             'nombre' => 'required|max:150',
             'vegetacion' => 'string|max:100',
-            'urlImagen' => 'string|max:100',
+            'urlImagen' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
             'altitud' => 'numeric',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
@@ -47,15 +47,25 @@ class ControllerApiario extends Controller
         $fecha=date('Y-m-d H:i:s');
         $user=Auth::user()->id;
 
+        
+
         $apiario= new Apiario();
         $apiario->nombre = $request->nombre;
         $apiario->vegetacion = $request->vegetacion;
         $apiario->altitud = $request->altitud;
         $apiario->latitud = $request->latitud;
         $apiario->longitud = $request->longitud;
-        $apiario->urlImagen = $request->urlImagen;
+        
         $apiario->creadoPor = $user;
         $apiario->fechaCreacion = $fecha;
+
+        if ($request->hasFile('urlImagen')) {
+            $file = $request->file('urlImagen');
+            $nombreArchivo = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $nombreArchivo);
+            $apiario->urlImagen = 'uploads/' . $nombreArchivo;
+            
+        }
         $apiario->save();
 
         
@@ -115,7 +125,17 @@ class ControllerApiario extends Controller
     {
         $apiario = Apiario::findOrFail($id);
     
-        $apiario->delete();
+        $apiario->estado = "inactivo";
+        $apiario->save();
         return redirect()->to('/apiario')->with('successdelete', 'Apiario eliminado exitosamente.');
     }
+    public function vercolmenas(string $id)
+    {   
+        
+        $apiario = Apiario::findOrFail($id);
+        //obtener colmenas asociadas al apiario con estado activo
+        $colmenas = $apiario->colmenas()->where('estado', 'activo')->get();
+        return view('apiario.verapiario', compact('apiario', 'colmenas'));
+    }
+    
 }

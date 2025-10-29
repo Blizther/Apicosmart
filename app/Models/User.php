@@ -89,4 +89,14 @@ class User extends Authenticatable
     {
         return $this->tareasPendientes()->get();    
     }
+    // Relación: un usuario tiene muchos dispositivos
+    public function dispositivos()
+    {
+        return $this->hasMany(Dispositivo::class, 'idUser', 'id');
+    }
+    //relación: un usuario tiene muchas ventas
+    public function ventasRealizadas()
+    {
+        return $this->hasMany(Venta::class, 'idUser', 'id');
+    }
 }

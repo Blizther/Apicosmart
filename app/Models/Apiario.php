@@ -30,5 +30,16 @@ class Apiario extends Model
     {
         return $this->colmenas()->where('estado', 'activo')->count();
     }
+    //cantidad de colmenas con estado operativo  enferma
+    public function cantidadColmenasEnfermas()
+    {
+        return $this->colmenas()->where('estadoOperativo', 'enferma')->where('estado', 'activo')->count();
+    }
+    //cantidad de colmenas con estado operativo  activa y estado activo
+
+    public function cantidadColmenasOperativaActiva()
+    {
+        return $this->colmenas()->where('estadoOperativo', 'activa')->where('estado', 'activo')->count();
+    }
 
 }
