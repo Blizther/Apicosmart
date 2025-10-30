@@ -65,7 +65,7 @@
                         <option value="chino" {{ old('vegetacion') == 'chino' ? 'selected' : '' }}>chino</option>
                         <option value="ilusión" {{ old('vegetacion') == 'ilusión' ? 'selected' : '' }}>ilusión</option>
                         <option value="Otro" {{ old('vegetacion') == 'otro' ? 'selected' : '' }}>OTRO</option>
-                        </select>
+                    </select>
                    
                 </div>
 

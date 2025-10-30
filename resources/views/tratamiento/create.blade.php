@@ -75,8 +75,9 @@ sin ese código el guardado no se activa
                     </div>
 
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="cantidadMarco">Tratamiento administrado</label>
+                        <label for="tratamientoAdministrado">Tratamiento administrado</label>
                         <!--lista de tratamientos ('amitraz', 'fluvalinato', 'oxalico', 'formico', 'tiamina','otro')      -->
+                        
                         <select name="tratamientoAdministrado" id="tratamientoAdministrado"  class="form-control" required>
                         <option value="amitraz" {{ old('tratamientoAdministrado') == 'amitraz' ? 'selected' : '' }}>AMITRAZ</option>
                         <option value="fluvalinato" {{ old('tratamientoAdministrado') ==    'fluvalinato' ? 'selected' : '' }}>FLUVALINATO</option>
@@ -89,7 +90,7 @@ sin ese código el guardado no se activa
                     <div class="mb-3 col-12 col-md-12">
                         <label for="modelo">Descripcion</label>
                         <!--descripcion del tratamiento aplicado en una caja de texto grande-->
-                        <textarea name="descripcion" id="descripcion" class="form-control" rows="4" required>{{ old('descripcion') }}</textarea>
+                        <textarea name="descripcion" id="descripcion" class="form-control" rows="4" >{{ old('descripcion') }}</textarea>
 
                     </div>
                     

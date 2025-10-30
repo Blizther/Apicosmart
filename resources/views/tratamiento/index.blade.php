@@ -55,6 +55,13 @@
                     </thead>
                     <tbody>
                         @php $correlativo = 1; @endphp
+                        <!-- ordenar los tratamientos por fecha de administración descendente, si hay dos con la misma fecha, ordenar por fechaCreacion -->
+                         @php
+                            $tratamientos = $tratamientos->sortByDesc(function($tratamiento) {
+                                return [$tratamiento->fechaAdministracion, $tratamiento->fechaCreacion];
+                            });
+                        @endphp
+                        
                         @foreach ($tratamientos as $tratamiento)
                             <tr >
                                 <th scope="row">{{ $correlativo }}</th>
@@ -62,12 +69,11 @@
                                 @php
                                     $colmena = $tratamiento->colmena;
                                 @endphp
-                                <td>{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
+                                <td>Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
                                 <td>{{ $tratamiento->problemaTratado }}</td>
                                 <td>{{ $tratamiento->tratamientoAdministrado }}</td>
-                                <td>{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}</td>
                                 <td>{{ $tratamiento->descripcion }}</td>
-                                
                             </tr>
                             @php $correlativo++; @endphp
                         @endforeach

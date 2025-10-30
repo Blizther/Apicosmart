@@ -56,10 +56,18 @@
                     </thead>
                     <tbody>
                         @php $correlativo = 1; @endphp
+                        <!-- ordenar las alimentaciones por fecha de suministracion descendente y por fecha creacion-->
+                         @php
+                            $alimentaciones = $alimentaciones->sortByDesc(function($alimentacion) {
+                                return [$alimentacion->fechaSuministracion, $alimentacion->fechaCreacion];
+                            });
+                        @endphp
+                         
+
                         @foreach ($alimentaciones as $alimentacion)
                             <tr >
                                 <th scope="row">{{ $correlativo }}</th>
-                                <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
                                 <!-- Obtener la colmena asociada al tratamiento -->
                                 @php
                                     $colmena = $alimentacion->colmena;
