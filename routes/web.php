@@ -11,7 +11,12 @@ use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
+<<<<<<< HEAD
 use App\Http\Controllers\ControllerCosecha;
+=======
+use App\Http\Controllers\ControllerTratamiento;
+use App\Http\Controllers\ControllerAlimentacion;
+>>>>>>> origin/pablo
 
 Route::get('/', function () {
     return view('welcome');
@@ -80,13 +85,22 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
     Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
-
-    //SECCION COSECHA
+    // SECCION COSECHA (tuyo)
     Route::resource('/cosechas', ControllerCosecha::class);
     Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
     Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
     Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
-    
+
+    // detalles de la colmena (pablo)
+    Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
+
+    // SECCION TRATAMIENTO (pablo)
+    Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
+    Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
+
+    // SECCION ALIMENTACION (pablo)
+    Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
+    Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)
