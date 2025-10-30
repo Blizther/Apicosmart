@@ -12,6 +12,7 @@ use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
 use App\Http\Controllers\ControllerTratamiento;
+use App\Http\Controllers\ControllerAlimentacion;
 
 Route::get('/', function () {
     return view('welcome');
@@ -78,9 +79,14 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
     Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
+    //detalles de la colmena
+    Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
     //SECCION TRATAMIENTO
     Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
     Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
+    //SECCION ALIMENTACION
+    Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
+    Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
 
     // Vista de venta del usuario (listado de sus productos + carrito)
     Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario'])->name('venta.usuario');

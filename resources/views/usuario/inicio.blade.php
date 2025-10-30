@@ -428,6 +428,9 @@
                         <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
                     </li>
                     <li>
+                        <a href="{{ route('alimentacion.index') }}" title="Tratamientos"><i class="fa fa-coffee"></i> <span class="nav-label"> Alimentación</span></a>
+                    </li>
+                    <li>
                         <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li class="">

@@ -11,7 +11,7 @@ class InspeccionColmena extends Model
 
      protected $table = 'inspeccioncolmena';
     protected $primaryKey = 'idColmena';
-    protected $fillable = ['idColmena','idUser','estadoOperativo', 'temperamento', 'intensidadImportacion','estadoReyna','pobalcion', 'celdasReales','patronPostura', 'enfermedadPlaga','reservaPolen','reservaMiel','notas'];
+    protected $fillable = ['idColmena','idUser','estadoOperativo', 'temperamento', 'intensidadImportacion','estadoReyna','poblacion', 'celdasReales','patronPostura', 'enfermedadPlaga','reservaPolen','reservaMiel','notas'];
 
     public $timestamps =false;
     protected $casts=[
