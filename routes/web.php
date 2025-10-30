@@ -11,9 +11,9 @@ use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
-use App\Http\Controllers\ControllerCosecha;
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
+use App\Http\Controllers\ControllerEstadisticas;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,22 +31,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas para administrador
 Route::middleware(['auth', 'rol:administrador'])->group(function () {
     Route::get('/administrador/inicio', function () {
-        return view('administrador.dashboard'); 
-    })->name('administrador.dashboard');
-    
+        return view('administrador.inicio');
+    });
     Route::resource('users', UserController::class);
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
     Route::get('/administrador/dispositivos-fabricados/crear', [DispositivoFabricadoController::class, 'create'])->name('fabricados.create');
     Route::post('/administrador/dispositivos-fabricados',      [DispositivoFabricadoController::class, 'store'])->name('fabricados.store');
-});
 
+});
 
 // Rutas para usuario común
 Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/usuario/inicio', function () {
         return view('usuario.dashboard');
     })->name('usuario.inicio');
-
     Route::get('/productos', [ControllerProducto::class, 'metodoProductos']);
     // Mostrar formulario de creación
     Route::get('/productos/crearproducto', [ControllerProducto::class, 'nuevoproducto']);
@@ -82,22 +80,23 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
     Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
-    // SECCION COSECHA (tuyo)
-    Route::resource('/cosechas', ControllerCosecha::class);
-    Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
-    Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
-    Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
-
-    // detalles de la colmena (pablo)
+    //detalles de la colmena
     Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
-
-    // SECCION TRATAMIENTO (pablo)
+    //SECCION TRATAMIENTO
     Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
     Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
-
-    // SECCION ALIMENTACION (pablo)
+    //SECCION ALIMENTACION
     Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
+
+Route::prefix('estadisticas')->group(function () {
+    Route::get('/', [ControllerEstadisticas::class, 'index'])->name('estadisticas.index');
+    Route::get('/colmenas-por-apiario', [ControllerEstadisticas::class, 'colmenasPorApiario'])->name('estadisticas.colmenas');
+    Route::get('/peso-cosecha-por-apiario', [ControllerEstadisticas::class, 'pesoCosechaPorApiario'])->name('estadisticas.cosecha');
+    Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
+    Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
+});
+
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)

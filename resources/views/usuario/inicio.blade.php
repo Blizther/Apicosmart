@@ -449,9 +449,8 @@
                     <li>
                         <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                            <li><a href=""><i class="fa fa-coffee"></i> Alimentación</a></li>
-                            <li><a href=""><i class="fa fa-industry"></i> Producción</a></li>
-                            <li><a href=""><i class="fa fa-medkit"></i> Tratamiento</a></li>
+                            <li><a href="{{route('estadisticas.index')}}"><i class="fa fa-bar-chart"></i> General</a></li>
+                            
                         </ul>
                     </li>
                  
@@ -584,14 +583,7 @@
             </div>
 
         </div>
-
-
-
     </div>
-
-
-
-
     </div>
     </div>
 

@@ -29,10 +29,21 @@
             <label class="form-label">Serial (código único del sensor)</label>
             <input type="text" name="serial" class="form-control" value="{{ old('serial') }}" required>
           </div>
+          <!--select para seleccionar la colmena  activa del usuario autenticado con la que se vinculará el dispositivo-->
           <div class="col-md-6">
-            <label class="form-label">Nombre (opcional)</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}">
+            <label class="form-label">Colmena a vincular</label>
+            <div class="col-md-12">
+              <select name="idColmena" class="form-select" required>
+                <option value="" disabled selected>Seleccione una colmena</option>
+                @foreach($colmenas as $colmena)
+                  <option value="{{ $colmena->idColmena }}" {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
+                  Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
           </div>
+          
         </div>
         <div class="mt-3">
           <button type="submit" class="btn btn-primary">Vincular</button>
@@ -50,9 +61,9 @@
         <table class="table table-striped align-middle">
           <thead>
             <tr>
-              <th style="width:90px;">ID</th>
+              
               <th>Serial</th>
-              <th>Nombre</th>
+              <th>Colmena</th>
               <th>Estado</th>
               <th style="width:140px;">Acciones</th>
             </tr>
@@ -60,9 +71,16 @@
           <tbody>
             @forelse($dispositivos as $d)
               <tr>
-                <td>{{ $d->id }}</td>
+                
                 <td><code>{{ $d->fabricado->serial ?? '—' }}</code></td>
-                <td>{{ $d->nombre ?? '—' }}</td>
+                <!--<td>{{ $d->colmena->codigo ?? '—' }} - {{ $d->colmena->apiario->nombre ?? '—' }}</td>-->
+                <td>
+                  @if($d->idColmena)
+                   Colmena # {{ $d->colmena->codigo ?? '—' }} - {{ $d->colmena->apiario->nombre ?? '—' }}
+                  @else
+                    <span class="text-muted">No vinculado a colmena</span>
+                  @endif
+                </td>
                 <td>{{ $d->estado ? 'Sí' : 'No' }}</td>
                 <td>
                   <a class="btn btn-link p-0" href="{{ route('mis.dispositivos.show', $d->id) }}">Ver lecturas</a>
