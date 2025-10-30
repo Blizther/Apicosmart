@@ -11,12 +11,9 @@ use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
-<<<<<<< HEAD
 use App\Http\Controllers\ControllerCosecha;
-=======
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
->>>>>>> origin/pablo
 
 Route::get('/', function () {
     return view('welcome');
