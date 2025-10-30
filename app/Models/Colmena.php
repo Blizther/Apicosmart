@@ -45,4 +45,9 @@ class Colmena extends Model
     {
         return $this->hasMany(Alimentacion::class, 'idColmena', 'idColmena');
     }
+    // Relación: una colmena tiene muchos dispositivos
+    public function dispositivos()
+    {
+        return $this->hasMany(Dispositivo::class, 'idColmena', 'idColmena');
+    }
 }

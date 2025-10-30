@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Dispositivo extends Model
 {
     protected $table = 'dispositivos';
-    protected $fillable = ['idUser', 'dispositivo_fabricado_id', 'nombre', 'estado'];
+    protected $fillable = ['idUser', 'dispositivo_fabricado_id', 'nombre', 'estado', 'idColmena'];
 
     public function fabricado()
     {
@@ -21,4 +21,9 @@ class Dispositivo extends Model
     {
         return $this->hasMany(LecturaSensor::class, 'dispositivo_id');
     }
+    public function colmena()
+    {
+        return $this->belongsTo(Colmena::class, 'idColmena', 'idColmena');
+    }
+    
 }
