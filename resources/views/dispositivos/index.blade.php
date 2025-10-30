@@ -61,7 +61,7 @@
         <table class="table table-striped align-middle">
           <thead>
             <tr>
-              <th style="width:90px;">ID</th>
+              
               <th>Serial</th>
               <th>Colmena</th>
               <th>Estado</th>
@@ -71,7 +71,7 @@
           <tbody>
             @forelse($dispositivos as $d)
               <tr>
-                <td>{{ $d->id }}</td>
+                
                 <td><code>{{ $d->fabricado->serial ?? '—' }}</code></td>
                 <!--<td>{{ $d->colmena->codigo ?? '—' }} - {{ $d->colmena->apiario->nombre ?? '—' }}</td>-->
                 <td>

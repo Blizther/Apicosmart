@@ -5,7 +5,7 @@
   <h3>Lecturas del dispositivo</h3>
   <p class="text-muted mb-2">
     Serial: <code>{{ $dispositivo->fabricado->serial ?? '—' }}</code> |
-    Nombre: {{ $dispositivo->nombre ?? '—' }}
+    Colmena: # {{ $dispositivo->colmena->codigo ?? '—' }} - {{ $dispositivo->colmena->apiario->nombre ?? '—' }}
   </p>
 
   <div class="card">
