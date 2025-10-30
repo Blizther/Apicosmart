@@ -59,7 +59,8 @@ sin ese código el guardado no se activa
                     <div class="mb-3 col-12 col-md-6">
                         <label for="fechaAdministracion">Fecha de administración </label>
                         <input type="date" class="form-control" id="fechaAdministracion"
-                            placeholder="Fecha de administración" name="fechaAdministracion" value="{{ old('fechaAdministracion') }}" required autocomplete="off">
+                            placeholder="Fecha de administración" name="fechaAdministracion" value="{{ old('fechaAdministracion') }}" 
+                            max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                         <label for="estado">Problema tratado</label>

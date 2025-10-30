@@ -128,6 +128,52 @@
                 @endif
             </div>
         </div>
+
+        <div class="col-sm-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h3>Alimentación suministrada</h3>
+                @if($colmena->alimentaciones->isEmpty())
+                <p>No se han suministrado alimentaciones en esta colmena.</p>
+                @else
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Alimentaciones</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <table class="table table-hover no-margins">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Alimento</th>
+                                        <th>Cantidad</th>
+                                        <th>Motivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Recorre las últimas 10 alimentaciones de la colmena -->
+                                    @foreach($colmena->alimentaciones->take(10) as $alimentacion)
+                                    <tr>
+                                        <td>{{ $alimentacion->fechaSuministracion }}</td>
+                                        <td>{{ $alimentacion->tipoAlimento }}</td>
+                                        <td>{{ $alimentacion->cantidad }} - {{ $alimentacion->unidad }}</td>
+                                        <td>{{ $alimentacion->motivo }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection

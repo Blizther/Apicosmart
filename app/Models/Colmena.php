@@ -40,4 +40,9 @@ class Colmena extends Model
     {
         return $this->hasMany(Tratamiento::class, 'idColmena', 'idColmena');
     }
+    // Relación: una colmena tiene muchas alimentaciones
+    public function alimentaciones()
+    {
+        return $this->hasMany(Alimentacion::class, 'idColmena', 'idColmena');
+    }
 }

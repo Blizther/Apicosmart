@@ -52,9 +52,11 @@ sin ese código el guardado no se activa
                             placeholder="Código" name="codigo" value="{{ old('codigo') }}" required autocomplete="off" readonly>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="fechaFabricacion">Fecha de Fabricación</label>
-                        <input type="date" class="form-control" id="fechaFabricacion"
-                            placeholder="Fecha de Fabricacion" name="fechaFabricacion" value="{{ old('fechaFabricacion') }}" required autocomplete="off">
+                        <label for="fechaFabricacion">Fecha de instalación</label>
+                        <input type="date" class="form-control" id="fechaInstalacionFisica"
+                            placeholder="Fecha de Fabricacion" name="fechaInstalacionFisica" value="{{ old('fechaInstalacionFisica') }}" 
+                            max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
+                            
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                         <label for="estado">Estado</label>
