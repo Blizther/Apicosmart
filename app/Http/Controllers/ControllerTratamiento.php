@@ -42,6 +42,7 @@ class ControllerTratamiento extends Controller
     {
         $request->validate([
             'problemaTratado' => 'required|string|max:255',
+            'tratamientoAdministrado' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fechaAdministracion' => 'required|date',
             'idColmena' => 'required|numeric|min:1',
@@ -52,6 +53,7 @@ class ControllerTratamiento extends Controller
 
         $tratamiento= new Tratamiento();
         $tratamiento->problemaTratado = $request->problemaTratado;
+        $tratamiento->tratamientoAdministrado = $request->tratamientoAdministrado;
         $tratamiento->descripcion = $request->descripcion;
         $tratamiento->fechaAdministracion = $request->fechaAdministracion;
         $tratamiento->idUsuario = $user;

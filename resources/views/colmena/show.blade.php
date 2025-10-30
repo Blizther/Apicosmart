@@ -28,7 +28,7 @@
                 <h3>Información de la Colmena</h3>
                 <p><strong>Código:</strong> {{ $colmena->codigo }}</p>
                 <p><strong>Apiario:</strong> {{ $colmena->apiario->nombre }}</p>
-                <p><strong>Fecha de Fabricación:</strong> {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y H:i:s') }}</p>
+                <p><strong>Fecha de Fabricación:</strong> {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y') }}</p>
                 <p><strong>Estado Operativo:</strong> {{ $colmena->estadoOperativo }}</p>
                 <p><strong>Cantidad de Marcos:</strong> {{ $colmena->cantidadMarco }}</p>
                 <p><strong>Modelo:</strong> {{ $colmena->modelo }}</p>
@@ -112,9 +112,15 @@
                                 </thead>
                                 <tbody>
                                     <!-- Recorre los últimos 10 tratamientos de la colmena -->
-                                    @foreach($colmena->tratamientos->take(10) as $tratamiento)
+                                        <!-- ordenar los tratamientos por fecha de administración descendente, si hay dos con la misma fecha, ordenar por fechaCreacion-->
+                                        @php
+                                            $tratamientos = $colmena->tratamientos->sortByDesc(function($tratamiento) {
+                                                return [$tratamiento->fechaAdministracion, $tratamiento->fechaCreacion];
+                                            });
+                                            @endphp
+                                    @foreach($tratamientos->take(10) as $tratamiento)
                                     <tr>
-                                        <td>{{ $tratamiento->fechaAdministracion }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}</td>
                                         <td>{{ $tratamiento->problemaTratado }}</td>
                                         <td>{{ $tratamiento->tratamientoAdministrado }}</td>
                                         <td>{{ $tratamiento->descripcion }}</td>
@@ -157,11 +163,19 @@
                                 </thead>
                                 <tbody>
                                     <!-- Recorre las últimas 10 alimentaciones de la colmena -->
-                                    @foreach($colmena->alimentaciones->take(10) as $alimentacion)
+                                     <!-- ordenar las alimentaciones por fecha de suministracion descendente y por fecha creacion-->
+                                      @php
+                                        $alimentaciones = $colmena->alimentaciones->sortByDesc(function($alimentacion) {
+                                            return [$alimentacion->fechaSuministracion, $alimentacion->fechaCreacion];
+                                        });
+                                        @endphp
+                                    
+                            
+                                    @foreach($alimentaciones->take(10) as $alimentacion)
                                     <tr>
-                                        <td>{{ $alimentacion->fechaSuministracion }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
                                         <td>{{ $alimentacion->tipoAlimento }}</td>
-                                        <td>{{ $alimentacion->cantidad }} - {{ $alimentacion->unidad }}</td>
+                                        <td>{{ $alimentacion->cantidad }} - {{ $alimentacion->unidadMedida }}</td>
                                         <td>{{ $alimentacion->motivo }}</td>
                                     </tr>
                                     @endforeach

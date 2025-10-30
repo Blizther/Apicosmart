@@ -24,7 +24,7 @@
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
-    
+
 
     <style>
         /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */
@@ -377,10 +377,11 @@
             text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
             font-family: "Segoe UI", Arial, sans-serif;
         }
+
         #map {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    border: 2px solid #3A4F26;
-}
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid #3A4F26;
+        }
     </style>
 </head>
 
@@ -431,6 +432,14 @@
                         <a href="{{ route('alimentacion.index') }}" title="Tratamientos"><i class="fa fa-coffee"></i> <span class="nav-label"> Alimentación</span></a>
                     </li>
                     <li>
+                        <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href=""><i class="fa fa-coffee"></i> Alimentación</a></li>
+                            <li><a href=""><i class="fa fa-industry"></i> Producción</a></li>
+                            <li><a href=""><i class="fa fa-medkit"></i> Tratamiento</a></li>
+                        </ul>
+                    </li>
+                    <li>
                         <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
                     <li class="">
@@ -439,7 +448,7 @@
                     <li>
                         <a href="<?php echo asset('') ?>reporteUsuario" title="Reporte venta"><i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span></a>
                     </li>
-                    
+
                     @endif
                 </ul>
             </div>
@@ -451,7 +460,7 @@
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" title="Max/Min menú lateral"><i class="fa fa-bars"></i> </a>
                         <a class="minimalize-styl-only btn btn-success " href="{{ url('/usuario/inicio') }}" title="Ir a Inicio"><i class="fa fa-home"></i> </a>
-                        
+
 
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
