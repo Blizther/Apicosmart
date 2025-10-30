@@ -19,13 +19,13 @@
     </div>
 
     <div class="row g-4">
-<div class="col-sm-12">
-        <a href="{{ route('tratamiento.index')}}" class="btn btn-warning">
-            <i class="fa fa-arrow-left"></i> Volver a la lista
-        </a>
+        <div class="col-sm-12">
+            <a href="{{ route('tratamiento.index')}}" class="btn btn-warning">
+                <i class="fa fa-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
     </div>
-    </div>
-    
+
 
     <div class="row g-4">
         <div class="col-sm-12">
@@ -50,51 +50,51 @@ sin ese código el guardado no se activa
                         <select name="idColmena" id="idColmena" class="form-control" required>
                             <option value="" disabled selected>Seleccione una colmena</option>
                             @foreach ($colmenas as $colmena)
-                                <option value="{{ $colmena->idColmena }}" {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
-                                    {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
-                                </option>
+                            <option value="{{ $colmena->idColmena }}" {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
+                                {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                         <label for="fechaAdministracion">Fecha de administración </label>
                         <input type="date" class="form-control" id="fechaAdministracion"
-                            placeholder="Fecha de administración" name="fechaAdministracion" value="{{ old('fechaAdministracion') }}" 
+                            placeholder="Fecha de administración" name="fechaAdministracion" value="{{ old('fechaAdministracion') }}"
                             max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                         <label for="estado">Problema tratado</label>
                         <!--lista de plagas y enfermedades ('varroa', 'loque', 'ascosferosis')      -->
-                        <select name="problemaTratado" id="problemaTratado"  class="form-control" required>
-                        <option value="varroa" {{ old('problemaTratado') == 'varroa' ? 'selected' : '' }}>VARROA</option>
-                        <option value="loque" {{ old('problemaTratado') == 'loque' ? 'selected' : '' }}>LOQUE</option>
-                        <option value="ascosferosis" {{ old('problemaTratado') == 'ascosferosis' ? 'selected' : '' }}>ASCOSFEROSIS</option>
-                        <option value="otra" {{ old('problemaTratado') == 'otra' ? 'selected' : '' }}>OTRA</option>
+                        <select name="problemaTratado" id="problemaTratado" class="form-control" required>
+                            <option value="varroa" {{ old('problemaTratado') == 'varroa' ? 'selected' : '' }}>VARROA</option>
+                            <option value="loque" {{ old('problemaTratado') == 'loque' ? 'selected' : '' }}>LOQUE</option>
+                            <option value="ascosferosis" {{ old('problemaTratado') == 'ascosferosis' ? 'selected' : '' }}>ASCOSFEROSIS</option>
+                            <option value="otra" {{ old('problemaTratado') == 'otra' ? 'selected' : '' }}>OTRA</option>
                         </select>
-                        
+
                     </div>
 
                     <div class="mb-3 col-12 col-md-6">
                         <label for="tratamientoAdministrado">Tratamiento administrado</label>
                         <!--lista de tratamientos ('amitraz', 'fluvalinato', 'oxalico', 'formico', 'tiamina','otro')      -->
-                        
-                        <select name="tratamientoAdministrado" id="tratamientoAdministrado"  class="form-control" required>
-                        <option value="amitraz" {{ old('tratamientoAdministrado') == 'amitraz' ? 'selected' : '' }}>AMITRAZ</option>
-                        <option value="fluvalinato" {{ old('tratamientoAdministrado') ==    'fluvalinato' ? 'selected' : '' }}>FLUVALINATO</option>
-                        <option value="oxalico" {{ old('tratamientoAdministrado') == 'oxalico' ? 'selected' : '' }}>OXALICO</option>
-                        <option value="formico" {{ old('tratamientoAdministrado') == 'formico' ? 'selected' : '' }}>FORMICO</option>
-                        <option value="tiamina" {{ old('tratamientoAdministrado') == 'tiamina' ? 'selected' : '' }}>TIAMINA</option>
-                        <option value="otro" {{ old('tratamientoAdministrado') == 'otro' ? 'selected' : '' }}>OTRO</option>
+
+                        <select name="tratamientoAdministrado" id="tratamientoAdministrado" class="form-control" required>
+                            <option value="amitraz" {{ old('tratamientoAdministrado') == 'amitraz' ? 'selected' : '' }}>AMITRAZ</option>
+                            <option value="fluvalinato" {{ old('tratamientoAdministrado') ==    'fluvalinato' ? 'selected' : '' }}>FLUVALINATO</option>
+                            <option value="oxalico" {{ old('tratamientoAdministrado') == 'oxalico' ? 'selected' : '' }}>OXALICO</option>
+                            <option value="formico" {{ old('tratamientoAdministrado') == 'formico' ? 'selected' : '' }}>FORMICO</option>
+                            <option value="tiamina" {{ old('tratamientoAdministrado') == 'tiamina' ? 'selected' : '' }}>TIAMINA</option>
+                            <option value="otro" {{ old('tratamientoAdministrado') == 'otro' ? 'selected' : '' }}>OTRO</option>
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-12">
                         <label for="modelo">Descripcion</label>
                         <!--descripcion del tratamiento aplicado en una caja de texto grande-->
-                        <textarea name="descripcion" id="descripcion" class="form-control" rows="4" >{{ old('descripcion') }}</textarea>
+                        <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
 
                     </div>
-                    
-                    
+
+
                     <div class="col-12 form-group">
                         <button type="submit" class="submit btn btn-primary w-100">GUARDAR TRATAMIENTO</button>
                     </div>
@@ -106,7 +106,7 @@ sin ese código el guardado no se activa
 </div>
 
 <script>
-    document.getElementById('apiario').addEventListener('change', function () {
+    document.getElementById('apiario').addEventListener('change', function() {
         let total = this.options[this.selectedIndex].getAttribute('data-total');
         if (total !== null) {
             document.getElementById('codigo').value = parseInt(total) + 1;
