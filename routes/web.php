@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
+use App\Http\Controllers\ControllerEstadisticas;
 
 Route::get('/', function () {
     return view('welcome');
@@ -87,6 +88,16 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     //SECCION ALIMENTACION
     Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
+
+Route::prefix('estadisticas')->group(function () {
+    Route::get('/', [ControllerEstadisticas::class, 'index'])->name('estadisticas.index');
+    Route::get('/colmenas-por-apiario', [ControllerEstadisticas::class, 'colmenasPorApiario'])->name('estadisticas.colmenas');
+    Route::get('/peso-cosecha-por-apiario', [ControllerEstadisticas::class, 'pesoCosechaPorApiario'])->name('estadisticas.cosecha');
+    Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
+    Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
+});
+
+
 
     // Vista de venta del usuario (listado de sus productos + carrito)
     Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario'])->name('venta.usuario');
