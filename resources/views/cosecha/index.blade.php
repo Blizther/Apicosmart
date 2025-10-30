@@ -54,7 +54,7 @@
                                 @endphp
                                 <td> Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
                                 <td>{{ $cosecha->peso }}</td>
-                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
                                 <td>{{ $cosecha->observaciones }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
