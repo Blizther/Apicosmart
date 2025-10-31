@@ -19,13 +19,13 @@
     </div>
 
     <div class="row g-4">
-<div class="col-sm-12">
-        <a href="{{ route('colmenas.index')}}" class="btn btn-warning">
-            <i class="fa fa-arrow-left"></i> Volver a la lista
-        </a>
+        <div class="col-sm-12">
+            <a href="{{ route('colmenas.index')}}" class="btn btn-warning">
+                <i class="fa fa-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
     </div>
-    </div>
-    
+
 
     <div class="row g-4">
         <div class="col-sm-12">
@@ -52,34 +52,39 @@ sin ese código el guardado no se activa
                             placeholder="Código" name="codigo" value="{{ old('codigo') }}" required autocomplete="off" readonly>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="fechaFabricacion">Fecha de instalación</label>
-                        <input type="date" class="form-control" id="fechaInstalacionFisica"
-                            placeholder="Fecha de Fabricacion" name="fechaInstalacionFisica" value="{{ old('fechaInstalacionFisica') }}" 
-                            max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
-                            
-                    </div>
-                    <div class="mb-3 col-12 col-md-6">
-                        <label for="estado">Estado</label>
-                        <select name="estado" id="estado"  class="form-control" required>
-                        <option value="activo" {{ old('estado') == 'activo' ? 'selected' : '' }}>ACTIVO</option>
-                        <option value="inactivo" {{ old('estado') == 'inactivo' ? 'selected' : '' }}>INACTIVO</option>
-                        </select>
-                    </div>
+                        <label for="apiario" class="form-label">Selecciona un Apiario</label>
+                        <select id="apiario" name="apiario" class="form-control" required>
+                            <option value="">-- Selecciona --</option>
+                            apiarios del usuario autenticado
 
-                    <div class="mb-3 col-12 col-md-6">
-                    <label for="apiario" class="form-label">Selecciona un Apiario</label>
-                    <select id="apiario" name="apiario" class="form-control" required>
-                        <option value="">-- Selecciona --</option>
-                        apiarios del usuario autenticado
-                        
-                        @foreach($apiarios as $apiario)
-                            <option 
-                                value="{{ $apiario->idApiario }}" 
+                            @foreach($apiarios as $apiario)
+                            <option
+                                value="{{ $apiario->idApiario }}"
                                 data-total="{{ $apiario->colmenas_count }}">
                                 {{ $apiario->nombre }}
                             </option>
-                        @endforeach
-                    </select>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="fechaFabricacion">Fecha de instalación</label>
+                        <input type="date" class="form-control" id="fechaInstalacionFisica"
+                            placeholder="Fecha de Fabricacion" name="fechaInstalacionFisica" value="{{ old('fechaInstalacionFisica') }}"
+                            max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
+
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="estado">Estado operativo</label>
+                        <!--('activa', 'inactiva', 'zanganera', 'huerfana', 'en_division', 'enferma')-->    
+
+                        <select name="estadoOperativo" id="estadoOperativo" class="form-control" required>
+                            <option value="activa" {{ old('estadoOperativo') == 'activa' ? 'selected' : '' }}>ACTIVA</option>
+                            <option value="zanganera" {{ old('estadoOperativo') == 'zanganera' ? 'selected' : '' }}>ZANGANERA</option>
+                            <option value="huerfana" {{ old('estadoOperativo') == 'huerfana' ? 'selected' : '' }}>HUERFANA</option>
+                            <option value="en_division" {{ old('estadoOperativo') == 'en_division' ? 'selected' : '' }}>EN DIVISIÓN</option>
+                            <option value="enferma" {{ old('estadoOperativo') == 'enferma' ? 'selected' : '' }}>ENFERMA</option>
+                            <option value="inactiva" {{ old('estadoOperativo') == 'inactivo' ? 'selected' : '' }}>INACTIVA</option>
+                        </select>
                     </div>
 
                     <div class="mb-3 col-12 col-md-6">
@@ -89,18 +94,18 @@ sin ese código el guardado no se activa
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                         <label for="modelo">Modelo</label>
-                        <select name="modelo" id="modelo"  class="form-control" required>
-                        <option value="Langstroth" {{ old('modelo') == 'langstroth' ? 'selected' : '' }}>LANGSTROTH</option>
-                        <option value="Dadant" {{ old('modelo') == 'dadant' ? 'selected' : '' }}>DADANT</option>
-                         <option value="Warre" {{ old('modelo') == 'Warre' ? 'selected' : '' }}>WARRE</option>
-                        <option value="Warre" {{ old('modelo') == 'layens' ? 'selected' : '' }}>Layens</option>
-                        <option value="Top Bar" {{ old('modelo') == 'TopBar' ? 'selected' : '' }}>TOP BAR</option>
-                         <option value="Warre" {{ old('modelo') == 'flowHive' ? 'selected' : '' }}>FLOW HIVE</option>
-                        <option value="Otro" {{ old('modelo') == 'otro' ? 'selected' : '' }}>OTRO</option>
+                        <select name="modelo" id="modelo" class="form-control" required>
+                            <option value="langstroth" {{ old('modelo') == 'langstroth' ? 'selected' : '' }}>LANGSTROTH</option>
+                            <option value="dadant" {{ old('modelo') == 'dadant' ? 'selected' : '' }}>DADANT</option>
+                            <option value="warre" {{ old('modelo') == 'Warre' ? 'selected' : '' }}>WARRE</option>
+                            <option value="layens" {{ old('modelo') == 'layens' ? 'selected' : '' }}>Layens</option>
+                            <option value="topBar" {{ old('modelo') == 'TopBar' ? 'selected' : '' }}>TOP BAR</option>
+                            <option value="flowHive" {{ old('modelo') == 'flowHive' ? 'selected' : '' }}>FLOW HIVE</option>
+                            <option value="Otro" {{ old('modelo') == 'otro' ? 'selected' : '' }}>OTRO</option>
                         </select>
                     </div>
-                    
-                    
+
+
                     <div class="col-12 form-group">
                         <button type="submit" class="submit btn btn-primary w-100">GUARDAR COLMENA</button>
                     </div>
@@ -112,7 +117,7 @@ sin ese código el guardado no se activa
 </div>
 
 <script>
-    document.getElementById('apiario').addEventListener('change', function () {
+    document.getElementById('apiario').addEventListener('change', function() {
         let total = this.options[this.selectedIndex].getAttribute('data-total');
         if (total !== null) {
             document.getElementById('codigo').value = parseInt(total) + 1;

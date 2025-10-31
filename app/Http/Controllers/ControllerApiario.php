@@ -42,8 +42,26 @@ class ControllerApiario extends Controller
             'altitud' => 'numeric',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
+        ],
+        [
+            'nombre.required' => 'El nombre del apiario es obligatorio.',
+            'nombre.max' => 'El nombre del apiario no debe exceder los 150 caracteres.',
+            'vegetacion.string' => 'La vegetación debe ser una cadena de texto.',
+            'vegetacion.max' => 'La vegetación no debe exceder los 100 caracteres.',
+            'urlImagen.image' => 'El archivo debe ser una imagen.',
+            'urlImagen.mimes' => 'La imagen debe ser un archivo de tipo: jpeg, png, jpg.',
+            'urlImagen.max' => 'La imagen no debe exceder los 3 MB.',
+            'altitud.numeric' => 'La altitud debe ser un valor numérico.',
+            'latitud.required' => 'La latitud es obligatoria.',
+            'latitud.numeric' => 'La latitud debe ser un valor numérico.',
+            'longitud.required' => 'La longitud es obligatoria.',
+            'longitud.numeric' => 'La longitud debe ser un valor numérico.',
         ]);
-        date_default_timezone_set('America/Caracas');
+        //personalizar mensajes de error en la validación
+
+
+
+        date_default_timezone_set('America/La_Paz');
         $fecha=date('Y-m-d H:i:s');
         $user=Auth::user()->id;
 

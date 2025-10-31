@@ -49,7 +49,7 @@
                             <th scope="col">NRO</th>
                             <th scope="col">Código</th>
                             <th scope="col">Nombre de Apiario</th>
-                            <th scope="col">Fecha Fabricación</th>
+                            <th scope="col">Fecha instalación</th>
                             <th scope="col">Estado Operativo</th>
                             <th scope="col">Cantidad de Marcos</th>
                             <th scope="col">Modelo</th>
@@ -63,7 +63,7 @@
                             <th scope="row">{{ $correlativo }}</th>
                             <td>{{ $colmena->codigo }}</td>
                             <td>{{ $colmena->apiario->nombre }}</td>
-                            <td>{{ \Carbon\Carbon::parse($colmena->fechaFabricacion)->format('d/m/Y H:i:s') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y ') }}</td>
                             <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
                             <td>{{ $colmena->cantidadMarco }}</td>
                             <td>{{ $colmena->modelo }}</td>

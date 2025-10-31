@@ -46,6 +46,17 @@ class ControllerTratamiento extends Controller
             'descripcion' => 'nullable|string',
             'fechaAdministracion' => 'required|date',
             'idColmena' => 'required|numeric|min:1',
+        ],
+        [
+            'problemaTratado.required' => 'El problema tratado es obligatorio.',
+            'problemaTratado.max' => 'El problema tratado no debe exceder los 255 caracteres.',
+            'tratamientoAdministrado.required' => 'El tratamiento administrado es obligatorio.',
+            'tratamientoAdministrado.max' => 'El tratamiento administrado no debe exceder los 255 caracteres.',
+            'fechaAdministracion.required' => 'La fecha de administración es obligatoria.',
+            'fechaAdministracion.date' => 'La fecha de administración debe ser una fecha válida.',
+            'idColmena.required' => 'La colmena es obligatoria.',
+            'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
+            'idColmena.min' => 'La colmena seleccionada no es válida.',
         ]);
         date_default_timezone_set('America/Caracas');
         $fecha=date('Y-m-d H:i:s');

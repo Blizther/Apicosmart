@@ -40,6 +40,23 @@ class ControllerAlimentacion extends Controller
             'fechaSuministracion' => 'required|date',
             'idColmena' => 'required|numeric|min:1',
             'obervaciones' => 'nullable|string',
+        ],
+        [
+            'tipoAlimento.required' => 'El tipo de alimento es obligatorio.',
+            'tipoAlimento.max' => 'El tipo de alimento no debe exceder los 100 caracteres.',
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.numeric' => 'La cantidad debe ser un valor numérico.',
+            'cantidad.min' => 'La cantidad no puede ser negativa.',
+            'unidadMedida.required' => 'La unidad de medida es obligatoria.',
+            'unidadMedida.max' => 'La unidad de medida no debe exceder los 20 caracteres.',
+            'motivo.required' => 'El motivo es obligatorio.',
+            'motivo.max' => 'El motivo no debe exceder los 255 caracteres.',
+            'fechaSuministracion.required' => 'La fecha de suministración es obligatoria.',
+            'fechaSuministracion.date' => 'La fecha de suministración debe ser una fecha válida.',
+            'idColmena.required' => 'La colmena es obligatoria.',
+            'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
+            'idColmena.min' => 'La colmena seleccionada no es válida.',
+            'observaciones.max' => 'Las observaciones no deben exceder los 255 caracteres.',
         ]);
         date_default_timezone_set('America/Caracas');
         $fecha=date('Y-m-d H:i:s');

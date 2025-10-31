@@ -48,19 +48,34 @@ class ControllerColmena extends Controller
 
         $request->validate([
             'codigo' => 'required|string|max:20',
-            'fechaFabricacion' => 'nullable|date',
-            'estado' => 'required|string|max:8',
+            'fechaInstalacionFisica' => 'nullable|date',
+            'estadoOperativo' => 'required|string|in:activa,inactiva,zanganera,huerfana,en_division,enferma',
             'apiario' => 'required|numeric|min:1',
             'cantidadMarco' => 'required|numeric|min:0|max:10',
-        ]);
-        date_default_timezone_set('America/Caracas');
+            ],
+            [
+                'codigo.required' => 'El código de la colmena es obligatorio.',
+                'codigo.max' => 'El código de la colmena no debe exceder los 20 caracteres.',
+                'fechaInstalacionFisica.date' => 'La fecha de instalación física debe ser una fecha válida.',
+                'estadoOperativo.required' => 'El estado operativo es obligatorio.',
+                'estadoOperativo.in' => 'El estado operativo seleccionado no es válido.',
+                'apiario.required' => 'El apiario es obligatorio.',
+                'apiario.numeric' => 'El apiario debe ser un valor numérico.',
+                'apiario.min' => 'Debe seleccionar un apiario válido.',
+                'cantidadMarco.required' => 'La cantidad de marcos es obligatoria.',
+                'cantidadMarco.numeric' => 'La cantidad de marcos debe ser un valor numérico.',
+                'cantidadMarco.min' => 'La cantidad de marcos no puede ser negativa.',
+                'cantidadMarco.max' => 'La cantidad de marcos no puede exceder los 10.',
+            ]);
+        
+        date_default_timezone_set('America/La_Paz');
         $fecha = date('Y-m-d H:i:s');
         $user = Auth::user()->id;
 
         $colmena = new Colmena();
         $colmena->codigo = $request->codigo;
-        $colmena->fechaInstalacionFisica = $request->fechaFabricacion;
-        $colmena->estado = $request->estado;
+        $colmena->fechaInstalacionFisica = $request->fechaInstalacionFisica;
+        $colmena->estadoOperativo = $request->estadoOperativo;
         $colmena->idApiario = $request->apiario;
         $colmena->cantidadMarco = $request->cantidadMarco;
         $colmena->creadoPor = $user;
@@ -92,6 +107,22 @@ class ControllerColmena extends Controller
             'colmenas.*.fechaInstalacionFisica' => 'nullable|date',
             'colmenas.*.cantidadMarco' => 'required|numeric|min:0|max:10',
             'colmenas.*.modelo' => 'required|string|max:50',
+        ],
+        [
+            'colmenas.required' => 'Debe agregar al menos una colmena.',
+            'colmenas.array' => 'Formato de colmenas inválido.',
+            'colmenas.*.codigo.required' => 'El código de la colmena es obligatorio.',
+            'colmenas.*.codigo.max' => 'El código de la colmena no debe exceder los 20 caracteres.',
+            'colmenas.*.apiario.required' => 'El apiario es obligatorio.',
+            'colmenas.*.apiario.numeric' => 'El apiario debe ser un valor numérico.',
+            'colmenas.*.apiario.min' => 'Debe seleccionar un apiario válido.',
+            'colmenas.*.fechaInstalacionFisica.date' => 'La fecha de instalación física debe ser una fecha válida.',
+            'colmenas.*.cantidadMarco.required' => 'La cantidad de marcos es obligatoria.',
+            'colmenas.*.cantidadMarco.numeric' => 'La cantidad de marcos debe ser un valor numérico.',
+            'colmenas.*.cantidadMarco.min' => 'La cantidad de marcos no puede ser negativa.',
+            'colmenas.*.cantidadMarco.max' => 'La cantidad de marcos no puede exceder los 10.',
+            'colmenas.*.modelo.required' => 'El modelo de la colmena es obligatorio.',
+            'colmenas.*.modelo.max' => 'El modelo de la colmena no debe exceder los 50 caracteres.',
         ]);
 
         date_default_timezone_set('America/Caracas');
