@@ -37,10 +37,9 @@ Route::middleware(['auth', 'rol:administrador'])->group(function () {
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
     Route::get('/administrador/dispositivos-fabricados/crear', [DispositivoFabricadoController::class, 'create'])->name('fabricados.create');
     Route::post('/administrador/dispositivos-fabricados',      [DispositivoFabricadoController::class, 'store'])->name('fabricados.store');
-
 });
 
-// Rutas para usuario común
+// Rutas para usuario apicultor
 Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/usuario/inicio', function () {
         return view('usuario.dashboard');
@@ -72,30 +71,38 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::put('/apiario/editarapiario/{id}', [ControllerApiario::class, 'update'])->name('apiario.update');
     Route::get('/apiario/{id}/verapiario', [ControllerApiario::class, 'vercolmenas'])->name('apiario.verapiario');
 
-    //SECCION COLMENA
+    /*********SECCION COLMENA******/
+    // Crear varias colmenas a la vez
+    Route::get('/colmenas/crear-lote', [ControllerColmena::class, 'createLote'])->name('colmenas.createLote');
+    Route::post('/colmenas/guardar-lote', [ControllerColmena::class, 'storeLote'])->name('colmenas.storeLote');
+    // Obtener el siguiente código de colmena según el apiario
+    Route::get('/colmenas/proximo-codigo/{idApiario}', [ControllerColmena::class, 'proximoCodigo'])->name('colmenas.proximoCodigo');
+
     Route::resource('/colmenas', ControllerColmena::class);
     Route::get('/colmenas/{id}/verInspeccion', [ControllerColmena::class, 'verinspeccion'])->name('colmenas.verinspeccion');
     Route::get('/colmenas/{id}/agregarinspeccion', [ControllerColmena::class, 'agregarinspeccion'])->name('colmenas.agregarinspeccion');
     Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
-    Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');  
-    Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
-    Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update'); 
+    Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');
+    Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update');
+    Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update');
     //detalles de la colmena
     Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
-    //SECCION TRATAMIENTO
+
+
+    /********SECCION TRATAMIENTO********/
     Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
     Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
     //SECCION ALIMENTACION
     Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
 
-Route::prefix('estadisticas')->group(function () {
-    Route::get('/', [ControllerEstadisticas::class, 'index'])->name('estadisticas.index');
-    Route::get('/colmenas-por-apiario', [ControllerEstadisticas::class, 'colmenasPorApiario'])->name('estadisticas.colmenas');
-    Route::get('/peso-cosecha-por-apiario', [ControllerEstadisticas::class, 'pesoCosechaPorApiario'])->name('estadisticas.cosecha');
-    Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
-    Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
-});
+    Route::prefix('estadisticas')->group(function () {
+        Route::get('/', [ControllerEstadisticas::class, 'index'])->name('estadisticas.index');
+        Route::get('/colmenas-por-apiario', [ControllerEstadisticas::class, 'colmenasPorApiario'])->name('estadisticas.colmenas');
+        Route::get('/peso-cosecha-por-apiario', [ControllerEstadisticas::class, 'pesoCosechaPorApiario'])->name('estadisticas.cosecha');
+        Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
+        Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
+    });
 
 
 
@@ -114,7 +121,7 @@ Route::prefix('estadisticas')->group(function () {
     // Checkout
     Route::post('/ventaUsuario/checkout',    [VentaController::class, 'store'])->name('venta.checkout');
     // reportes
-     // Lista de reportes
+    // Lista de reportes
     Route::get('/reporteUsuario', [ControllerVentaUsuario::class, 'metodoReporteUsuario'])
         ->name('venta.reporte');              // <-- ESTE name
 
@@ -122,7 +129,7 @@ Route::prefix('estadisticas')->group(function () {
     Route::get('/reporteUsuario/{venta}', [ControllerVentaUsuario::class, 'mostrarVenta'])
         ->whereNumber('venta')
         ->name('venta.reporte.detalle');
-    
+
     Route::get('/ventaUsuario', [ControllerVentaUsuario::class, 'metodoVentaUsuario']);
     Route::get('/reporteUsuario', [ControllerVentaUsuario::class, 'metodoReporteUsuario']);
     Route::get('/stockUsuario', [ControllerVentaUsuario::class, 'metodoStockUsuario']);
@@ -131,5 +138,4 @@ Route::prefix('estadisticas')->group(function () {
     Route::get('/mis/dispositivos', [DispositivoWebController::class, 'index'])->name('mis.dispositivos');
     Route::post('/mis/dispositivos', [DispositivoWebController::class, 'store'])->name('mis.dispositivos.store');
     Route::get('/mis/dispositivos/{id}', [DispositivoWebController::class, 'show'])->name('mis.dispositivos.show');
-
 });
