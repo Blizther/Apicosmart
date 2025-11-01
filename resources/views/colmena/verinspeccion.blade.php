@@ -25,6 +25,7 @@
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                 <h1>Control de inspección</h1>
+                <h3>Colmena: {{ $codigoColmena }} - Apiario: {{ $nombreApiario }}</h3>
             </div>
         </div>
 

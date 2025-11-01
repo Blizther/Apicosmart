@@ -217,7 +217,14 @@ class ControllerColmena extends Controller
     {
 
         $colmenas = InspeccionColmena::where('idColmena', $id)->get();
-        return view('colmena.verinspeccion', compact('colmenas', 'id'));
+        // mostrar codigo de la colmena en la vista y el apiario al que pertenece
+        $cadenaColmena = Colmena::where('idColmena', $id)->first();
+        $codigoColmena = $cadenaColmena->codigo;
+        $idApiario = $cadenaColmena->idApiario;
+        $apiario = Apiario::where('idApiario', $idApiario)->first();
+        $nombreApiario = $apiario->nombre;
+
+        return view('colmena.verinspeccion', compact('colmenas', 'id', 'codigoColmena', 'nombreApiario'));
     }
     public function agregarinspeccion(string $id)
     {
