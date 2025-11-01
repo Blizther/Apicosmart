@@ -429,6 +429,9 @@
                         <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
                     </li>
                     <li>
+                        <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
+                    </li>
+                    <li>
                         <a href="{{ route('alimentacion.index') }}" title="Tratamientos"><i class="fa fa-coffee"></i> <span class="nav-label"> Alimentación</span></a>
                     </li>
                     <li>

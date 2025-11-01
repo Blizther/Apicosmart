@@ -18,4 +18,9 @@ class InspeccionColmena extends Model
         'fechaCreacion'=> 'datetime', 
         'fechaActualizar'=> 'datetime',  
     ];
+    // Relación: una inspección pertenece a una colmena
+    public function colmena()
+    {
+        return $this->belongsTo(Colmena::class, 'idColmena', 'idColmena');
+    }
 }

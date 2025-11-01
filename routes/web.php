@@ -14,6 +14,7 @@ use App\Http\Controllers\ControllerInspeccionColmena;
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
 use App\Http\Controllers\ControllerEstadisticas;
+use App\Http\Controllers\ControllerCosecha;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,7 +32,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas para administrador
 Route::middleware(['auth', 'rol:administrador'])->group(function () {
     Route::get('/administrador/inicio', function () {
-        return view('administrador.inicio');
+        return view('administrador.dashboard');
     });
     Route::resource('users', UserController::class);
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
@@ -88,6 +89,11 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     //detalles de la colmena
     Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
 
+    //SECCION COSECHA
+    Route::resource('/cosechas', ControllerCosecha::class);
+    Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
+    Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
+    Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
 
     /********SECCION TRATAMIENTO********/
     Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');

@@ -6,7 +6,6 @@
     <title>Inicio de Sesión</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        /* Fondo general */
         body {
             font-family: sans-serif;
             margin: 0;
@@ -21,19 +20,17 @@
             justify-content: center;
         }
 
-        /* Contenedor del formulario */
         .form-container {
             width: 100%;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.2); /* Transparencia */
-            backdrop-filter: blur(10px); /* Difuminado tipo “glassmorphism” */
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 40px 30px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             text-align: center;
         }
 
-        /* Logo */
         .logo {
             width: 180px;
             margin-bottom: 20px;
@@ -45,7 +42,6 @@
             margin-bottom: 20px;
         }
 
-        /* Labels alineados a la izquierda */
         label {
             display: block;
             text-align: left;
@@ -54,7 +50,6 @@
             margin-bottom: 4px;
         }
 
-        /* Inputs */
         input[type=text],
         input[type=password] {
             width: 100%;
@@ -66,7 +61,6 @@
             background: rgba(255,255,255,0.8);
         }
 
-        /* Botón */
         button {
             background-color: #F9B233;
             color: white;
@@ -80,10 +74,9 @@
         }
 
         button:hover {
-            background-color: #C98C1C; /* Más oscuro para hover */
+            background-color: #C98C1C;
         }
 
-        /* Enlaces inferiores */
         .opciones {
             margin-top: 20px;
         }
@@ -99,13 +92,91 @@
         .opciones a:hover {
             text-decoration: underline;
         }
+
+        /* === ESTILOS PARA LA ALERTA EMERGENTE PERSONALIZADA === */
+        .alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4); /* fondo oscuro semi-transparente */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .alert-box {
+            background: rgba(255, 255, 255, 0.9); /* tarjetita clara */
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 20px 24px;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .alert-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2b2b2b;
+        }
+
+        .alert-box p {
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .alert-btn {
+            background-color: #F9B233; /* tu color del botón login */
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            padding: 10px 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .alert-btn:hover {
+            background-color: #C98C1C;
+        }
     </style>
 </head>
 <body>
     @if ($errors->any())
-        <div style="color:red; text-align:center;">
+        <!-- ya no mostramos el error rojo suelto -->
+        <div style="display:none; color:red; text-align:center;">
             {{ $errors->first() }}
         </div>
+
+        <!-- ALERTA EMERGENTE PERSONALIZADA -->
+        <div class="alert-overlay" id="customAlert">
+            <div class="alert-box">
+                <h3>Atención</h3>
+                <p>Usuario y/o Contraseña inválida</p>
+                <button class="alert-btn" onclick="cerrarAlerta()">Aceptar</button>
+            </div>
+        </div>
+
+        <script>
+    function cerrarAlerta() {
+        var alerta = document.getElementById('customAlert');
+        if (alerta) {
+            alerta.style.display = 'none';
+        }
+    }
+
+    // Permitir cerrar con Enter o Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+            cerrarAlerta();
+        }
+    });
+</script>
+
     @endif
 
     <div class="form-container">
@@ -127,7 +198,6 @@
 
         <div class="opciones">
             <a href="#">¿Olvidaste tu contraseña?</a>
-            <a href="#">Registrar nuevo usuario</a>
         </div>
     </div>
 </body>

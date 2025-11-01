@@ -162,7 +162,12 @@
                             </div>
             <div class="col-lg-5">
                 <div class="ibox float-e-margins">
+                    @php
+                        $ultima = Auth::user()->ultimaInspeccion;
+                    @endphp
+                    
                     <div class="ibox-title">
+                        <span class="label label-warning pull-right">colmena # {{ $ultima && $ultima->colmena ? $ultima->colmena->codigo : 'N/A' }} - {{ $ultima && $ultima->colmena ? $ultima->colmena->apiario->nombre : 'N/A' }}</span>
                         <h5>Última inspección</h5>
                     </div>
                     <div class="ibox-content">
@@ -174,7 +179,7 @@
                             <div class="col-xs-4">
                                 <small class="stats-label">Estado Colmena</small>
                                 @php
-                                    $ultima = Auth::user()->ultimaInspeccion;
+                                    
                                     $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
 
                                     // Define colores según el estado
