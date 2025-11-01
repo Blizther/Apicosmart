@@ -160,7 +160,7 @@ $(document).ready(function() {
                 pdfDoc.text(`${nombreUsuario} | Tel: ${telefono}`, 35, 17);
                 pdfDoc.text(`Fecha: ${fecha}`, 35, 22);
                 pdfDoc.setFontSize(8);
-                pdfDoc.text(`Página ${paginaActual} de ${totalPaginas}`, pageWidth - 35, 22);
+                pdfDoc.text(`Página ${paginaActual} `, pageWidth - 35, 22);
                 pdfDoc.line(10, 25, pageWidth - 10, 25);
             }
 
