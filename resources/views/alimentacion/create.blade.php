@@ -83,10 +83,10 @@ sin ese código el guardado no se activa
                         <label for="unidadMedida">unidad de medida</label>
                         <!--lista de tratamientos ('gr', 'Kg', 'ml', 'L')      -->
                         <select name="unidadMedida" id="unidadMedida" class="form-control" required>
-                            <option value="gr" {{ old('unidadMedida') == 'gr' ? 'selected' : '' }}>gr</option>
-                            <option value="Kg" {{ old('unidadMedida') ==    'Kg' ? 'selected' : '' }}>Kg</option>
-                            <option value="ml" {{ old('unidadMedida') == 'ml' ? 'selected' : '' }}>ml</option>
-                            <option value="L" {{ old('unidadMedida') == 'L' ? 'selected' : '' }}>L</option>
+                            <option value="gr" {{ old('unidadMedida') == 'gr' ? 'selected' : '' }}>gramos</option>
+                            <option value="Kg" {{ old('unidadMedida') ==    'Kg' ? 'selected' : '' }}>Kilogramos</option>
+                            <option value="ml" {{ old('unidadMedida') == 'ml' ? 'selected' : '' }}>mililitros</option>
+                            <option value="L" {{ old('unidadMedida') == 'L' ? 'selected' : '' }}>Litros</option>
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">

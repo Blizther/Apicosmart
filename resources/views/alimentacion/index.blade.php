@@ -74,7 +74,24 @@
                                 @endphp
                                 <td>Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
                                 <td>{{ $alimentacion->tipoAlimento }}</td>
-                                <td>{{ $alimentacion->cantidad }} - {{$alimentacion->unidadMedida}}</td>
+                                <!--mostrar cantidad con unidad de medida, ejemplo: 500 - gramos, 1.5 - litros, 
+                                teniendo en cuenta que en la base de datos se guarda la unidad como gr, Kg, ml, L. se debe realizar un parseo-->
+                                <td>{{ $alimentacion->cantidad }} - 
+                                    @if($alimentacion->unidadMedida == 'gr')
+                                        gramos
+                                    @elseif($alimentacion->unidadMedida == 'Kg')
+                                        Kilogramos
+                                    @elseif($alimentacion->unidadMedida == 'ml')
+                                        mililitros
+                                    @elseif($alimentacion->unidadMedida == 'L')
+                                        Litros
+                                    @else
+                                        {{ $alimentacion->unidadMedida }}
+                                    @endif
+                                </td>
+                                
+                                
+                                
                                 <td>{{ $alimentacion->motivo }}</td>
                                 <td>{{ $alimentacion->observaciones }}</td>
                             </tr>
