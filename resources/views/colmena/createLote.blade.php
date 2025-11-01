@@ -52,10 +52,10 @@
                     <thead class="table-secondary">
                         <tr>
                             <th>Código</th>
-                            <th>Apiario</th>
-                            <th>Fecha Instalación</th>
-                            <th>Cantidad de Marcos</th>
-                            <th>Modelo</th>
+                            <th>Apiario*</th>
+                            <th>Fecha Instalación*</th>
+                            <th>Cantidad de Marcos*</th>
+                            <th>Modelo*</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -76,7 +76,7 @@
                             </td>
                             <td>
                                 <input type="date" name="colmenas[0][fechaInstalacionFisica]" class="form-control"
-                                    max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
                             </td>
                             <td>
                                 <input type="number" name="colmenas[0][cantidadMarco]" class="form-control" min="0" max="10" value="0">

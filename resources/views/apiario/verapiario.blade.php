@@ -74,7 +74,7 @@
                         <tr>
                             <th>NRO</th>
                             <th>Código</th>
-                            <th>Fecha Fabricación</th>
+                            <th>Fecha registro</th>
                             <th>Estado</th>
                             <th>Cantidad de Marcos</th>
                             <th>Modelo</th>
@@ -87,7 +87,7 @@
                             <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
                                 <th>{{ $correlativo }}</th>
                                 <td>{{ $colmena->codigo }}</td>
-                                <td>{{ \Carbon\Carbon::parse($colmena->fechaFabricacion)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($colmena->fechaCreacion)->format('d/m/Y H:i:s') }}</td>
                                 <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
                                 <td>{{ $colmena->cantidadMarco }}</td>
                                 <td>{{ $colmena->modelo }}</td>

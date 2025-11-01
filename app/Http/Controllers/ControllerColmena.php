@@ -125,7 +125,7 @@ class ControllerColmena extends Controller
             'colmenas.*.modelo.max' => 'El modelo de la colmena no debe exceder los 50 caracteres.',
         ]);
 
-        date_default_timezone_set('America/Caracas');
+        date_default_timezone_set('America/La_Paz');
         $user = Auth::id();
         $fecha = date('Y-m-d H:i:s');
 
@@ -155,10 +155,10 @@ class ControllerColmena extends Controller
 
         if ($ultima && preg_match('/(\d+)$/', $ultima->codigo, $coincidencias)) {
             $numero = (int)$coincidencias[1] + 1;
-            $nuevoCodigo = preg_replace('/\d+$/', str_pad($numero, 3, '0', STR_PAD_LEFT), $ultima->codigo);
+            $nuevoCodigo = preg_replace('/\d+$/', str_pad($numero, 0, '0', STR_PAD_LEFT), $ultima->codigo);
         } elseif ($ultima && !preg_match('/(\d+)$/', $ultima->codigo)) {
             // Si el código no tenía número, agregamos el primero
-            $nuevoCodigo = $ultima->codigo . '-001';
+            $nuevoCodigo = $ultima->codigo . '1';
         }
 
         return response()->json(['codigo' => $nuevoCodigo]);
