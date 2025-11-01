@@ -42,7 +42,7 @@
 
                 {{-- Colmena --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="idColmena" class="form-label">Colmena</label>
+                    <label for="idColmena" class="form-label">Colmena*</label>
                     <select name="idColmena" id="idColmena" class="form-control" required>
                             <option value="" disabled selected>Seleccione una colmena</option>
                             @foreach ($colmenas as $colmena)
@@ -55,7 +55,7 @@
 
                 {{-- Peso --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="peso" class="form-label">Peso (kg)</label>
+                    <label for="peso" class="form-label">Peso (kg)*</label>
                     <input type="number" step="0.01" min="0"
                            class="form-control" id="peso" name="peso"
                            value="{{ old('peso') }}" placeholder="Ej. 2.00" required>
@@ -63,7 +63,7 @@
 
                 {{-- Estado de la miel --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="estadoMiel" class="form-label">Estado de la miel</label>
+                    <label for="estadoMiel" class="form-label">Estado de la miel*</label>
                     <select id="estadoMiel" name="estadoMiel" class="form-control" required>
                         <option value="" disabled {{ old('estadoMiel') ? '' : 'selected' }}>Seleccione una opción</option>
                         <option value="Líquida"       {{ old('estadoMiel') === 'Líquida' ? 'selected' : '' }}>Líquida</option>
@@ -75,7 +75,7 @@
 
                 s{{-- Fecha de cosecha --}}
             <div class="mb-3 col-12 col-md-6">
-                <label for="fechaCosecha" class="form-label">Fecha de cosecha</label>
+                <label for="fechaCosecha" class="form-label">Fecha de cosecha*</label>
                 <input
                     type="date"
                     class="form-control"

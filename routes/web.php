@@ -15,6 +15,7 @@ use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
 use App\Http\Controllers\ControllerEstadisticas;
 use App\Http\Controllers\ControllerCosecha;
+use App\Http\Controllers\ControllerEstadisticasColmenas;
 
 Route::get('/', function () {
     return view('welcome');
@@ -109,6 +110,13 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
         Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
         Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
     });
+// Estadísticas por colmena
+Route::get('/estadisticas/colmenas', [ControllerEstadisticasColmenas::class, 'index'])->name('estadisticas.colmenas.index');
+
+Route::get('/estadisticas/colmenas/inspecciones', [ControllerEstadisticasColmenas::class, 'inspecciones'])->name('estadisticas.colmenas.inspecciones');
+Route::get('/estadisticas/colmenas/cosecha', [ControllerEstadisticasColmenas::class, 'cosecha'])->name('estadisticas.colmenas.cosecha');
+Route::get('/estadisticas/colmenas/tratamientos', [ControllerEstadisticasColmenas::class, 'tratamientos'])->name('estadisticas.colmenas.tratamientos');
+Route::get('/estadisticas/colmenas/alimentaciones', [ControllerEstadisticasColmenas::class, 'alimentaciones'])->name('estadisticas.colmenas.alimentaciones');
 
 
 

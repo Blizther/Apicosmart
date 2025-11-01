@@ -438,7 +438,7 @@
                         <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
                             <li><a href="{{route('estadisticas.index')}}"><i class="fa fa-bar-chart"></i> General</a></li>
-                            
+                            <li><a href="{{route('estadisticas.colmenas.index')}}"><i class="fa fa-pie-chart"></i> Por Colmena</a></li>
                         </ul>
                     </li>
                     <li>
