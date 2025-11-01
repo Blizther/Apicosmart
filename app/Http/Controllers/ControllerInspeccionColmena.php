@@ -20,6 +20,7 @@ class ControllerInspeccionColmena extends Controller
 
     // VALIDACIÓN: solo tipos y longitudes según tu SQL
     $data = $request->validate([
+        'estadoOperativo'       => ['required','string','in:activa,inactiva,zanganera,huerfana,en_division,enferma'],
         'temperamento'           => ['nullable','string','max:45'],
         'intensidadImportacion'  => ['nullable','string','max:45'], // en BD es "IntensidadImportacion"
         'estadoReyna'            => ['nullable','string','max:45'],
@@ -52,6 +53,7 @@ class ControllerInspeccionColmena extends Controller
     $row = [
         'idColmena'             => (int) $idColmena,
         'idUser'                => (int) $idUser,
+        'estadoOperativo'      => $data['estadoOperativo'] ?? null,
 
         'temperamento'          => $data['temperamento'] ?? null,
         'IntensidadImportacion' => $data['intensidadImportacion'] ?? null, // mapeo de name -> columna

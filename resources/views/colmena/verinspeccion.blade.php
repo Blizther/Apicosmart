@@ -35,37 +35,38 @@
                         <tr>
                             <th scope="col">NRO</th>
                             <th scope="col">Fecha de inspección</th>
+                            <th scope="col">Estado Colmena</th>
                             <th scope="col">Temperamento</th>
                             <th scope="col">Intensidad de Importación</th>
-                            <th scope="col">Estado de la Reyna</th>
                             <th scope="col">Celdas Reales</th>
                             <th scope="col">Patron de Postura</th>
                             <th scope="col">Enfermedades/Plaga</th>
                             <th scope="col">Reserva de miel</th>
                             <th scope="col">Reserva de polen</th>
-                            <th scope="col">Notas</th>
+                            <th scope="col">Reyna</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $correlativo=1;
                         ?>
+                        <!--ordenar por fecha de inspección descendente-->
+                        @php
+                        $colmenas = $colmenas->sortByDesc('fechaCreacion');
+                        @endphp
                         @foreach ($colmenas as $colmena)
                             <tr>
                                 <th scope="row"><?php echo $correlativo; ?></th>
-                                <td>{{ \Carbon\Carbon::parse($colmena->fechaInspección)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($colmena->fechaInspeccion)->format('d/m/Y ') }}</td>
+                                <td>{{ $colmena->estadoOperativo }}</td>
                                 <td>{{ $colmena->temperamento }}</td>
                                 <td>{{ $colmena->intensidadImportacion }}</td>
-                                <td>{{ $colmena->estadoReyna }}</td>
                                 <td>{{ $colmena->celdasReales }}</td>
                                 <td>{{ $colmena->patronPostura }}</td>
                                 <td>{{ $colmena->enfermedadPlaga }}</td>
                                 <td>{{ $colmena->reservaMiel }}</td>
                                 <td>{{ $colmena->reservaPolen }}</td>
                                 <td>{{ $colmena->estadoReyna }}</td>
-                                <td>{{ $colmena->notas }}</td>
-                                
-                               
                             </tr>
                         <?php
                         $correlativo++;

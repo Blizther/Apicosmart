@@ -44,7 +44,7 @@
                 <div class="row">
                     <h6 class="col-12">Complete el formulario</h6>
                     <div class="col-12 col-md-6">
-                        <label for="temperamento">Estado Operativo</label>
+                        <label for="estadoOperativo">Estado Operativo</label>
                         <select name="estadoOperativo" id="estadoOperativo" class="form-control" required>
                             <option value="activa" {{ old('estadoOperativo') == 'activa' ? 'selected' : '' }}>activa</option>
                             <option value="inactiva" {{ old('estadoOperativo') == 'inactiva' ? 'selected' : '' }}>inactiva</option>
