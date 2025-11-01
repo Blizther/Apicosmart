@@ -31,7 +31,7 @@
 
         <div class="col-sm-12">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered align-middle">
                     <thead>
                         <tr>
                             <th scope="col">NRO</th>
@@ -56,7 +56,7 @@
                         $colmenas = $colmenas->sortByDesc('fechaCreacion');
                         @endphp
                         @foreach ($colmenas as $colmena)
-                            <tr>
+                            <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
                                 <th scope="row"><?php echo $correlativo; ?></th>
                                 <td>{{ \Carbon\Carbon::parse($colmena->fechaInspeccion)->format('d/m/Y ') }}</td>
                                 <td>{{ $colmena->estadoOperativo }}</td>

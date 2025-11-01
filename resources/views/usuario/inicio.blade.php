@@ -382,7 +382,12 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             border: 2px solid #3A4F26;
         }
-    </style>
+    
+    .table-danger {
+        background-color: #f8d7da !important;
+        color: #842029 !important;
+    }
+</style>
 </head>
 
 <body>

@@ -95,13 +95,4 @@
         </div>
     </div>
 </div>
-
-<!-- Estilos personalizados -->
-<style>
-    .table-danger {
-        background-color: #f8d7da !important;
-        color: #842029 !important;
-    }
-</style>
-
 @endsection
