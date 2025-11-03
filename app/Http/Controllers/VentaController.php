@@ -17,6 +17,13 @@ class VentaController extends Controller
         $data = $request->validate([
             'producto_id' => 'required|integer',
             'cantidad'    => 'required|integer|min:1',
+        ],
+        [
+            'producto_id.required' => 'El producto es obligatorio.',
+            'producto_id.integer' => 'El producto debe ser un valor numérico.',
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.integer' => 'La cantidad debe ser un valor numérico.',
+            'cantidad.min' => 'La cantidad debe ser al menos 1.',
         ]);
 
         $userId = Auth::id();

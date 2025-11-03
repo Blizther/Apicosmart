@@ -461,4 +461,8 @@
 
 @yield('scripts')
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> origin/pablo

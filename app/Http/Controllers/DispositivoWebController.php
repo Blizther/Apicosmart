@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dispositivo;
+use App\Models\Colmena;
 use App\Models\DispositivoFabricado;
 use App\Models\LecturaSensor;
 use Illuminate\Http\Request;
@@ -17,8 +18,11 @@ class DispositivoWebController extends Controller
             ->where('idUser', Auth::id())
             ->orderByDesc('id')
             ->get();
-
-        return view('dispositivos.index', compact('dispositivos'));
+        //recuperar las colemnas del usuario autenticado
+        $colmenas = Colmena::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->get();
+        return view('dispositivos.index', compact('dispositivos', 'colmenas'));
     }
 
     // Vincular por serial (según la nueva lógica)
@@ -26,6 +30,7 @@ class DispositivoWebController extends Controller
     {
         $data = $request->validate([
             'serial' => 'required|string|max:64',
+            'idColmena' => 'required|numeric|min:1',
             'nombre' => 'nullable|string|max:120',
         ]);
 
@@ -46,12 +51,14 @@ class DispositivoWebController extends Controller
         if ($fab->vinculo && $fab->vinculo->idUser === Auth::id()) {
             return redirect()->route('mis.dispositivos')->with('ok','Este dispositivo ya estaba vinculado a tu cuenta.');
         }
+        
 
         // 4) Crear vínculo
         $disp = Dispositivo::create([
             'idUser'                   => Auth::id(),
             'dispositivo_fabricado_id' => $fab->id,
             'nombre'                   => $data['nombre'] ?? null,
+            'idColmena'                => $request->idColmena ?? null,
             'estado'                   => 1,
         ]);
 

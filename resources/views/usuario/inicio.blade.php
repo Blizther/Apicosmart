@@ -24,7 +24,7 @@
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
-    
+
 
     <style>
         /* ===== Sidebar ApicoSmart (solo nave izquierda) ===== */
@@ -377,11 +377,17 @@
             text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
             font-family: "Segoe UI", Arial, sans-serif;
         }
+
         #map {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    border: 2px solid #3A4F26;
-}
-    </style>
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid #3A4F26;
+        }
+    
+    .table-danger {
+        background-color: #f8d7da !important;
+        color: #842029 !important;
+    }
+</style>
 </head>
 
 <body>
@@ -425,9 +431,27 @@
                         <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     <li>
+<<<<<<< HEAD
                         <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
                     </li>
                     
+=======
+                        <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
+                    </li>
+                    <li>
+                        <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ route('alimentacion.index') }}" title="Tratamientos"><i class="fa fa-coffee"></i> <span class="nav-label"> Alimentación</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="{{route('estadisticas.index')}}"><i class="fa fa-bar-chart"></i> General</a></li>
+                            <li><a href="{{route('estadisticas.colmenas.index')}}"><i class="fa fa-pie-chart"></i> Por Colmena</a></li>
+                        </ul>
+                    </li>
+>>>>>>> origin/pablo
                     <li>
                         <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>
@@ -437,7 +461,7 @@
                     <li>
                         <a href="<?php echo asset('') ?>reporteUsuario" title="Reporte venta"><i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span></a>
                     </li>
-                    
+
                     @endif
                 </ul>
             </div>
@@ -449,7 +473,7 @@
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" title="Max/Min menú lateral"><i class="fa fa-bars"></i> </a>
                         <a class="minimalize-styl-only btn btn-success " href="{{ url('/usuario/inicio') }}" title="Ir a Inicio"><i class="fa fa-home"></i> </a>
-                        
+
 
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
@@ -557,14 +581,7 @@
             </div>
 
         </div>
-
-
-
     </div>
-
-
-
-
     </div>
     </div>
 

@@ -30,6 +30,7 @@ class ControllerVentaUsuario extends Controller
     {
         return view('ventaUsuario.stockUsuario');
     }
+
     public function metodoReporteUsuario(Request $request)
     {
         $uid  = Auth::id();
@@ -62,6 +63,7 @@ class ControllerVentaUsuario extends Controller
 
         return view('ventaUsuario.reporteUsuario', compact('ventas', 'from', 'to', 'resumen'));
     }
+    
     public function mostrarVenta($ventaId)
     {
         $uid = Auth::id();

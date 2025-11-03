@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Apiario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ControllerApiario extends Controller
 {
@@ -35,15 +36,41 @@ class ControllerApiario extends Controller
      */
     public function store(Request $request)
     {
+         $userId = Auth::id();
         $request->validate([
-            'nombre' => 'required|max:150',
-            'vegetacion' => 'string|max:100',
-            'urlImagen' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
-            'altitud' => 'numeric',
-            'latitud' => 'required|numeric',
-            'longitud' => 'required|numeric',
-        ]);
-        date_default_timezone_set('America/Caracas');
+        'nombre' => [
+            'required',
+            'max:150',
+            Rule::unique('apiario')->where(function ($query) use ($userId) {
+                return $query->where('creadoPor', $userId)
+                             ->where('estado', 'activo');
+            }),
+        ],
+        'vegetacion' => 'string|max:100',
+        'urlImagen' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
+        'altitud' => 'numeric',
+        'latitud' => 'required|numeric',
+        'longitud' => 'required|numeric',
+    ], [
+        'nombre.required' => 'El nombre del apiario es obligatorio.',
+        'nombre.max' => 'El nombre del apiario no debe exceder los 150 caracteres.',
+        'nombre.unique' => 'Ya tienes un apiario con este nombre. Por favor elige otro.',
+        'vegetacion.string' => 'La vegetación debe ser una cadena de texto.',
+        'vegetacion.max' => 'La vegetación no debe exceder los 100 caracteres.',
+        'urlImagen.image' => 'El archivo debe ser una imagen.',
+        'urlImagen.mimes' => 'La imagen debe ser un archivo de tipo: jpeg, png, jpg.',
+        'urlImagen.max' => 'La imagen no debe exceder los 3 MB.',
+        'altitud.numeric' => 'La altitud debe ser un valor numérico.',
+        'latitud.required' => 'La latitud es obligatoria.',
+        'latitud.numeric' => 'La latitud debe ser un valor numérico.',
+        'longitud.required' => 'La longitud es obligatoria.',
+        'longitud.numeric' => 'La longitud debe ser un valor numérico.',
+    ]);
+        //personalizar mensajes de error en la validación
+
+
+
+        date_default_timezone_set('America/La_Paz');
         $fecha=date('Y-m-d H:i:s');
         $user=Auth::user()->id;
 

@@ -45,6 +45,22 @@ class ControllerCosecha extends Controller
             'fechaCosecha' => 'required|date',
             'idColmena' => 'required|numeric|min:1',
             'observaciones' => 'nullable|string|max:255',
+<<<<<<< HEAD
+=======
+        ],
+        [
+            'peso.required' => 'El peso de la cosecha es obligatorio.',
+            'peso.numeric' => 'El peso debe ser un valor numérico.',
+            'peso.min' => 'El peso no puede ser negativo.',
+            'estadoMiel.required' => 'El estado de la miel es obligatorio.',
+            'estadoMiel.max' => 'El estado de la miel no debe exceder los 20 caracteres.',
+            'fechaCosecha.required' => 'La fecha de la cosecha es obligatoria.',
+            'fechaCosecha.date' => 'La fecha de la cosecha debe ser una fecha válida.',
+            'idColmena.required' => 'La colmena es obligatoria.',
+            'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
+            'idColmena.min' => 'La colmena seleccionada no es válida.',
+            'observaciones.max' => 'Las observaciones no deben exceder los 255 caracteres.',
+>>>>>>> origin/pablo
         ]);     
         date_default_timezone_set('America/Caracas');
         $fecha=date('Y-m-d H:i:s');
@@ -89,4 +105,8 @@ class ControllerCosecha extends Controller
 
 
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/pablo

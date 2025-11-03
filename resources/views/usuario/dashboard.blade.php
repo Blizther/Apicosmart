@@ -161,10 +161,33 @@
                                 </div>
                             </div>
             <div class="col-lg-5">
+<<<<<<< HEAD
     <div class="ibox float-e-margins">
         <div class="ibox-title">
             <h5>Última inspección</h5>
         </div>
+=======
+                <div class="ibox float-e-margins">
+                    @php
+                        $ultima = Auth::user()->ultimaInspeccion;
+                    @endphp
+                    
+                    <div class="ibox-title">
+                        <span class="label label-warning pull-right">colmena # {{ $ultima && $ultima->colmena ? $ultima->colmena->codigo : 'N/A' }} - {{ $ultima && $ultima->colmena ? $ultima->colmena->apiario->nombre : 'N/A' }}</span>
+                        <h5>Última inspección</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <small class="stats-label">Fecha inspección</small>
+                                <h4> {{ Auth::user()->ultima_inspeccion_fecha ?? 'N/A' }}</h4>
+                            </div>
+                            <div class="col-xs-4">
+                                <small class="stats-label">Estado Colmena</small>
+                                @php
+                                    
+                                    $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
+>>>>>>> origin/pablo
 
         @php
             $ultima = Auth::user()->ultimaInspeccion; // ya lo usas abajo

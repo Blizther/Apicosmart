@@ -38,7 +38,11 @@
                         <tr>
                             <th scope="col" style="width: 5%;">NRO</th>
                             <th scope="col" style="width: 25%;">Colmena - Apiario</th>
+<<<<<<< HEAD
                             <th scope="col" style="width: 10%;">Peso</th>
+=======
+                            <th scope="col" style="width: 10%;">Peso (Kg)</th>
+>>>>>>> origin/pablo
                             <th scope="col" style="width: 20%;">Fecha Cosecha</th>
                             <th scope="col" style="width: 25%;">Observaciones</th>
                             <th scope="col" style="width: 15%;">Acciones</th>
@@ -76,4 +80,8 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+>>>>>>> origin/pablo

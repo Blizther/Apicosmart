@@ -46,7 +46,8 @@
 
                 {{-- Nombre (label arriba) --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="nombre" class="form-label">Nombre</label>
+                    <label for="nombre" class="form-label">Nombre*</label>
+                    <small class="stats-label">(no debe ser repetido)</small>
                     <input type="text" class="form-control" id="nombre"
                         placeholder="Nombre" name="nombre" value="{{ old('nombre') }}" required autocomplete="off">
                 </div>
@@ -65,15 +66,16 @@
                         <option value="chino" {{ old('vegetacion') == 'chino' ? 'selected' : '' }}>chino</option>
                         <option value="ilusión" {{ old('vegetacion') == 'ilusión' ? 'selected' : '' }}>ilusión</option>
                         <option value="Otro" {{ old('vegetacion') == 'otro' ? 'selected' : '' }}>OTRO</option>
-                        </select>
+                    </select>
                    
                 </div>
 
                 {{-- altitud (label arriba) --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="altitud" class="form-label">Altitud</label>
-                    <input type="text" class="form-control" id="altitud"
-                        placeholder="Altitud" name="altitud" value="{{ old('Altitud') }}" required autocomplete="off">
+                    <label for="altitud" class="form-label">Altitud*</label>
+                    <small class="stats-label">metros/nivel del mar | max 4000</small>
+                    <input type="number" class="form-control" id="altitud"
+                        placeholder="Altitud" name="altitud" value="{{ old('Altitud') }}" required autocomplete="off" min="0" step="1" max="4000">
                 </div>
                 {{-- Imagen (label arriba) --}}
                 <div class="mb-3 col-12 col-md-6">
