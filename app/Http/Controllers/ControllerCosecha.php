@@ -39,29 +39,29 @@ class ControllerCosecha extends Controller
     //guardar nueva cosecha
     public function store(Request $request)
     {
-        $request->validate([
-            'peso' => 'required|numeric|min:0',
-            'estadoMiel' => 'required|string|max:20',
-            'fechaCosecha' => 'required|date',
-            'idColmena' => 'required|numeric|min:1',
-            'observaciones' => 'nullable|string|max:255',
-<<<<<<< HEAD
-=======
-        ],
-        [
-            'peso.required' => 'El peso de la cosecha es obligatorio.',
-            'peso.numeric' => 'El peso debe ser un valor numérico.',
-            'peso.min' => 'El peso no puede ser negativo.',
-            'estadoMiel.required' => 'El estado de la miel es obligatorio.',
-            'estadoMiel.max' => 'El estado de la miel no debe exceder los 20 caracteres.',
-            'fechaCosecha.required' => 'La fecha de la cosecha es obligatoria.',
-            'fechaCosecha.date' => 'La fecha de la cosecha debe ser una fecha válida.',
-            'idColmena.required' => 'La colmena es obligatoria.',
-            'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
-            'idColmena.min' => 'La colmena seleccionada no es válida.',
-            'observaciones.max' => 'Las observaciones no deben exceder los 255 caracteres.',
->>>>>>> origin/pablo
-        ]);     
+        $request->validate(
+    [
+        'peso'           => 'required|numeric',
+        'estadoMiel'     => 'required|string|max:20',
+        'fechaCosecha'   => 'required|date',
+        'idColmena'      => 'required|numeric|min:1',
+        'observaciones'  => 'nullable|string|max:255',
+    ],
+    [
+        'peso.required'          => 'El peso de la cosecha es obligatorio.',
+        'peso.numeric'           => 'El peso debe ser numérico.',
+        'estadoMiel.required'    => 'El estado de la miel es obligatorio.',
+        'estadoMiel.string'      => 'El estado de la miel no es válido.',
+        'estadoMiel.max'         => 'El estado de la miel no debe exceder 20 caracteres.',
+        'fechaCosecha.required'  => 'La fecha de cosecha es obligatoria.',
+        'fechaCosecha.date'      => 'La fecha de cosecha no es válida.',
+        'idColmena.required'     => 'Debe seleccionar una colmena.',
+        'idColmena.numeric'      => 'La colmena no es válida.',
+        'idColmena.min'          => 'La colmena no es válida.',
+        'observaciones.string'   => 'Las observaciones no son válidas.',
+        'observaciones.max'      => 'Las observaciones no deben exceder 255 caracteres.',
+    ]
+);  
         date_default_timezone_set('America/Caracas');
         $fecha=date('Y-m-d H:i:s');
         $user=Auth::user()->id;
@@ -103,10 +103,4 @@ class ControllerCosecha extends Controller
         ->with('successdelete', 'Cosecha eliminada exitosamente.');
 }
 
-
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/pablo
