@@ -11,15 +11,10 @@ use App\Http\Controllers\ControllerProducto;
 use App\Http\Controllers\ControllerVentaUsuario;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ControllerInspeccionColmena;
-<<<<<<< HEAD
 use App\Http\Controllers\ControllerCosecha;
-=======
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
-use App\Http\Controllers\ControllerEstadisticas;
-use App\Http\Controllers\ControllerCosecha;
-use App\Http\Controllers\ControllerEstadisticasColmenas;
->>>>>>> origin/pablo
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,14 +32,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas para administrador
 Route::middleware(['auth', 'rol:administrador'])->group(function () {
     Route::get('/administrador/inicio', function () {
-<<<<<<< HEAD
         return view('administrador.dashboard'); 
     })->name('administrador.dashboard');
-    
-=======
         return view('administrador.dashboard');
     });
->>>>>>> origin/pablo
     Route::resource('users', UserController::class);
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
     Route::get('/administrador/dispositivos-fabricados/crear', [DispositivoFabricadoController::class, 'create'])->name('fabricados.create');

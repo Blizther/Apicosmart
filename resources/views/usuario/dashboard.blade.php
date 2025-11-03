@@ -161,12 +161,10 @@
                                 </div>
                             </div>
             <div class="col-lg-5">
-<<<<<<< HEAD
     <div class="ibox float-e-margins">
         <div class="ibox-title">
             <h5>Última inspección</h5>
         </div>
-=======
                 <div class="ibox float-e-margins">
                     @php
                         $ultima = Auth::user()->ultimaInspeccion;
@@ -187,7 +185,6 @@
                                 @php
                                     
                                     $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
->>>>>>> origin/pablo
 
         @php
             $ultima = Auth::user()->ultimaInspeccion; // ya lo usas abajo

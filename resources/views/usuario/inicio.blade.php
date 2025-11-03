@@ -431,11 +431,8 @@
                         <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
                     </li>
                     <li>
-<<<<<<< HEAD
                         <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
                     </li>
-                    
-=======
                         <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
                     </li>
                     <li>
@@ -451,7 +448,6 @@
                             <li><a href="{{route('estadisticas.colmenas.index')}}"><i class="fa fa-pie-chart"></i> Por Colmena</a></li>
                         </ul>
                     </li>
->>>>>>> origin/pablo
                     <li>
                         <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                     </li>

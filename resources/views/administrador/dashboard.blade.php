@@ -51,8 +51,5 @@
         
     </div>
 </div>
-<<<<<<< HEAD
 @endsection
-=======
-@endsection
->>>>>>> origin/pablo
+
