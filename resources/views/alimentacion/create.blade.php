@@ -65,28 +65,28 @@ sin ese código el guardado no se activa
                         <label for="tipoAlimento">Alimentación Suministrada</label>
                         <!--lista de tipos de alimentacion ('torta proteica', 'jarabe azucar', 'sustituto polen', 'agua vitaminada', 'otro')      -->
                         <select name="tipoAlimento" id="tipoAlimento" class="form-control" required>
-                            <option value="torta proteica" {{ old('tipoAlimento') == 'torta proteica' ? 'selected' : '' }}>torta proteica</option>
-                            <option value="jarabe azucar" {{ old('tipoAlimento') == 'jarabe azucar' ? 'selected' : '' }}>jarabe azucar</option>
-                            <option value="sustituto polen" {{ old('tipoAlimento') == 'sustituto polen' ? 'selected' : '' }}>sustituto polen</option>
-                            <option value="agua vitaminada" {{ old('tipoAlimento') == 'agua vitaminada' ? 'selected' : '' }}>agua vitaminada</option>
-                            <option value="otro" {{ old('tipoAlimento') == 'otro' ? 'selected' : '' }}>OTRA</option>
+                            <option value="torta proteica" {{ old('tipoAlimento') == 'torta proteica' ? 'selected' : '' }}>Torta proteica</option>
+                            <option value="jarabe azucar" {{ old('tipoAlimento') == 'jarabe azucar' ? 'selected' : '' }}>Jarabe azucar</option>
+                            <option value="sustituto polen" {{ old('tipoAlimento') == 'sustituto polen' ? 'selected' : '' }}>Sustituto polen</option>
+                            <option value="agua vitaminada" {{ old('tipoAlimento') == 'agua vitaminada' ? 'selected' : '' }}>Agua vitaminada</option>
+                            <option value="otro" {{ old('tipoAlimento') == 'otro' ? 'selected' : '' }}>Otra</option>
                         </select>
 
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="cantidad">cantidad</label>
+                        <label for="cantidad">Cantidad</label>
                         <input type="number" min="0" step="0.1" class="form-control" id="cantidad"
-                            placeholder="cantidad suministrada" name="cantidad" value="{{ old('cantidad') }}" required autocomplete="off">
+                            placeholder="Ej. 2.00" name="cantidad" value="{{ old('cantidad') }}" required autocomplete="off">
                         
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="unidadMedida">unidad de medida</label>
+                        <label for="unidadMedida">Unidad de medida</label>
                         <!--lista de tratamientos ('gr', 'Kg', 'ml', 'L')      -->
                         <select name="unidadMedida" id="unidadMedida" class="form-control" required>
-                            <option value="gr" {{ old('unidadMedida') == 'gr' ? 'selected' : '' }}>gramos</option>
-                            <option value="Kg" {{ old('unidadMedida') ==    'Kg' ? 'selected' : '' }}>Kilogramos</option>
-                            <option value="ml" {{ old('unidadMedida') == 'ml' ? 'selected' : '' }}>mililitros</option>
-                            <option value="L" {{ old('unidadMedida') == 'L' ? 'selected' : '' }}>Litros</option>
+                            <option value="gr" {{ old('unidadMedida') == 'gr' ? 'selected' : '' }}>Gramos (g)</option>
+                            <option value="Kg" {{ old('unidadMedida') ==    'Kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
+                            <option value="ml" {{ old('unidadMedida') == 'ml' ? 'selected' : '' }}>Mililitros (mL)</option>
+                            <option value="L" {{ old('unidadMedida') == 'L' ? 'selected' : '' }}>Litros (L)</option>
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">

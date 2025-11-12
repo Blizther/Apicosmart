@@ -38,14 +38,13 @@
                         <tr>
                             <th scope="col" style="width: 5%;">NRO</th>
                             <th scope="col" style="width: 25%;">Colmena - Apiario</th>
-
-                            <th scope="col" style="width: 10%;">Peso</th>
                             <th scope="col" style="width: 10%;">Peso (Kg)</th>
                             <th scope="col" style="width: 20%;">Fecha Cosecha</th>
                             <th scope="col" style="width: 25%;">Observaciones</th>
                             <th scope="col" style="width: 15%;">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @php $correlativo = 1; @endphp
                         @foreach ($cosechas as $cosecha)
@@ -54,16 +53,21 @@
                                 @php
                                     $colmena = App\Models\Colmena::find($cosecha->idColmena);
                                 @endphp
-                                <td> Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
+                                <td>Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
                                 <td>{{ $cosecha->peso }}</td>
-                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
                                 <td>{{ $cosecha->observaciones }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}" method="POST" onsubmit="return confirm('¿Desea eliminar esta cosecha?');">
+                                        <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}" 
+                                              method="POST" 
+                                              class="m-0 p-0 form-eliminar-cosecha">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger btn-eliminar-cosecha"
+                                                    data-colmena="Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}"
+                                                    data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
                                                 Eliminar
                                             </button>
                                         </form>
@@ -78,4 +82,52 @@
         </div>
     </div>
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-cosecha');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form    = this.closest('form');
+            const colmena = this.getAttribute('data-colmena') || '';
+            const fecha   = this.getAttribute('data-fecha') || '';
+
+            let texto = '¿Desea eliminar esta cosecha?';
+            if (colmena || fecha) {
+                texto += ' ' + colmena;
+                if (fecha) {
+                    texto += ' - ' + fecha;
+                }
+            }
+
+            Swal.fire({
+                title: 'Atención',
+                text: texto,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',  // verde del proyecto
+                cancelButtonColor: '#F9B233',   // amarillo del proyecto
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
+</style>
+
 @endsection

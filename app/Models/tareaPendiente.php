@@ -4,23 +4,59 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 class TareaPendiente extends Model
 {
     use HasFactory;
-     protected $table = 'tareapendiente';
-    protected $primaryKey = 'idTareaPendiente';
-    const CREATED_AT = 'fechaCreacion';
-    const UPDATED_AT = 'fechaActualizacion'; // si no tienes campo de actualización
-    protected $fillable = ['idTareaPendiente', 'descripcion', 'estado','fechaCreacion', 'fechaVencimiento', 'creadoPor'];
+    //ingresar el nombre de la tabla
 
-    public $timestamps =false;
-    protected $casts=[
-        'fechaCreacion'=> 'datetime', 
-        'fechaVencimiento'=> 'datetime', 
+    protected $table = 'tareapendiente';
+    //definir la llave primaria
+    protected $primaryKey = 'idTareaPendiente';
+    //definir los campos que se pueden asignar de forma masiva
+    protected $fillable = [
+        'idTareaPendiente',
+        'idUser',
+        'idColmena',
+        'titulo',
+        'descripcion',
+        'prioridad',
+        'estado',
+        'fechaInicio',
+        'fechaFin',
+        'creadoPor',
+        'tipo',
+        'eliminado',
     ];
-    // Relación: una tarea pendiente pertenece a un usuario
+    public $timestamps = false;
+    protected $casts = [
+        'updated_at' => 'timestamp',
+        'created_at' => 'timestamp',
+        'fechaRecordatorio' => 'timestamp',
+    ];
+
+     // Scope para solo tareas "activas" (no eliminadas)
+    public function scopeActivas($query)
+    {
+        return $query->where('eliminado', 'activo');
+    }
+
+    // Relación con usuario (ajusta el modelo si el tuyo no se llama Usuario)
     public function usuario()
     {
-        return $this->belongsTo(User::class, 'creadoPor', 'id');
+        return $this->belongsTo(User::class, 'idUser');
     }
+
+
+    // Relación con colmena (ajusta el modelo si el tuyo no se llama Colmena)
+    public function colmena()
+    {
+        return $this->belongsTo(Colmena::class, 'idColmena');
+    }
+    public function apiario()
+    {
+        return $this->belongsTo(Apiario::class, 'idApiario');
+    }
+
+
 }

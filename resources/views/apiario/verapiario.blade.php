@@ -24,41 +24,38 @@
     <div class="row g-4 mt-2">
         <!-- Información general -->
         <div class="col-sm-12 col-md-12">
-    <div class="bg-light rounded p-4">
-        <h3>Información General</h3>
-        <div class="row align-items-center">
-            <!-- Columna izquierda: datos -->
-            <div class="col-md-8">
-                <p><strong>Vegetación:</strong> {{ $apiario->vegetacion }}</p>
-                <p><strong>Altitud:</strong> {{ $apiario->altitud }} metros</p>
-                <p><strong>Estado:</strong> {{ $apiario->estado ? 'Activo' : 'Inactivo' }}</p>
-            </div>
+            <div class="bg-light rounded p-4">
+                <h3>Información General</h3>
+                <div class="row align-items-center">
+                    <!-- Columna izquierda: datos -->
+                    <div class="col-md-8">
+                        <p><strong>Vegetación:</strong> {{ $apiario->vegetacion }}</p>
+                        <p><strong>Altitud:</strong> {{ $apiario->altitud }} metros</p>
+                        <p><strong>Estado:</strong> {{ $apiario->estado ? 'Activo' : 'Inactivo' }}</p>
+                    </div>
 
-            <!-- Columna derecha: imagen -->
-            @if(!empty($apiario->urlImagen))
-            <div class="col-md-4 text-center">
-                <img src="{{ asset($apiario->urlImagen) }}" 
-                     alt="Imagen del Apiario" 
-                     class="img-fluid rounded shadow-sm" 
-                     style="max-height: 200px; border-radius: 12px; object-fit: cover;">
+                    <!-- Columna derecha: imagen -->
+                    @if(!empty($apiario->urlImagen))
+                    <div class="col-md-4 text-center">
+                        <img src="{{ asset($apiario->urlImagen) }}" 
+                            alt="Imagen del Apiario" 
+                            class="img-fluid rounded shadow-sm" 
+                            style="max-height: 200px; border-radius: 12px; object-fit: cover;">
+                    </div>
+                    @endif
+                </div>
             </div>
-            @endif
         </div>
-    </div>
-</div>
 
-
-        <!-- Ubicación e imagen -->
+        <!-- Ubicación -->
         <div class="col-sm-12 col-md-12">
             <div class="bg-light rounded p-4">
-                <!-- Mensaje si no tiene colmenas -->
                 @if($colmenas->count() == 0)
                     <div class="alert alert-danger">
                         Este apiario no tiene colmenas registradas.
                     </div>
                 @endif
                 <h3>Ubicación</h3>
-                <!-- Contenedor del mapa -->
                 <div id="map" style="height: 300px; border-radius: 12px;"></div>
             </div>
         </div>
@@ -91,17 +88,28 @@
                                 <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
                                 <td>{{ $colmena->cantidadMarco }}</td>
                                 <td>{{ $colmena->modelo }}</td>
-                                <td>
-                                    <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">Ver Inspecciones</a>
-                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">Editar</a>
-                                    <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Estás seguro de que deseas eliminar esta colmena?')">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                        <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
+                                            Ver Inspecciones
+                                        </a>
+                                        <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
+                                            Editar
+                                        </a>
+
+                                        {{-- Botón eliminar con SweetAlert --}}
+                                        <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" 
+                                              method="POST" 
+                                              class="m-0 p-0 form-eliminar-colmena">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" 
+                                                    class="btn btn-danger btn-sm btn-eliminar-colmena"
+                                                    data-codigo="{{ $colmena->codigo }}">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @php $correlativo++; @endphp
@@ -149,12 +157,59 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         document.getElementById('map').innerHTML = '<p style="color:red;">No hay coordenadas registradas para este apiario</p>';
     }
+
+    // SweetAlert para eliminar colmenas
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-colmena');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form = this.closest('form');
+            const codigo = this.getAttribute('data-codigo') || '';
+
+            Swal.fire({
+                title: 'Atención',
+                text: '¿Estás seguro de que deseas eliminar la colmena con código: ' + codigo + '?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
 });
 </script>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
-    .table-danger {
-        background-color: #f8d7da !important;
-        color: #842029 !important;
-    }
+.table-danger {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+}
+
+/* Alinear botones de acción */
+td .d-flex form {
+    display: inline-flex !important;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+td .d-flex .btn {
+    margin: 0 2px;
+}
+
+/* Estilo del modal SweetAlert */
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
 </style>
 @endsection

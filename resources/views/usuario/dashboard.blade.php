@@ -121,50 +121,73 @@
                                                 <th>Descripcion</th>
                                             </tr>
                                             </thead>
+                                            
                                             <tbody>
-                                            <!-- Recorre las últimas 5 tareas programadas del usuario autenticado -->
-                                            @foreach(Auth::user()->tareasPendientes()->latest()->take(6)->get() as $tarea)
-                                                <tr>
-                                                    <td>
-                                                        <!-- se tienen en cuenta cuatro estados, pendiente, completada, en progreso y cancelada -->
-                                                        @if($tarea->estado == 'pendiente')
-                                                            <span class="label label-primary">Pendiente</span>
-                                                        @elseif($tarea->estado == 'completada')
-                                                            <span class="label label-success">Completada</span>
-                                                        @elseif($tarea->estado == 'enProgreso')
-                                                            <span class="label label-warning">En Progreso</span>
-                                                        @elseif($tarea->estado == 'cancelada')
-                                                            <span class="label label-danger">Cancelada</span>
-                                                        @endif
-                                                        
-                                                    </td>
-                                                    <td>{{ $tarea->fechaVencimiento ? $tarea->fechaVencimiento->format('d/m/Y') : 'N/A' }}</td>
-                                                    <td>
-                                                        <!-- se tienen en cuenta cuatro estados: baja, media, alta y urgente -->
-                                                        @if($tarea->prioridad == 'baja')
-                                                            <span class="label label-info">Baja</span>
-                                                        @elseif($tarea->prioridad == 'media')
-                                                            <span class="label label-primary">Media</span>
-                                                        @elseif($tarea->prioridad == 'alta')
-                                                            <span class="label label-warning">Alta</span>
-                                                        @elseif($tarea->prioridad == 'urgente')
-                                                            <span class="label label-danger">Urgente</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $tarea->titulo }}</td>
-                                                    <td>{{ $tarea->descripcion }}</td> 
-                                                </tr>
+                                                @foreach(
+                                                    Auth::user()
+                                                        ->tareasPendientes()
+                                                        ->with('colmena.apiario')   {{-- para tener colmena y apiario --}}
+                                                        ->latest()
+                                                        ->take(6)
+                                                        ->get() as $tarea
+                                                )
+                                                    <tr>
+                                                        {{-- Estado --}}
+                                                        <td>
+                                                            @if($tarea->estado == 'pendiente')
+                                                                <span class="label label-primary">Pendiente</span>
+                                                            @elseif($tarea->estado == 'completada')
+                                                                <span class="label label-success">Completada</span>
+                                                            @elseif($tarea->estado == 'enProgreso')
+                                                                <span class="label label-warning">En Progreso</span>
+                                                            @elseif($tarea->estado == 'cancelada')
+                                                                <span class="label label-danger">Cancelada</span>
+                                                            @endif
+                                                        </td>
+
+                                                        {{-- Fecha Fin --}}
+                                                        <td>
+                                                            {{ $tarea->fechaFin
+                                                                ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y')
+                                                                : 'N/A' }}
+                                                        </td>
+
+                                                        {{-- Prioridad --}}
+                                                        <td>
+                                                            @if($tarea->prioridad == 'baja')
+                                                                <span class="label label-info">Baja</span>
+                                                            @elseif($tarea->prioridad == 'media')
+                                                                <span class="label label-primary">Media</span>
+                                                            @elseif($tarea->prioridad == 'alta')
+                                                                <span class="label label-warning">Alta</span>
+                                                            @elseif($tarea->prioridad == 'urgente')
+                                                                <span class="label label-danger">Urgente</span>
+                                                            @endif
+                                                        </td>
+
+                                                        {{-- Título --}}
+                                                        <td>{{ $tarea->titulo }}</td>
+
+                                                        {{-- Descripción: Colmena + Apiario --}}
+                                                        <td>
+                                                            @if($tarea->colmena && $tarea->colmena->apiario)
+                                                                Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}
+                                                            @elseif($tarea->colmena)
+                                                                Colmena #{{ $tarea->colmena->codigo }}
+                                                            @else
+                                                                N/A
+                                                            @endif
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
+
                                         </table>
                                     </div>
                                 </div>
                             </div>
             <div class="col-lg-5">
     <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <h5>Última inspección</h5>
-        </div>
                 <div class="ibox float-e-margins">
                     @php
                         $ultima = Auth::user()->ultimaInspeccion;
@@ -183,12 +206,15 @@
                             <div class="col-xs-4">
                                 <small class="stats-label">Estado Colmena</small>
                                 @php
-                                    
                                     $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
+                                    $ultima = Auth::user()->ultimaInspeccion; // ya lo usas abajo
+                                @endphp
+                                <h4 class="{{ $estado == 'activa' ? 'text-success' : ($estado == 'enferma' ? 'label-danger' : 'text-muted') }}">
+                                    {{ $estado }}
+                                </h4>
+                            </div>
 
-        @php
-            $ultima = Auth::user()->ultimaInspeccion; // ya lo usas abajo
-        @endphp
+
 
         <!-- NUEVA PRIMERA FILA: info de colmena y apiario -->
         <div class="ibox-content">
@@ -312,7 +338,6 @@
     </div>
 </div>
 
-
-        </div>
+</div>
     @endsection
     

@@ -14,6 +14,10 @@ use App\Http\Controllers\ControllerInspeccionColmena;
 use App\Http\Controllers\ControllerCosecha;
 use App\Http\Controllers\ControllerTratamiento;
 use App\Http\Controllers\ControllerAlimentacion;
+use App\Http\Controllers\ControllerEstadisticas;
+use App\Http\Controllers\ControllerEstadisticasColmenas;
+use App\Http\Controllers\ControllerTareaPendiente;
+
 
 
 Route::get('/', function () {
@@ -36,6 +40,9 @@ Route::middleware(['auth', 'rol:administrador'])->group(function () {
     })->name('administrador.dashboard');
         return view('administrador.dashboard');
     });
+// --- Grupo ADMIN ---
+Route::middleware(['auth', 'rol:administrador'])->group(function () {
+
     Route::resource('users', UserController::class);
     Route::get('/administrador/dispositivos-fabricados',       [DispositivoFabricadoController::class, 'index'])->name('fabricados.index');
     Route::get('/administrador/dispositivos-fabricados/crear', [DispositivoFabricadoController::class, 'create'])->name('fabricados.create');
@@ -104,6 +111,15 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
 
+    //SECCION TAREAS PENDIENTES
+    Route::get('/tarea-pendiente', [ControllerTareaPendiente::class, 'index'])->name('tarea.index');
+    Route::get('/tarea-pendiente/crear', [ControllerTareaPendiente::class, 'create'])->name('tarea.create');
+    Route::post('/tarea-pendiente/guardar', [ControllerTareaPendiente::class, 'store'])->name('tarea.store');
+    Route::get('/tarea-pendiente/{id}/editar', [ControllerTareaPendiente::class, 'edit'])->name('tarea.edit');
+    Route::put('/tarea-pendiente/{id}/actualizar', [ControllerTareaPendiente::class, 'update'])->name('tarea.update');
+    Route::delete('/tarea-pendiente/{id}/eliminar', [ControllerTareaPendiente::class, 'destroy'])->name('tarea.destroy');
+
+
     Route::prefix('estadisticas')->group(function () {
         Route::get('/', [ControllerEstadisticas::class, 'index'])->name('estadisticas.index');
         Route::get('/colmenas-por-apiario', [ControllerEstadisticas::class, 'colmenasPorApiario'])->name('estadisticas.colmenas');
@@ -111,21 +127,13 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
         Route::get('/tratamientos-por-apiario', [ControllerEstadisticas::class, 'tratamientosPorApiario'])->name('estadisticas.tratamientos');
         Route::get('/alimentaciones-por-apiario', [ControllerEstadisticas::class, 'alimentacionesPorApiario'])->name('estadisticas.alimentaciones');
     });
-// Estadísticas por colmena
-Route::get('/estadisticas/colmenas', [ControllerEstadisticasColmenas::class, 'index'])->name('estadisticas.colmenas.index');
+    // Estadísticas por colmena
+    Route::get('/estadisticas/colmenas', [ControllerEstadisticasColmenas::class, 'index'])->name('estadisticas.colmenas.index');
 
-Route::get('/estadisticas/colmenas/inspecciones', [ControllerEstadisticasColmenas::class, 'inspecciones'])->name('estadisticas.colmenas.inspecciones');
-Route::get('/estadisticas/colmenas/cosecha', [ControllerEstadisticasColmenas::class, 'cosecha'])->name('estadisticas.colmenas.cosecha');
-Route::get('/estadisticas/colmenas/tratamientos', [ControllerEstadisticasColmenas::class, 'tratamientos'])->name('estadisticas.colmenas.tratamientos');
-Route::get('/estadisticas/colmenas/alimentaciones', [ControllerEstadisticasColmenas::class, 'alimentaciones'])->name('estadisticas.colmenas.alimentaciones');
-
-
-    //SECCION COSECHA
-    Route::resource('/cosechas', ControllerCosecha::class);
-    Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
-    Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
-    Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
-    
+    Route::get('/estadisticas/colmenas/inspecciones', [ControllerEstadisticasColmenas::class, 'inspecciones'])->name('estadisticas.colmenas.inspecciones');
+    Route::get('/estadisticas/colmenas/cosecha', [ControllerEstadisticasColmenas::class, 'cosecha'])->name('estadisticas.colmenas.cosecha');
+    Route::get('/estadisticas/colmenas/tratamientos', [ControllerEstadisticasColmenas::class, 'tratamientos'])->name('estadisticas.colmenas.tratamientos');
+    Route::get('/estadisticas/colmenas/alimentaciones', [ControllerEstadisticasColmenas::class, 'alimentaciones'])->name('estadisticas.colmenas.alimentaciones');
 
 
     // Vista de venta del usuario (listado de sus productos + carrito)

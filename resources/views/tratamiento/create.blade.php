@@ -46,7 +46,7 @@ sin ese código el guardado no se activa
                 <div class="bg-light rounded h-100 p-2 row">
                     <h6 class="mb-4 col-12">Complete el formulario</h6>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="colmena_id">Colmena</label>
+                        <label for="colmena_id">Colmena *</label>
                         <select name="idColmena" id="idColmena" class="form-control" required>
                             <option value="" disabled selected>Seleccione una colmena</option>
                             @foreach ($colmenas as $colmena)
@@ -57,38 +57,38 @@ sin ese código el guardado no se activa
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="fechaAdministracion">Fecha de administración </label>
+                        <label for="fechaAdministracion">Fecha de administración *</label>
                         <input type="date" class="form-control" id="fechaAdministracion"
                             placeholder="Fecha de administración" name="fechaAdministracion" value="{{ old('fechaAdministracion') }}"
                             max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="estado">Problema tratado</label>
-                        <!--lista de plagas y enfermedades ('varroa', 'loque', 'ascosferosis')      -->
+                        <label for="estado">Problema tratado *</label>
                         <select name="problemaTratado" id="problemaTratado" class="form-control" required>
+                            <option value="" disabled selected>Seleccione un problema</option>
                             <option value="varroa" {{ old('problemaTratado') == 'varroa' ? 'selected' : '' }}>VARROA</option>
                             <option value="loque" {{ old('problemaTratado') == 'loque' ? 'selected' : '' }}>LOQUE</option>
                             <option value="ascosferosis" {{ old('problemaTratado') == 'ascosferosis' ? 'selected' : '' }}>ASCOSFEROSIS</option>
                             <option value="otra" {{ old('problemaTratado') == 'otra' ? 'selected' : '' }}>OTRA</option>
                         </select>
-
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6">
-                        <label for="tratamientoAdministrado">Tratamiento administrado</label>
-                        <!--lista de tratamientos ('amitraz', 'fluvalinato', 'oxalico', 'formico', 'tiamina','otro')      -->
 
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="tratamientoAdministrado">Tratamiento administrado *</label>
                         <select name="tratamientoAdministrado" id="tratamientoAdministrado" class="form-control" required>
+                            <option value="" disabled selected>Seleccione un tratamiento</option>
                             <option value="amitraz" {{ old('tratamientoAdministrado') == 'amitraz' ? 'selected' : '' }}>AMITRAZ</option>
-                            <option value="fluvalinato" {{ old('tratamientoAdministrado') ==    'fluvalinato' ? 'selected' : '' }}>FLUVALINATO</option>
+                            <option value="fluvalinato" {{ old('tratamientoAdministrado') == 'fluvalinato' ? 'selected' : '' }}>FLUVALINATO</option>
                             <option value="oxalico" {{ old('tratamientoAdministrado') == 'oxalico' ? 'selected' : '' }}>OXALICO</option>
                             <option value="formico" {{ old('tratamientoAdministrado') == 'formico' ? 'selected' : '' }}>FORMICO</option>
                             <option value="tiamina" {{ old('tratamientoAdministrado') == 'tiamina' ? 'selected' : '' }}>TIAMINA</option>
                             <option value="otro" {{ old('tratamientoAdministrado') == 'otro' ? 'selected' : '' }}>OTRO</option>
                         </select>
                     </div>
+
                     <div class="mb-3 col-12 col-md-12">
-                        <label for="modelo">Descripcion</label>
+                        <label for="modelo">Descripcion (opcional)</label>
                         <!--descripcion del tratamiento aplicado en una caja de texto grande-->
                         <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
 

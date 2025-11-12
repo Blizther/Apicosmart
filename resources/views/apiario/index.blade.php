@@ -22,12 +22,13 @@
     </div>
     <hr>
 
-    <!-- Mapa colapsable -->
-    <div class="ibox float-e-margins">
+    <!-- Mapa colapsable (INSPINIA) -->
+    <div class="ibox float-e-margins collapsed"><!-- importante: clase collapsed -->
         <div class="ibox-title">
             <h5>Ubicación de mis Apiarios</h5>
             <div class="ibox-tools">
                 <a class="collapse-link">
+                    {{-- Ojo: Inspinia usa fa-chevron-up y cambia el ícono con la clase collapsed --}}
                     <i class="fa fa-chevron-up"></i>
                 </a>
             </div>
@@ -71,12 +72,16 @@
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('apiario.destroy', $apiario->idApiario) }}" method="POST" class="d-inline">
+                        {{-- Botón eliminar con SweetAlert --}}
+                        <form action="{{ route('apiario.destroy', $apiario->idApiario) }}" 
+                              method="POST" 
+                              class="d-inline form-eliminar-apiario">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" 
-                                onclick="return confirm('¿Estás seguro de que deseas eliminar este apiario?')" 
-                                title="Eliminar">
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-eliminar-apiario"
+                                    data-nombre="{{ $apiario->nombre }}"
+                                    title="Eliminar">
                                 <i class="fa fa-trash-o"></i>
                             </button>
                         </form>
@@ -110,7 +115,7 @@
 /* Contenedor de imagen fijo */
 .apiario-image-container {
     width: 100%;
-    height: 180px; /* altura fija uniforme */
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,7 +128,7 @@
 .apiario-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* recorta sin deformar */
+    object-fit: cover;
 }
 
 .apiario-card:hover {
@@ -143,36 +148,56 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Mapa Leaflet
-    var map = L.map('map').setView([-33.45, -70.66], 6);
+    // ==== Inicializar mapa normalmente ====
+    var map = L.map('map').setView([-33.45, -70.66], 6); // valor inicial, luego se ajusta con fitBounds
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
     var apiarios = @json($apiarios);
-
-    if (apiarios.length === 0) {
-        console.log("No hay apiarios para mostrar en el mapa.");
-        return;
-    }
-
     var markers = L.featureGroup();
 
-    apiarios.forEach(apiario => {
-        if (apiario.latitud && apiario.longitud) {
-            var marker = L.marker([apiario.latitud, apiario.longitud])
-                .bindPopup(`<strong>${apiario.nombre}</strong><br>
-                            Vegetación: ${apiario.vegetacion ?? 'N/A'}<br>
-                            Altitud: ${apiario.altitud ?? 'N/A'} m`);
-            markers.addLayer(marker);
+    if (apiarios.length > 0) {
+        apiarios.forEach(apiario => {
+            if (apiario.latitud && apiario.longitud) {
+                var marker = L.marker([apiario.latitud, apiario.longitud])
+                    .bindPopup(
+                        `<strong>${apiario.nombre}</strong><br>
+                         Vegetación: ${apiario.vegetacion ?? 'N/A'}<br>
+                         Altitud: ${apiario.altitud ?? 'N/A'} m`
+                    );
+                markers.addLayer(marker);
+            }
+        });
+
+        if (markers.getLayers().length > 0) {
+            map.addLayer(markers);
+            map.fitBounds(markers.getBounds());
         }
-    });
+    }
 
-    map.addLayer(markers);
-    map.fitBounds(markers.getBounds());
+    // ==== Arreglar tamaño cuando se abre el panel ====
+    if (window.$) {
+        $(document).on('click', '.collapse-link', function () {
+            var ibox = $(this).closest('.ibox');
 
-    // Hacer la tarjeta clickeable excepto los botones
+            // Antes del click el ibox tiene o no la clase 'collapsed'
+            var seVaAbrir = ibox.hasClass('collapsed');
+
+            if (seVaAbrir) {
+                // Esperar a que termine la animación del slideDown de Inspinia
+                setTimeout(function () {
+                    map.invalidateSize();
+                    if (markers.getLayers().length > 0) {
+                        map.fitBounds(markers.getBounds());
+                    }
+                }, 400);
+            }
+        });
+    }
+
+    // Tarjeta clickeable
     document.querySelectorAll('.apiario-card').forEach(card => {
         card.addEventListener('click', function(e) {
             if (!e.target.closest('a') && !e.target.closest('button')) {
@@ -182,5 +207,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<!-- SweetAlert confirmación eliminación -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-apiario');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form = this.closest('form');
+            const nombre = this.getAttribute('data-nombre') || '';
+
+            Swal.fire({
+                title: 'Atención',
+                text: '¿Estás seguro de que deseas eliminar el apiario: ' + nombre + '?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
+</style>
 
 @endsection

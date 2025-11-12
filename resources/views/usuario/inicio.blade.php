@@ -425,22 +425,45 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('apiario.index') }}" title="Apiarios"><i class="fa fa-pagelines"></i> <span class="nav-label"> Apiarios</span></a>
+                        <a href="{{ route('apiario.index') }}" title="Apiarios">
+                            <i class="fa fa-pagelines"></i>
+                            <span class="nav-label"> Apiarios</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="{{route('colmenas.index')}}" title="Colmenas"><i class="fa fa-archive"></i> <span class="nav-label"> Colmenas</span></a>
+                        <a href="{{route('colmenas.index')}}" title="Colmenas">
+                            <i class="fa fa-archive"></i>
+                            <span class="nav-label"> Colmenas</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
+                        <a href="{{route('cosechas.index')}}" title="Cosechas">
+                            <i class="fa fa-align-center"></i>
+                            <span class="nav-label"> Cosechas</span>
+                        </a>
                     </li>
-                        <a href="{{ route('tratamiento.index') }}" title="Tratamientos"><i class="fa fa-plus-circle"></i> <span class="nav-label"> Tratamientos</span></a>
-                    </li>
+
                     <li>
-                        <a href="{{route('cosechas.index')}}" title="Cosechas"><i class="fa fa-align-center"></i><span class="nav-label"> Cosecha</span></a>
+                        <a href="{{ route('tratamiento.index') }}" title="Tratamientos">
+                            <i class="fa fa-plus-circle"></i>
+                            <span class="nav-label"> Tratamientos</span>
+                        </a>
                     </li>
+
                     <li>
-                        <a href="{{ route('alimentacion.index') }}" title="Tratamientos"><i class="fa fa-coffee"></i> <span class="nav-label"> Alimentación</span></a>
+                        <a href="{{ route('alimentacion.index') }}" title="alimentacion">
+                            <i class="fa fa-coffee"></i>
+                            <span class="nav-label"> Alimentación</span>
+                        </a>
                     </li>
+
+                    <li>
+                        <a href="{{ route('tarea.index') }}" title="tarea">
+                            <i class="fa fa-plus-circle"></i>
+                            <span class="nav-label"> Tareas pendientes</span>
+                        </a>
+                    </li>
+
                     <li>
                         <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">

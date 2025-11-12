@@ -57,8 +57,6 @@
 
                 {{-- Peso --}}
                 <div class="mb-3 col-12 col-md-6">
-                    <label for="peso" class="form-label">Peso (kg)</label>
-
                     <label for="peso" class="form-label">Peso (kg)*</label>
 
                     <input type="number" step="0.01" min="0"
@@ -81,7 +79,6 @@
 
                 s{{-- Fecha de cosecha --}}
             <div class="mb-3 col-12 col-md-6">
-                <label for="fechaCosecha" class="form-label">Fecha de cosecha</label>
 
                 <label for="fechaCosecha" class="form-label">Fecha de cosecha*</label>
                 <input

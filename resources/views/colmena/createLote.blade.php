@@ -115,7 +115,6 @@
 </div>
 
 {{-- Script para agregar/eliminar filas --}}
-
 <script>
 let index = 1;
 
@@ -139,7 +138,15 @@ document.addEventListener('click', function(e) {
         if (filas.length > 1) {
             e.target.closest('tr').remove();
         } else {
-            alert('Debe haber al menos una fila.');
+            // antes: alert('Debe haber al menos una fila.');
+            Swal.fire({
+                title: 'Atención',
+                text: 'Debe haber al menos una fila.',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            });
         }
     }
 });
@@ -168,5 +175,14 @@ document.addEventListener('change', async function(e) {
     }
 });
 </script>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    .swal2-apico-popup {
+        border-radius: 16px !important;
+    }
+</style>
 
 @endsection

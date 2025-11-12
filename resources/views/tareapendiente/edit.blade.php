@@ -1,0 +1,135 @@
+@extends('usuario.inicio')
+@section('content')
+
+<div class="container-fluid pt-4 px-4">
+
+    <a href="{{ route('tarea.index') }}" class="btn btn-warning mb-3">
+        <i class="fa fa-arrow-left"></i> Volver a la lista
+    </a>
+
+    <div class="bg-light rounded p-4">
+        <h2 class="mb-3">Editar Tarea Pendiente</h2>
+        <p class="mb-4">Modifique los campos necesarios y guarde los cambios</p>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Corrige los siguientes campos:</strong>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('tarea.update', $tarea->idTareaPendiente) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            {{-- Primera fila: Colmena / Tipo / Prioridad / Estado --}}
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="idColmena" class="form-label">Colmena</label>
+                    <select name="idColmena" id="idColmena" class="form-select" required>
+                        @foreach(App\Models\Colmena::all() as $colmena)
+                            <option value="{{ $colmena->idColmena }}" 
+                                {{ $tarea->idColmena == $colmena->idColmena ? 'selected' : '' }}>
+                                Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="tipo" class="form-label">Tipo de tarea</label>
+                    <select name="tipo" id="tipo" class="form-select" required>
+                        <option value="inspeccion" {{ $tarea->tipo == 'inspeccion' ? 'selected' : '' }}>Inspección</option>
+                        <option value="cosecha" {{ $tarea->tipo == 'cosecha' ? 'selected' : '' }}>Cosecha</option>
+                        <option value="tratamiento" {{ $tarea->tipo == 'tratamiento' ? 'selected' : '' }}>Tratamiento</option>
+                        <option value="alimentacion" {{ $tarea->tipo == 'alimentacion' ? 'selected' : '' }}>Alimentación</option>
+                        <option value="mantenimiento" {{ $tarea->tipo == 'mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="prioridad" class="form-label">Prioridad</label>
+                    <select name="prioridad" id="prioridad" class="form-select" required>
+                        <option value="baja" {{ $tarea->prioridad == 'baja' ? 'selected' : '' }}>Baja</option>
+                        <option value="media" {{ $tarea->prioridad == 'media' ? 'selected' : '' }}>Media</option>
+                        <option value="alta" {{ $tarea->prioridad == 'alta' ? 'selected' : '' }}>Alta</option>
+                        <option value="urgente" {{ $tarea->prioridad == 'urgente' ? 'selected' : '' }}>Urgente</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select name="estado" id="estado" class="form-select" required>
+                        <option value="pendiente" {{ $tarea->estado == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="enProgreso" {{ $tarea->estado == 'enProgreso' ? 'selected' : '' }}>En progreso</option>
+                        <option value="completada" {{ $tarea->estado == 'completada' ? 'selected' : '' }}>Completada</option>
+                        <option value="cancelada" {{ $tarea->estado == 'cancelada' ? 'selected' : '' }}>Cancelada</option>
+                        <option value="vencida" {{ $tarea->estado == 'vencida' ? 'selected' : '' }}>Vencida</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- Segunda fila: título / recordatorio --}}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" name="titulo" id="titulo" maxlength="100" value="{{ $tarea->titulo }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="fechaRecordatorio" class="form-label">Fecha de recordatorio</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="fechaRecordatorio"
+                        id="fechaRecordatorio"
+                        value="{{ old('fechaRecordatorio', $tarea->fechaRecordatorio ? \Carbon\Carbon::parse($tarea->fechaRecordatorio)->format('Y-m-d') : '') }}"
+                    >
+
+                </div>
+            </div>
+
+            {{-- Tercera fila: fechas --}}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="fechaInicio" class="form-label">Fecha de inicio</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="fechaInicio"
+                        id="fechaInicio"
+                        value="{{ old('fechaInicio', $tarea->fechaInicio ? \Carbon\Carbon::parse($tarea->fechaInicio)->format('Y-m-d') : '') }}"
+                    >
+                </div>
+
+                <div class="col-md-6">
+                    <label for="fechaFin" class="form-label">Fecha de fin</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="fechaFin"
+                        id="fechaFin"
+                        value="{{ old('fechaFin', $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('Y-m-d') : '') }}"
+                    >
+                </div>
+            </div>
+
+            {{-- Descripción --}}
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3">{{ $tarea->descripcion }}</textarea>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-success">
+                    ACTUALIZAR TAREA
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@endsection

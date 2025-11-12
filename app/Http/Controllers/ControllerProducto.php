@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ControllerProducto extends Controller
 {
@@ -14,13 +15,14 @@ class ControllerProducto extends Controller
         return view ('productos.productos',compact('productos'));
     }*/
     public function metodoProductos()
-{
-    $idUser = Auth::id(); // ID del usuario logueado
-    $productos = Producto::where('idUser', $idUser)->get();
+    {
+        $idUser = Auth::id(); // ID del usuario logueado
+        $productos = Producto::where('idUser', $idUser)->get();
 
-    //$productos = Producto::all(); MODIFICADO
-    return view('productos.productos', compact('productos'));
-}
+        //$productos = Producto::all(); MODIFICADO
+        return view('productos.productos', compact('productos'));
+    }
+
     public function nuevoproducto()
     {
         return view('productos.formnuevoproducto');
@@ -28,37 +30,34 @@ class ControllerProducto extends Controller
 
     public function nuevoproductobd(Request $request)
     {
-        //https://laravel.com/docs/10.x/validation#available-validation-rules
-        // Validar los datos del formulario
-        // Si se quiere editar los mensajes para todo el sistema se debe editar el archivo
-        // vendor\laravel\framework\src\Illuminate\Translation\lang\en\validation.php
+        // Validación con solo letras y sin productos duplicados por usuario
         $request->validate([
-            'descripcion' => 'required|max:150',
+            'descripcion' => [
+                'required',
+                'max:150',
+                'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/u',
+                Rule::unique('productos', 'descripcion')->where(function ($query) {
+                    return $query->where('idUser', Auth::id());
+                }),
+            ],
             'unidadMedida' => 'required|max:25',
-            'stock' => 'required|integer|min:0',
-            'precio' => 'required|numeric|min:0',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
+            'stock'        => 'required|integer|min:0',
+            'precio'       => 'required|numeric|min:0',
+            'imagen'       => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
         ], [
-            'descripcion.required' => 'La Descripcion es obligatoria.',
-            'descripcion.max' => 'La Descripcion no debe ser mayor de 150 caracteres.',
-            'unidadMedida.max' => 'La Unidad de Medida no debe ser mayor de 25 caracteres.',
-            'unidadMedida.required' => 'La Unidad de Medida es obligatoria.',
-            'stock.required' => 'El campo stock es obligatorio.',
-            'stock.integer' => 'El campo stock debe ser un número entero.',
-            'stock.min' => 'El campo stock debe ser al menos 0.',
-            'precio.required' => 'El campo precio es obligatorio.',
-            'precio.numeric' => 'El campo precio debe ser un número.',
-            'precio.min' => 'El campo precio debe ser al menos 0.',
+            'descripcion.required' => 'El nombre del producto es obligatorio.',
+            'descripcion.max'      => 'El nombre del producto no debe ser mayor de 150 caracteres.',
+            'descripcion.regex'    => 'El nombre del producto solo puede contener letras y espacios.',
+            'descripcion.unique'   => 'Ya existe un producto con ese nombre.',
+            'unidadMedida.max'     => 'La Unidad de Medida no debe ser mayor de 25 caracteres.',
+            'unidadMedida.required'=> 'La Unidad de Medida es obligatoria.',
+            'stock.required'       => 'El campo stock es obligatorio.',
+            'stock.integer'        => 'El campo stock debe ser un número entero.',
+            'stock.min'            => 'El campo stock debe ser al menos 0.',
+            'precio.required'      => 'El campo precio es obligatorio.',
+            'precio.numeric'       => 'El campo precio debe ser un número.',
+            'precio.min'           => 'El campo precio debe ser al menos 0.',
         ]);
-
-        /*
-        // Crear el nuevo producto
-        Producto::create([
-            'nombre' => $request->nombre,
-            'precio' => $request->precio,
-            'stock' => $request->stock
-        ]);
-        */
 
         $data = $request->all();
 
@@ -68,6 +67,7 @@ class ControllerProducto extends Controller
             $file->move(public_path('uploads'), $nombreArchivo);
             $data['imagen'] = 'uploads/' . $nombreArchivo;
         }
+
         $data['idUser'] = Auth::id();
         Producto::create($data);
 
@@ -99,31 +99,38 @@ class ControllerProducto extends Controller
 
     public function actualizarProducto(Request $request, $id)
     {
-        $request->validate([
-            'descripcion' => 'required|max:150',
-            'unidadMedida' => 'required|max:25',
-            'stock' => 'required|integer|min:0',
-            'precio' => 'required|numeric|min:0',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
-        ], [
-            'descripcion.required' => 'La Descripcion es obligatoria.',
-            'descripcion.max' => 'La Descripcion no debe ser mayor de 150 caracteres.',
-            'unidadMedida.max' => 'La Unidad de Medida no debe ser mayor de 25 caracteres.',
-            'unidadMedida.required' => 'La Unidad de Medida es obligatoria.',
-            'stock.required' => 'El campo stock es obligatorio.',
-            'stock.integer' => 'El campo stock debe ser un número entero.',
-            'stock.min' => 'El campo stock debe ser al menos 0.',
-            'precio.required' => 'El campo precio es obligatorio.',
-            'precio.numeric' => 'El campo precio debe ser un número.',
-            'precio.min' => 'El campo precio debe ser al menos 0.',
-        ]);
-        
-
-        // Buscar el producto por ID
         $producto = Producto::findOrFail($id);
 
-        //$producto->update($request->all());
-
+        $request->validate([
+            'descripcion' => [
+                'required',
+                'max:150',
+                'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/u',
+                Rule::unique('productos', 'descripcion')
+                    ->where(function ($query) {
+                        return $query->where('idUser', Auth::id());
+                    })
+                    ->ignore($producto->id),
+            ],
+            'unidadMedida' => 'required|max:25',
+            'stock'        => 'required|integer|min:0',
+            'precio'       => 'required|numeric|min:0',
+            'imagen'       => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
+        ], [
+            'descripcion.required' => 'El nombre del producto es obligatorio.',
+            'descripcion.max'      => 'El nombre del producto no debe ser mayor de 150 caracteres.',
+            'descripcion.regex'    => 'El nombre del producto solo puede contener letras y espacios.',
+            'descripcion.unique'   => 'Ya existe un producto con ese nombre.',
+            'unidadMedida.max'     => 'La Unidad de Medida no debe ser mayor de 25 caracteres.',
+            'unidadMedida.required'=> 'La Unidad de Medida es obligatoria.',
+            'stock.required'       => 'El campo stock es obligatorio.',
+            'stock.integer'        => 'El campo stock debe ser un número entero.',
+            'stock.min'            => 'El campo stock debe ser al menos 0.',
+            'precio.required'      => 'El campo precio es obligatorio.',
+            'precio.numeric'       => 'El campo precio debe ser un número.',
+            'precio.min'           => 'El campo precio debe ser al menos 0.',
+        ]);
+        
         $data = $request->all();
 
         if ($request->hasFile('imagen')) {
