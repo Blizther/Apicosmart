@@ -16,7 +16,7 @@
 </div>
 
 <div class="mb-3">
-    <a href="{{ route('cosechas.create')}}" class="btn btn-success">
+    <a href="{{ route('cosechas.create') }}" class="btn btn-success">
         <i class="fa fa-plus"></i> Agregar Cosecha
     </a>
 </div>
@@ -36,45 +36,54 @@
                 <table class="table table-bordered align-middle text-center">
                     <thead class="table-secondary">
                         <tr>
-                            <th scope="col" style="width: 5%;">NRO</th>
-                            <th scope="col" style="width: 25%;">Colmena - Apiario</th>
-                            <th scope="col" style="width: 10%;">Peso (Kg)</th>
-                            <th scope="col" style="width: 20%;">Fecha Cosecha</th>
-                            <th scope="col" style="width: 25%;">Observaciones</th>
-                            <th scope="col" style="width: 15%;">Acciones</th>
+                            <th style="width: 5%;">NRO</th>
+                            <th style="width: 25%;">Colmena - Apiario</th>
+                            <th style="width: 10%;">Peso (Kg)</th>
+                            <th style="width: 20%;">Fecha Cosecha</th>
+                            <th style="width: 25%;">Observaciones</th>
+                            <th style="width: 15%;">Acciones</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @php $correlativo = 1; @endphp
                         @foreach ($cosechas as $cosecha)
-                            <tr>
-                                <th scope="row">{{ $correlativo }}</th>
-                                @php
-                                    $colmena = App\Models\Colmena::find($cosecha->idColmena);
-                                @endphp
-                                <td>Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
-                                <td>{{ $cosecha->peso }}</td>
-                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
-                                <td>{{ $cosecha->observaciones }}</td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}" 
-                                              method="POST" 
-                                              class="m-0 p-0 form-eliminar-cosecha">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-danger btn-eliminar-cosecha"
-                                                    data-colmena="Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}"
-                                                    data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
-                                                Eliminar
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @php $correlativo++; @endphp
+                            @php
+                                $colmena = $cosecha->colmena;
+                                $apiario = $colmena ? $colmena->apiario : null;
+                            @endphp
+                            @if($colmena && $apiario)
+                                <tr>
+                                    <th scope="row">{{ $correlativo }}</th>
+                                    <td>Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}</td>
+                                    <td>{{ $cosecha->peso }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
+                                    <td>{{ $cosecha->observaciones }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            {{-- EDITAR --}}
+                                            <a href="{{ route('cosechas.edit', $cosecha->idCosecha) }}"
+                                               class="btn btn-sm btn-warning">
+                                                Editar
+                                            </a>
+
+                                            {{-- ELIMINAR --}}
+                                            <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-cosecha">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-eliminar-cosecha"
+                                                        data-colmena="Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                        data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @php $correlativo++; @endphp
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -99,9 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let texto = '¿Desea eliminar esta cosecha?';
             if (colmena || fecha) {
                 texto += ' ' + colmena;
-                if (fecha) {
-                    texto += ' - ' + fecha;
-                }
+                if (fecha) texto += ' - ' + fecha;
             }
 
             Swal.fire({
@@ -111,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#3A4F26',  // verde del proyecto
-                cancelButtonColor: '#F9B233',   // amarillo del proyecto
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
                 customClass: { popup: 'swal2-apico-popup' }
             }).then((result) => {
                 if (result.isConfirmed) {

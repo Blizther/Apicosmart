@@ -98,15 +98,23 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     //detalles de la colmena
     Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
 
-    //SECCION COSECHA
-    Route::resource('/cosechas', ControllerCosecha::class);
-    Route::get('/cosechas/crearcosecha', [ControllerCosecha::class, 'create'])->name('cosecha.create');
-    Route::post('/cosechas/guardarcosecha', [ControllerCosecha::class, 'store'])->name('cosecha.store');
-    Route::get('/cosechas/{id}/', [ControllerCosecha::class, 'index'])->name('cosecha.index');
+    /******** SECCION COSECHA ********/
+    Route::get('/cosechas', [ControllerCosecha::class, 'index'])->name('cosechas.index');
+    Route::get('/cosechas/crear', [ControllerCosecha::class, 'create'])->name('cosechas.create');
+    Route::post('/cosechas/guardar', [ControllerCosecha::class, 'store'])->name('cosechas.store');
+    Route::get('/cosechas/{id}/editar', [ControllerCosecha::class, 'edit'])->name('cosechas.edit');
+    Route::put('/cosechas/{id}/actualizar', [ControllerCosecha::class, 'update'])->name('cosechas.update');
+    Route::delete('/cosechas/{id}/eliminar', [ControllerCosecha::class, 'destroy'])->name('cosechas.destroy');
+
 
     /********SECCION TRATAMIENTO********/
-    Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
     Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
+    Route::get('/tratamiento/crear', [ControllerTratamiento::class, 'create'])->name('tratamiento.create');
+    Route::post('/tratamiento/guardar', [ControllerTratamiento::class, 'store'])->name('tratamiento.store');
+    Route::get('/tratamiento/{id}/editar', [ControllerTratamiento::class, 'edit'])->name('tratamiento.edit');
+    Route::put('/tratamiento/{id}/actualizar', [ControllerTratamiento::class, 'update'])->name('tratamiento.update');
+    Route::delete('/tratamiento/{id}/eliminar', [ControllerTratamiento::class, 'destroy'])->name('tratamiento.destroy');
+
     //SECCION ALIMENTACION
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
     Route::get('/alimentacion/crear', [ControllerAlimentacion::class, 'create'])->name('alimentacion.create');

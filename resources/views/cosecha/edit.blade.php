@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    {{-- Botón volver con diseño tipo tratamiento --}}
+    {{-- Botón volver --}}
     <div class="row g-4 mb-2">
         <div class="col-sm-12">
             <a href="{{ route('cosechas.index') }}" class="btn btn-warning">
@@ -31,24 +31,25 @@
     <div class="row g-4">
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <h3 class="mb-0">Agregar nueva cosecha</h3>
+                <h3 class="mb-0">Editar cosecha</h3>
             </div>
         </div>
 
-        <form action="{{ route('cosechas.store') }}" method="POST" class="col-sm-12">
+        <form action="{{ route('cosechas.update', $cosecha->idCosecha) }}" method="POST" class="col-sm-12">
             @csrf
+            @method('PUT')
+
             <div class="bg-light rounded h-100 p-3 row">
 
-                <h6 class="mb-3 col-12">Complete el formulario</h6>
+                <h6 class="mb-3 col-12">Modifique los datos necesarios</h6>
 
                 {{-- Colmena --}}
                 <div class="mb-3 col-12 col-md-6">
                     <label for="idColmena" class="form-label">Colmena *</label>
                     <select name="idColmena" id="idColmena" class="form-control" required>
-                        <option value="" disabled {{ old('idColmena') ? '' : 'selected' }}>Seleccione una colmena</option>
                         @foreach ($colmenas as $colmena)
                             <option value="{{ $colmena->idColmena }}"
-                                {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
+                                {{ old('idColmena', $cosecha->idColmena) == $colmena->idColmena ? 'selected' : '' }}>
                                 Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
                             </option>
                         @endforeach
@@ -66,8 +67,7 @@
                         class="form-control"
                         id="peso"
                         name="peso"
-                        value="{{ old('peso') }}"
-                        placeholder="Ej. 2.00"
+                        value="{{ old('peso', $cosecha->peso) }}"
                         required
                     >
                     <small class="text-muted">Máximo permitido: 50 kg por colmena.</small>
@@ -77,11 +77,11 @@
                 <div class="mb-3 col-12 col-md-6">
                     <label for="estadoMiel" class="form-label">Estado de la miel *</label>
                     <select id="estadoMiel" name="estadoMiel" class="form-control" required>
-                        <option value="" disabled {{ old('estadoMiel') ? '' : 'selected' }}>Seleccione una opción</option>
-                        <option value="Líquida"      {{ old('estadoMiel') === 'Líquida' ? 'selected' : '' }}>Líquida</option>
-                        <option value="Cristalizada" {{ old('estadoMiel') === 'Cristalizada' ? 'selected' : '' }}>Cristalizada</option>
-                        <option value="Impura"       {{ old('estadoMiel') === 'Impura' ? 'selected' : '' }}>Impura</option>
-                        <option value="Operculada"   {{ old('estadoMiel') === 'Operculada' ? 'selected' : '' }}>Operculada</option>
+                        @php $estadoOld = old('estadoMiel', $cosecha->estadoMiel); @endphp
+                        <option value="Líquida"      {{ $estadoOld === 'Líquida' ? 'selected' : '' }}>Líquida</option>
+                        <option value="Cristalizada" {{ $estadoOld === 'Cristalizada' ? 'selected' : '' }}>Cristalizada</option>
+                        <option value="Impura"       {{ $estadoOld === 'Impura' ? 'selected' : '' }}>Impura</option>
+                        <option value="Operculada"   {{ $estadoOld === 'Operculada' ? 'selected' : '' }}>Operculada</option>
                     </select>
                 </div>
 
@@ -93,7 +93,7 @@
                         class="form-control"
                         id="fechaCosecha"
                         name="fechaCosecha"
-                        value="{{ old('fechaCosecha') }}"
+                        value="{{ old('fechaCosecha', \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('Y-m-d')) }}"
                         max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
                         required
                     >
@@ -108,13 +108,12 @@
                         name="observaciones"
                         rows="3"
                         maxlength="255"
-                        placeholder="Notas generales..."
-                    >{{ old('observaciones') }}</textarea>
+                    >{{ old('observaciones', $cosecha->observaciones) }}</textarea>
                 </div>
 
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary w-100">
-                        Guardar cosecha
+                        Actualizar cosecha
                     </button>
                 </div>
             </div>

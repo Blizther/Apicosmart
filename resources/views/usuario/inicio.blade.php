@@ -452,14 +452,14 @@
 
                     <li>
                         <a href="{{ route('alimentacion.index') }}" title="alimentacion">
-                            <i class="fa fa-coffee"></i>
+                            <i class="fa fa-tint"></i>
                             <span class="nav-label"> Alimentación</span>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('tarea.index') }}" title="tarea">
-                            <i class="fa fa-plus-circle"></i>
+                            <i class="fa fa-check-square-o"></i>
                             <span class="nav-label"> Tareas pendientes</span>
                         </a>
                     </li>

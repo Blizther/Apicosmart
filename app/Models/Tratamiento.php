@@ -9,7 +9,7 @@ class Tratamiento extends Model
     use HasFactory;
     protected $table = 'tratamiento';
     protected $primaryKey = 'idTratamiento';
-    protected $fillable = ['idTratamiento', 'problemaTratado', 'descripcion', 'fechaAdministracion','idUsuario', 'idColmena'];
+    protected $fillable = ['idTratamiento', 'problemaTratado', 'tratamientoAdministrado','descripcion', 'fechaAdministracion','idUsuario', 'idColmena'];
     public $timestamps =false;
     protected $casts=[
         'fechaCreacion'=> 'timestamp', 

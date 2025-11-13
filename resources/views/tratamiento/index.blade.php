@@ -54,13 +54,12 @@
                                 <th scope="col">Tratamiento aplicado</th>
                                 <th scope="col">Fecha</th>
                                 <th scope="col">Descripción</th>
+                                <th scope="col" style="width: 10%;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php $correlativo = 1; @endphp
 
-                            <!-- ordenar los tratamientos por fecha de administración descendente,
-                                 si hay dos con la misma fecha, ordenar por fechaCreacion -->
                             @php
                                 $tratamientos = $tratamientos
                                     ->sortByDesc('fechaAdministracion')
@@ -71,7 +70,6 @@
                                 <tr>
                                     <th scope="row">{{ $correlativo }}</th>
 
-                                    <!-- Obtener la colmena asociada al tratamiento -->
                                     @php
                                         $colmena = $tratamiento->colmena;
                                     @endphp
@@ -90,6 +88,32 @@
                                     <td>{{ $tratamiento->tratamientoAdministrado }}</td>
                                     <td>{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}</td>
                                     <td>{{ $tratamiento->descripcion }}</td>
+
+                                    {{-- ACCIONES --}}
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            {{-- EDITAR --}}
+                                            <a href="{{ route('tratamiento.edit', $tratamiento->idTratamiento) }}"
+                                               class="btn btn-sm btn-warning">
+                                                Editar
+                                            </a>
+
+                                            {{-- ELIMINAR --}}
+                                            <form action="{{ route('tratamiento.destroy', $tratamiento->idTratamiento) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-tratamiento">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-eliminar-tratamiento"
+                                                        data-colmena="@if($colmena && $colmena->apiario)Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}@elseif($colmena)Colmena #{{ $colmena->codigo }}@else - @endif"
+                                                        data-fecha="{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}"
+                                                        data-problema="{{ $tratamiento->problemaTratado }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @php $correlativo++; @endphp
                             @endforeach
@@ -101,4 +125,61 @@
         </div>
     </div>
 </div>
+
+{{-- SweetAlert para eliminar --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-tratamiento');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form     = this.closest('form');
+            const colmena  = this.getAttribute('data-colmena') || '';
+            const fecha    = this.getAttribute('data-fecha') || '';
+            const problema = this.getAttribute('data-problema') || '';
+
+            let texto = '¿Desea eliminar este tratamiento?';
+            let detalle = [];
+
+            if (colmena.trim() !== '') {
+                detalle.push(colmena);
+            }
+            if (problema.trim() !== '') {
+                detalle.push(problema);
+            }
+            if (fecha.trim() !== '') {
+                detalle.push(fecha);
+            }
+
+            if (detalle.length > 0) {
+                texto += ' ' + detalle.join(' - ');
+            }
+
+            Swal.fire({
+                title: 'Atención',
+                text: texto,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
+</style>
+
 @endsection
