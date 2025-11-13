@@ -51,7 +51,7 @@ sin ese código el guardado no se activa
                             <option value="" disabled selected>Seleccione una colmena</option>
                             @foreach ($colmenas as $colmena)
                             <option value="{{ $colmena->idColmena }}" {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
-                                {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
+                                Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
                             </option>
                             @endforeach
                         </select>

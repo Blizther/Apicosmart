@@ -12,12 +12,15 @@
         @if (session('successedit'))
             <div class="alert alert-success">{{ session('successedit') }}</div>
         @endif
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
     </div>
 </div>
 
 <div class="mb-3">
-    <a href="{{ route('tarea.create') }}" class="btn btn-success">
-        <i class="fa fa-plus"></i> Agregar Tarea Pendiente
+    <a href="{{ route('alimentacion.create') }}" class="btn btn-success">
+        <i class="fa fa-plus"></i> Agregar Alimentación
     </a>
 </div>
 
@@ -25,7 +28,7 @@
     <div class="row g-4">
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <h1>Panel de Tareas Pendientes</h1>
+                <h1>Panel de Alimentación</h1>
             </div>
         </div>
     </div>
@@ -37,67 +40,91 @@
                     <thead class="table-secondary">
                         <tr>
                             <th scope="col" style="width: 5%;">NRO</th>
-                            <th scope="col" style="width: 10%;">Colmena</th>
-                            <th scope="col" style="width: 10%;">Tipo</th>
-                            <th scope="col" style="width: 10%;">Prioridad</th>
-                            <th scope="col" style="width: 10%;">Estado</th>
-                            <th scope="col" style="width: 15%;">Fecha Inicio</th>
-                            <th scope="col" style="width: 15%;">Fecha Fin</th>
-                            <th scope="col" style="width: 15%;">Título</th>
+                            <th scope="col" style="width: 10%;">Fecha</th>
+                            <th scope="col" style="width: 20%;">Colmena - Apiario</th>
+                            <th scope="col" style="width: 15%;">Alimento</th>
+                            <th scope="col" style="width: 10%;">Cantidad</th>
+                            <th scope="col" style="width: 10%;">Motivo</th>
                             <th scope="col" style="width: 20%;">Descripción</th>
                             <th scope="col" style="width: 10%;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php $correlativo = 1; @endphp
-                        @foreach ($tareas as $tarea)
-                            <tr>
-                                <th scope="row">{{ $correlativo }}</th>
-                                <td>
-                                    @if($tarea->colmena && $tarea->colmena->apiario)
-                                        Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}
-                                    @elseif($tarea->colmena)
-                                        Colmena #{{ $tarea->colmena->codigo }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
 
-                                <td>{{ ucfirst($tarea->tipo) }}</td>
-                                <td>{{ ucfirst($tarea->prioridad) }}</td>
-                                <td>{{ ucfirst($tarea->estado) }}</td>
-                                <td>
-                                    {{ $tarea->fechaInicio ? \Carbon\Carbon::parse($tarea->fechaInicio)->format('d/m/Y') : '-' }}
-                                </td>
-                                <td>
-                                    {{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}
-                                </td>
-                                <td>{{ $tarea->titulo }}</td>
-                                <td>{{ $tarea->descripcion }}</td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ route('tarea.edit', $tarea->idTareaPendiente) }}" class="btn btn-sm btn-warning">
-                                            Editar
-                                        </a>
-                                        <form action="{{ route('tarea.destroy', $tarea->idTareaPendiente) }}"
-                                            method="POST"
-                                            class="m-0 p-0 form-eliminar-tarea">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                    class="btn btn-sm btn-danger btn-eliminar-tarea"
-                                                    data-colmena="@if($tarea->colmena && $tarea->colmena->apiario)Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}@elseif($tarea->colmena)Colmena #{{ $tarea->colmena->codigo }}@else - @endif"
-                                                    data-fecha="{{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}"
-                                                    data-titulo="{{ $tarea->titulo }}">
-                                                Eliminar
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                        @foreach ($alimentaciones as $alimentacion)
+                            @php
+                                $colmena = $alimentacion->colmena;
+                                $apiario = $colmena ? $colmena->apiario : null;
+                            @endphp
 
+                            @if($colmena && $apiario)
+                                <tr>
+                                    <th scope="row">{{ $correlativo }}</th>
 
-                            </tr>
-                            @php $correlativo++; @endphp
+                                    {{-- Fecha --}}
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}
+                                    </td>
+
+                                    {{-- Colmena - Apiario --}}
+                                    <td>
+                                        Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}
+                                    </td>
+
+                                    {{-- Tipo de alimento --}}
+                                    <td>{{ $alimentacion->tipoAlimento }}</td>
+
+                                    {{-- Cantidad + unidad --}}
+                                    <td>
+                                        {{ $alimentacion->cantidad }}
+                                        @if($alimentacion->unidadMedida == 'gr')
+                                            g
+                                        @elseif($alimentacion->unidadMedida == 'Kg')
+                                            kg
+                                        @elseif($alimentacion->unidadMedida == 'ml')
+                                            mL
+                                        @elseif($alimentacion->unidadMedida == 'L')
+                                            L
+                                        @else
+                                            {{ $alimentacion->unidadMedida }}
+                                        @endif
+                                    </td>
+
+                                    {{-- Motivo --}}
+                                    <td>{{ $alimentacion->motivo }}</td>
+
+                                    {{-- Observaciones --}}
+                                    <td>{{ $alimentacion->observaciones }}</td>
+
+                                    {{-- ACCIONES (igual estilo que tareas) --}}
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            {{-- EDITAR --}}
+                                            <a href="{{ route('alimentacion.edit', $alimentacion->idAlimentacion) }}"
+                                               class="btn btn-sm btn-warning">
+                                                Editar
+                                            </a>
+
+                                            {{-- ELIMINAR --}}
+                                            <form action="{{ route('alimentacion.destroy', $alimentacion->idAlimentacion) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-alimentacion">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-eliminar-alimentacion"
+                                                        data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                        data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
+                                                        data-alimento="{{ $alimentacion->tipoAlimento }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @php $correlativo++; @endphp
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -110,25 +137,25 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar-tarea');
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-alimentacion');
 
     botonesEliminar.forEach(function (boton) {
         boton.addEventListener('click', function () {
             const form     = this.closest('form');
             const colmena  = this.getAttribute('data-colmena') || '';
             const fecha    = this.getAttribute('data-fecha') || '';
-            const titulo   = this.getAttribute('data-titulo') || '';
+            const alimento = this.getAttribute('data-alimento') || '';
 
-            let texto = '¿Desea eliminar esta tarea pendiente?';
+            let texto = '¿Desea eliminar este registro de alimentación?';
             let detalle = [];
 
             if (colmena.trim() !== '') {
                 detalle.push(colmena);
             }
-            if (titulo.trim() !== '') {
-                detalle.push('"' + titulo + '"');
+            if (alimento.trim() !== '') {
+                detalle.push(alimento);
             }
-            if (fecha.trim() !== '' && fecha !== '-') {
+            if (fecha.trim() !== '') {
                 detalle.push(fecha);
             }
 

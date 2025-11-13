@@ -108,8 +108,13 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::resource('/tratamiento', 'App\Http\Controllers\ControllerTratamiento');
     Route::get('/tratamiento', [ControllerTratamiento::class, 'index'])->name('tratamiento.index');
     //SECCION ALIMENTACION
-    Route::resource('/alimentacion', 'App\Http\Controllers\ControllerAlimentacion');
     Route::get('/alimentacion', [ControllerAlimentacion::class, 'index'])->name('alimentacion.index');
+    Route::get('/alimentacion/crear', [ControllerAlimentacion::class, 'create'])->name('alimentacion.create');
+    Route::post('/alimentacion/guardar', [ControllerAlimentacion::class, 'store'])->name('alimentacion.store');
+    Route::get('/alimentacion/{id}/editar', [ControllerAlimentacion::class, 'edit'])->name('alimentacion.edit');
+    Route::put('/alimentacion/{id}/actualizar', [ControllerAlimentacion::class, 'update'])->name('alimentacion.update');
+    Route::delete('/alimentacion/{id}/eliminar', [ControllerAlimentacion::class, 'destroy'])->name('alimentacion.destroy');
+
 
     //SECCION TAREAS PENDIENTES
     Route::get('/tarea-pendiente', [ControllerTareaPendiente::class, 'index'])->name('tarea.index');

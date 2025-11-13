@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Apiario;
-use Illuminate\Support\Carbon\Carbon;
 use App\Models\Colmena;
 use App\Models\Cosecha;
 use App\Models\Tratamiento;
 use App\Models\Alimentacion;
-
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Carbon\Carbon; // no lo usas, lo puedes dejar o quitar
 
 class ControllerEstadisticas extends Controller
 {
@@ -22,7 +21,12 @@ class ControllerEstadisticas extends Controller
     // 🔹 1. Cantidad de colmenas por apiario
     public function colmenasPorApiario()
     {
-        $apiarios = Apiario::withCount('colmenas')->get();
+        $apiarios = Apiario::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->withCount(['colmenas' => function ($q) {
+                $q->where('estado', 'activo');
+            }])
+            ->get();
 
         return response()->json([
             'labels' => $apiarios->pluck('nombre'),
@@ -33,13 +37,19 @@ class ControllerEstadisticas extends Controller
     // 🔹 2. Peso total de cosecha por apiario
     public function pesoCosechaPorApiario()
     {
-        $apiarios = Apiario::with(['colmenas.cosechas'])->get();
+        $apiarios = Apiario::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->with(['colmenas' => function ($q) {
+                $q->where('estado', 'activo');
+            }, 'colmenas.cosechas'])
+            ->get();
 
         $labels = [];
         $values = [];
 
         foreach ($apiarios as $apiario) {
             $pesoTotal = 0;
+
             foreach ($apiario->colmenas as $colmena) {
                 $pesoTotal += $colmena->cosechas->sum('peso');
             }
@@ -57,13 +67,19 @@ class ControllerEstadisticas extends Controller
     // 🔹 3. Cantidad de tratamientos por apiario
     public function tratamientosPorApiario()
     {
-        $apiarios = Apiario::with(['colmenas.tratamientos'])->get();
+        $apiarios = Apiario::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->with(['colmenas' => function ($q) {
+                $q->where('estado', 'activo');
+            }, 'colmenas.tratamientos'])
+            ->get();
 
         $labels = [];
         $values = [];
 
         foreach ($apiarios as $apiario) {
             $total = 0;
+
             foreach ($apiario->colmenas as $colmena) {
                 $total += $colmena->tratamientos->count();
             }
@@ -81,13 +97,19 @@ class ControllerEstadisticas extends Controller
     // 🔹 4. Cantidad de alimentaciones por apiario
     public function alimentacionesPorApiario()
     {
-        $apiarios = Apiario::with(['colmenas.alimentaciones'])->get();
+        $apiarios = Apiario::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->with(['colmenas' => function ($q) {
+                $q->where('estado', 'activo');
+            }, 'colmenas.alimentaciones'])
+            ->get();
 
         $labels = [];
         $values = [];
 
         foreach ($apiarios as $apiario) {
             $total = 0;
+
             foreach ($apiario->colmenas as $colmena) {
                 $total += $colmena->alimentaciones->count();
             }

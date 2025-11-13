@@ -1,33 +1,40 @@
 @extends('usuario.inicio')
 @section('content')
 
-<!-- en esta vista deben visualizarse todas alimentaciones suministradas a las colmenas del usuario -->
 <div class="row g-4">
-        <div class="col-sm-12">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="col-sm-12">
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            @if (session('successdelete'))
-                <div class="alert alert-success">
-                    {{ session('successdelete') }}
-                </div>
-            @endif
+        @if (session('successdelete'))
+            <div class="alert alert-success">
+                {{ session('successdelete') }}
+            </div>
+        @endif
 
-            @if (session('successedit'))
-                <div class="alert alert-success">
-                    {{ session('successedit') }}
-                </div>
-            @endif
-        </div>
+        @if (session('successedit'))
+            <div class="alert alert-success">
+                {{ session('successedit') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
     </div>
-    <div class="mb-3">
-        <a href="{{ route('alimentacion.create')}}" class="btn btn-success">
-            <i class="fa fa-plus"></i> Agregar Alimentación
-        </a>
-    </div>
+</div>
+
+<div class="mb-3">
+    <a href="{{ route('alimentacion.create') }}" class="btn btn-success">
+        <i class="fa fa-plus"></i> Agregar Alimentación
+    </a>
+</div>
+
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-sm-12">
@@ -36,72 +43,163 @@
             </div>
         </div>
     </div>
-    <!-- Aquí va el contenido específico de la vista de Alimentación -->
+
     <div class="row g-4 mt-2">
         <div class="col-sm-12">
-            
             <div class="col-sm-12">
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th scope="col">NRO</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Colmena - Apiario</th>
-                            <th scope="col">Alimento</th>
-                            <th scope="col">cantidad</th>
-                            <th scope="col">Motivo</th>
-                            <th scope="col">Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $correlativo = 1; @endphp
-                        <!-- ordenar las alimentaciones por fecha de suministracion descendente y por fecha creacion-->
-                         @php
-                            $alimentaciones = $alimentaciones->sortByDesc(function($alimentacion) {
-                                return [$alimentacion->fechaSuministracion, $alimentacion->fechaCreacion];
-                            });
-                        @endphp
-                         
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th scope="col">NRO</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Colmena - Apiario</th>
+                                <th scope="col">Alimento</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Motivo</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col" style="width: 10%;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $correlativo = 1; @endphp
 
-                        @foreach ($alimentaciones as $alimentacion)
-                            <tr >
-                                <th scope="row">{{ $correlativo }}</th>
-                                <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
-                                <!-- Obtener la colmena asociada al tratamiento -->
+                            @foreach ($alimentaciones as $alimentacion)
                                 @php
                                     $colmena = $alimentacion->colmena;
+                                    $apiario = $colmena ? $colmena->apiario : null;
                                 @endphp
-                                <td>Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}</td>
-                                <td>{{ $alimentacion->tipoAlimento }}</td>
-                                <!--mostrar cantidad con unidad de medida, ejemplo: 500 - gramos, 1.5 - litros, 
-                                teniendo en cuenta que en la base de datos se guarda la unidad como gr, Kg, ml, L. se debe realizar un parseo-->
-                                <td>{{ $alimentacion->cantidad }} - 
-                                    @if($alimentacion->unidadMedida == 'gr')
-                                        gramos
-                                    @elseif($alimentacion->unidadMedida == 'Kg')
-                                        Kilogramos
-                                    @elseif($alimentacion->unidadMedida == 'ml')
-                                        mililitros
-                                    @elseif($alimentacion->unidadMedida == 'L')
-                                        Litros
-                                    @else
-                                        {{ $alimentacion->unidadMedida }}
-                                    @endif
-                                </td>
-                                
-                                
-                                
-                                <td>{{ $alimentacion->motivo }}</td>
-                                <td>{{ $alimentacion->observaciones }}</td>
-                            </tr>
-                            @php $correlativo++; @endphp
-                        @endforeach
-                    </tbody>
-                </table>
+
+                                @if($colmena && $apiario)
+                                    <tr>
+                                        <th scope="row">{{ $correlativo }}</th>
+
+                                        {{-- Fecha --}}
+                                        <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
+
+                                        {{-- Colmena - Apiario --}}
+                                        <td>
+                                            Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}
+                                        </td>
+
+                                        {{-- Alimento --}}
+                                        <td>{{ $alimentacion->tipoAlimento }}</td>
+
+                                        {{-- Cantidad + unidad --}}
+                                        <td>
+                                            {{ $alimentacion->cantidad }}
+                                            @if($alimentacion->unidadMedida == 'gr')
+                                                g
+                                            @elseif($alimentacion->unidadMedida == 'Kg')
+                                                kg
+                                            @elseif($alimentacion->unidadMedida == 'ml')
+                                                mL
+                                            @elseif($alimentacion->unidadMedida == 'L')
+                                                L
+                                            @else
+                                                {{ $alimentacion->unidadMedida }}
+                                            @endif
+                                        </td>
+
+                                        {{-- Motivo --}}
+                                        <td>{{ $alimentacion->motivo }}</td>
+
+                                        {{-- Observaciones --}}
+                                        <td>{{ $alimentacion->observaciones }}</td>
+
+                                        {{-- ACCIONES --}}
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-2">
+
+                                                {{-- EDITAR --}}
+                                                <a href="{{ route('alimentacion.edit', $alimentacion->idalimentacion) }}"
+                                                   class="btn btn-sm btn-warning">
+                                                    Editar
+                                                </a>
+
+                                                {{-- ELIMINAR --}}
+                                                <form action="{{ route('alimentacion.destroy', $alimentacion->idalimentacion) }}"
+                                                      method="POST"
+                                                      class="m-0 p-0 form-eliminar-alimentacion">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger btn-eliminar-alimentacion"
+                                                            data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                            data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
+                                                            data-alimento="{{ $alimentacion->tipoAlimento }}">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @php $correlativo++; @endphp
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 </div>
+
+{{-- SweetAlert para eliminar --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-alimentacion');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form     = this.closest('form');
+            const colmena  = this.getAttribute('data-colmena') || '';
+            const fecha    = this.getAttribute('data-fecha') || '';
+            const alimento = this.getAttribute('data-alimento') || '';
+
+            let texto = '¿Desea eliminar este registro de alimentación?';
+            let detalle = [];
+
+            if (colmena.trim() !== '') {
+                detalle.push(colmena);
+            }
+            if (alimento.trim() !== '') {
+                detalle.push(alimento);
+            }
+            if (fecha.trim() !== '') {
+                detalle.push(fecha);
+            }
+
+            if (detalle.length > 0) {
+                texto += ' ' + detalle.join(' - ');
+            }
+
+            Swal.fire({
+                title: 'Atención',
+                text: texto,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
+</style>
+
 @endsection

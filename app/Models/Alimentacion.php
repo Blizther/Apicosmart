@@ -9,8 +9,8 @@ class Alimentacion extends Model
 {
     use HasFactory;
         protected $table = 'alimentacion';
-    protected $primaryKey = 'idAlimentacion';
-    protected $fillable = ['idAlimentacion', 'tipoAlimento', 'cantidad', 'unidadMedida', 'motivo', 'fechaSuministracion', 'descripcion', 'idColmena', 'idUsuario'];
+    protected $primaryKey = 'idalimentacion';
+    protected $fillable = ['idalimentacion', 'tipoAlimento', 'cantidad', 'unidadMedida', 'motivo', 'fechaSuministracion', 'descripcion', 'idColmena', 'idUsuario'];
     public $timestamps =false;
     protected $casts=[
         'fechaSuministracion'=> 'timestamp', 

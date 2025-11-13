@@ -5,6 +5,15 @@
 
     <!-- Mensajes de sesión -->
     <div class="mb-4">
+
+        {{-- Mensaje de error (por ejemplo: tiene colmenas activas) --}}
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        {{-- Mensajes de éxito ya existentes --}}
         @foreach (['success', 'successdelete', 'successedit'] as $msg)
             @if(session($msg))
                 <div class="alert alert-success">

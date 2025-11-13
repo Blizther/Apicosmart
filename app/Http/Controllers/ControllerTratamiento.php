@@ -7,7 +7,6 @@ use App\Models\Colmena;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class ControllerTratamiento extends Controller
 {
     /**
@@ -15,26 +14,38 @@ class ControllerTratamiento extends Controller
      */
     public function index()
     {
-        
-        $tratamientos = Tratamiento::with('colmena')
-                        ->where('idUsuario', Auth::id())
-                        ->orderBy('fechaAdministracion', 'desc')
-                        ->get();
+        $tratamientos = Tratamiento::with('colmena.apiario')
+            ->where('idUsuario', Auth::id())
+
+            // Filtrar SOLO tratamientos cuya colmena está activa
+            // y cuyo apiario también está activo
+            ->whereHas('colmena', function ($q) {
+                $q->where('estado', 'activo')
+                  ->whereHas('apiario', function ($q2) {
+                      $q2->where('estado', 'activo');
+                  });
+            })
+
+            ->orderBy('fechaAdministracion', 'desc')
+            ->get();
+
         return view('tratamiento.index', compact('tratamientos'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         // Cargar las colmenas del usuario autenticado y que tengan estado activo
-        $idUser = Auth::id(); // ID del usuario logueado   
+        $idUser = Auth::id(); // ID del usuario logueado
         $colmenas = Colmena::where('creadoPor', $idUser)
                     ->where('estado', 'activo')
                     ->get();
 
-        return view('tratamiento.create',compact('colmenas'));
+        return view('tratamiento.create', compact('colmenas'));
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -58,11 +69,12 @@ class ControllerTratamiento extends Controller
             'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
             'idColmena.min' => 'La colmena seleccionada no es válida.',
         ]);
-        date_default_timezone_set('America/Caracas');
-        $fecha=date('Y-m-d H:i:s');
-        $user=Auth::user()->id;
 
-        $tratamiento= new Tratamiento();
+        date_default_timezone_set('America/Caracas');
+        $fecha = date('Y-m-d H:i:s');
+        $user = Auth::user()->id;
+
+        $tratamiento = new Tratamiento();
         $tratamiento->problemaTratado = $request->problemaTratado;
         $tratamiento->tratamientoAdministrado = $request->tratamientoAdministrado;
         $tratamiento->descripcion = $request->descripcion;
@@ -70,15 +82,18 @@ class ControllerTratamiento extends Controller
         $tratamiento->idUsuario = $user;
         $tratamiento->idColmena = $request->idColmena;
         $tratamiento->save();
-         return redirect()->to('/tratamiento')->with('success', 'Tratamiento registrado exitosamente.');
+
+        return redirect()->to('/tratamiento')->with('success', 'Tratamiento registrado exitosamente.');
     }
+
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         //
-    }   
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -87,11 +102,12 @@ class ControllerTratamiento extends Controller
         $tratamiento = Tratamiento::findOrFail($id);
         return view('tratamiento.edit', compact('tratamiento'));
     }
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {       
+    {
         $request->validate([
             'problemaTratado' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
@@ -105,8 +121,11 @@ class ControllerTratamiento extends Controller
         $tratamiento->fechaAdministracion = $request->fechaAdministracion;
         $tratamiento->idColmena = $request->idColmena;
         $tratamiento->save();
-         return redirect()->to('/tratamientos')->with('success', 'Tratamiento actualizado exitosamente.');
+
+        // Ojo: aquí ya lo tenías con /tratamientos (plural)
+        return redirect()->to('/tratamientos')->with('success', 'Tratamiento actualizado exitosamente.');
     }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -114,6 +133,8 @@ class ControllerTratamiento extends Controller
     {
         $tratamiento = Tratamiento::findOrFail($id);
         $tratamiento->delete();
+
+        // Igual que arriba, respeté tu /tratamientos (plural)
         return redirect()->to('/tratamientos')->with('successdelete', 'Tratamiento eliminado exitosamente.');
     }
 

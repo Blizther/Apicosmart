@@ -46,58 +46,72 @@ sin ese código el guardado no se activa
                 <div class="bg-light rounded h-100 p-2 row">
                     <h6 class="mb-4 col-12">Complete el formulario</h6>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="colmena_id">Colmena</label>
+                        <label for="colmena_id">Colmena *</label>
                         <select name="idColmena" id="idColmena" class="form-control" required>
                             <option value="" disabled selected>Seleccione una colmena</option>
                             @foreach ($colmenas as $colmena)
                             <option value="{{ $colmena->idColmena }}" {{ old('idColmena') == $colmena->idColmena ? 'selected' : '' }}>
-                                {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
+                               Colmena # {{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}
                             </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="fechaAdministracion">Fecha de suministración </label>
+                        <label for="fechaAdministracion">Fecha de suministración *</label>
                         <input type="date" class="form-control" id="fechaSuministracion" name="fechaSuministracion"
                             value="{{ old('fechaSuministracion') }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="tipoAlimento">Alimentación Suministrada</label>
+                        <label for="tipoAlimento">Alimentación Suministrada *</label>
                         <!--lista de tipos de alimentacion ('torta proteica', 'jarabe azucar', 'sustituto polen', 'agua vitaminada', 'otro')      -->
-                        <select name="tipoAlimento" id="tipoAlimento" class="form-control" required>
-                            <option value="torta proteica" {{ old('tipoAlimento') == 'torta proteica' ? 'selected' : '' }}>Torta proteica</option>
-                            <option value="jarabe azucar" {{ old('tipoAlimento') == 'jarabe azucar' ? 'selected' : '' }}>Jarabe azucar</option>
-                            <option value="sustituto polen" {{ old('tipoAlimento') == 'sustituto polen' ? 'selected' : '' }}>Sustituto polen</option>
-                            <option value="agua vitaminada" {{ old('tipoAlimento') == 'agua vitaminada' ? 'selected' : '' }}>Agua vitaminada</option>
-                            <option value="otro" {{ old('tipoAlimento') == 'otro' ? 'selected' : '' }}>Otra</option>
-                        </select>
+                    <select name="tipoAlimento" id="tipoAlimento" class="form-control" required>
+                        <option value="" disabled {{ old('tipoAlimento') ? '' : 'selected' }}>
+                            Seleccione tipo de alimentación
+                        </option>
+                        <option value="torta proteica" {{ old('tipoAlimento') == 'torta proteica' ? 'selected' : '' }}>Torta proteica</option>
+                        <option value="jarabe azucar" {{ old('tipoAlimento') == 'jarabe azucar' ? 'selected' : '' }}>Jarabe de azúcar</option>
+                        <option value="sustituto polen" {{ old('tipoAlimento') == 'sustituto polen' ? 'selected' : '' }}>Sustituto de polen</option>
+                        <option value="agua vitaminada" {{ old('tipoAlimento') == 'agua vitaminada' ? 'selected' : '' }}>Agua vitaminada</option>
+                        <option value="otro" {{ old('tipoAlimento') == 'otro' ? 'selected' : '' }}>Otro</option>
+                    </select>
+
+
 
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="cantidad">Cantidad</label>
+                        <label for="cantidad">Cantidad *</label>
                         <input type="number" min="0" step="0.1" class="form-control" id="cantidad"
                             placeholder="Ej. 2.00" name="cantidad" value="{{ old('cantidad') }}" required autocomplete="off">
                         
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="unidadMedida">Unidad de medida</label>
+                        <label for="unidadMedida">Unidad de medida *</label>
                         <!--lista de tratamientos ('gr', 'Kg', 'ml', 'L')      -->
                         <select name="unidadMedida" id="unidadMedida" class="form-control" required>
+                            <option value="" disabled {{ old('unidadMedida') ? '' : 'selected' }}>
+                                Seleccione unidad de medida
+                            </option>
                             <option value="gr" {{ old('unidadMedida') == 'gr' ? 'selected' : '' }}>Gramos (g)</option>
-                            <option value="Kg" {{ old('unidadMedida') ==    'Kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
+                            <option value="Kg" {{ old('unidadMedida') == 'Kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
                             <option value="ml" {{ old('unidadMedida') == 'ml' ? 'selected' : '' }}>Mililitros (mL)</option>
                             <option value="L" {{ old('unidadMedida') == 'L' ? 'selected' : '' }}>Litros (L)</option>
                         </select>
+
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="motivo">Motivo</label>
+                        <label for="motivo">Motivo *</label>
                         <!--lista de motivos ('estimulacion', 'reserva invernal', 'carencia nectar', 'emergencia', 'otro'))      -->
                         <select name="motivo" id="motivo" class="form-control" required>
-                            <option value="estimulacion" {{ old('motivo') == 'estimulacion' ? 'selected' : '' }}>Estimulacion</option>
-                            <option value="reserva invernal" {{ old('motivo') ==    'reserva invernal' ? 'selected' : '' }}>Reserva invernal</option>
-                            <option value="carencia nectar" {{ old('motivo') == 'carencia nectar' ? 'selected' : '' }}>Carencia de nectar</option>
+                            <option value="" disabled {{ old('motivo') ? '' : 'selected' }}>
+                                Seleccione motivo
+                            </option>
+                            <option value="estimulacion" {{ old('motivo') == 'estimulacion' ? 'selected' : '' }}>Estimulación</option>
+                            <option value="reserva invernal" {{ old('motivo') == 'reserva invernal' ? 'selected' : '' }}>Reserva invernal</option>
+                            <option value="carencia nectar" {{ old('motivo') == 'carencia nectar' ? 'selected' : '' }}>Carencia de néctar</option>
                             <option value="emergencia" {{ old('motivo') == 'emergencia' ? 'selected' : '' }}>Emergencia</option>
+                            <option value="otro" {{ old('motivo') == 'otro' ? 'selected' : '' }}>Otro</option>
                         </select>
+
                     </div>
                     <div class="mb-3 col-12 col-md-12">
                         <label for="observaciones">Descripción</label>

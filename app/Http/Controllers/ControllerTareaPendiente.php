@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TareaPendiente;
+use App\Models\Colmena;
 
 class ControllerTareaPendiente extends Controller
 {
@@ -12,25 +13,34 @@ class ControllerTareaPendiente extends Controller
     {
         $userId = Auth::id();
 
-        $tareas = TareaPendiente::activas()
+        // Base: tareas del usuario, no eliminadas, ligadas a colmenas y apiarios activos
+        $baseQuery = TareaPendiente::activas()
             ->where('idUser', $userId)
+            ->whereHas('colmena', function ($q) {
+                $q->where('estado', 'activo')
+                  ->whereHas('apiario', function ($q2) {
+                      $q2->where('estado', 'activo');
+                  });
+            });
+
+        // Lista principal
+        $tareas = (clone $baseQuery)
+            ->with('colmena.apiario')
             ->orderByRaw("FIELD(prioridad, 'urgente','alta','media','baja')")
             ->orderBy('fechaFin', 'asc')
             ->get();
 
-        $totalPendientes = TareaPendiente::activas()
-            ->where('idUser', $userId)
+        // Totales
+        $totalPendientes = (clone $baseQuery)
             ->whereIn('estado', ['pendiente', 'enProgreso'])
             ->count();
 
-        $totalUrgentes = TareaPendiente::activas()
-            ->where('idUser', $userId)
+        $totalUrgentes = (clone $baseQuery)
             ->whereIn('estado', ['pendiente', 'enProgreso'])
             ->where('prioridad', 'urgente')
             ->count();
 
-        $totalVencidas = TareaPendiente::activas()
-            ->where('idUser', $userId)
+        $totalVencidas = (clone $baseQuery)
             ->where('estado', 'vencida')
             ->count();
 
@@ -44,7 +54,16 @@ class ControllerTareaPendiente extends Controller
 
     public function create()
     {
-        return view('tareapendiente.create');
+        // Colmenas SOLO del usuario, activas y de apiarios activos
+        $colmenas = Colmena::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->whereHas('apiario', function ($q) {
+                $q->where('estado', 'activo');
+            })
+            ->with('apiario')
+            ->get();
+
+        return view('tareapendiente.create', compact('colmenas'));
     }
 
     public function store(Request $request)
@@ -65,6 +84,20 @@ class ControllerTareaPendiente extends Controller
             'fechaFin.after_or_equal'     => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
             'fechaRecordatorio.before_or_equal' => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
         ]);
+
+        // Verificar que la colmena está activa y su apiario también
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->whereHas('apiario', function ($q) {
+                $q->where('estado', 'activo');
+            })
+            ->first();
+
+        if (!$colmena) {
+            return back()
+                ->withErrors(['idColmena' => 'La colmena seleccionada no es válida o pertenece a un apiario inactivo.'])
+                ->withInput();
+        }
 
         TareaPendiente::create([
             'idUser'            => Auth::id(),
@@ -91,7 +124,15 @@ class ControllerTareaPendiente extends Controller
             ->where('idUser', Auth::id())
             ->firstOrFail();
 
-        return view('tareapendiente.edit', compact('tarea'));
+        $colmenas = Colmena::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->whereHas('apiario', function ($q) {
+                $q->where('estado', 'activo');
+            })
+            ->with('apiario')
+            ->get();
+
+        return view('tareapendiente.edit', compact('tarea', 'colmenas'));
     }
 
     public function update(Request $request, $id)
@@ -112,6 +153,20 @@ class ControllerTareaPendiente extends Controller
             'fechaFin.after_or_equal'     => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
             'fechaRecordatorio.before_or_equal' => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
         ]);
+
+        // Verificar colmena activa + apiario activo
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->whereHas('apiario', function ($q) {
+                $q->where('estado', 'activo');
+            })
+            ->first();
+
+        if (!$colmena) {
+            return back()
+                ->withErrors(['idColmena' => 'La colmena seleccionada no es válida o pertenece a un apiario inactivo.'])
+                ->withInput();
+        }
 
         $tarea = TareaPendiente::activas()
             ->where('idTareaPendiente', $id)

@@ -9,69 +9,179 @@ use Illuminate\Support\Facades\Auth;
 
 class ControllerAlimentacion extends Controller
 {
-    //lista de alimentaciones de colmenas con estado activo del usuario autenticado
+    // LISTA
     public function index()
     {
-        
-        $alimentaciones = Alimentacion::with('colmena')
-                        ->where('idUsuario', Auth::id())
-                        ->orderBy('fechaSuministracion', 'desc')
-                        ->get();
+        $alimentaciones = Alimentacion::with(['colmena.apiario'])
+            ->where('idUsuario', Auth::id())
+            // Solo colmenas activas y apiarios activos
+            ->whereHas('colmena', function ($q) {
+                $q->where('estado', 'activo')
+                  ->whereHas('apiario', function ($q2) {
+                      $q2->where('estado', 'activo');
+                  });
+            })
+            ->orderBy('fechaSuministracion', 'desc')
+            ->orderBy('idAlimentacion', 'desc')
+            ->get();
+
         return view('alimentacion.index', compact('alimentaciones'));
     }
-    // Show the form for creating a new resource.
+
+    // FORM CREAR
     public function create()
     {
-        // Cargar las colmenas del usuario autenticado y que tengan estado activo
-        $idUser = Auth::id(); // ID del usuario logueado   
+        $idUser = Auth::id();
+
         $colmenas = Colmena::where('creadoPor', $idUser)
-                    ->where('estado', 'activo')
-                    ->get();   
-        return view('alimentacion.create',compact('colmenas'));
+            ->where('estado', 'activo')
+            ->with('apiario')
+            ->get();
+
+        return view('alimentacion.create', compact('colmenas'));
     }
-    // Store a newly created resource in storage.
-    public function store(Request $request)
+
+    /**
+     * Validación común (store + update)
+     */
+    private function validarAlimentacion(Request $request)
     {
         $request->validate([
-            'tipoAlimento' => 'required|string|max:100',
-            'cantidad' => 'required|numeric|min:0',
-            'unidadMedida' => 'required|string|max:20',
-            'motivo' => 'required|string|max:255',
+            'tipoAlimento'        => 'required|string|max:100',
+            'cantidad'            => 'required|numeric|min:0.1',
+            'unidadMedida'        => 'required|in:gr,Kg,ml,L',
+            'motivo'              => 'required|string|max:255',
             'fechaSuministracion' => 'required|date',
-            'idColmena' => 'required|numeric|min:1',
-            'obervaciones' => 'nullable|string',
-        ],
-        [
-            'tipoAlimento.required' => 'El tipo de alimento es obligatorio.',
-            'tipoAlimento.max' => 'El tipo de alimento no debe exceder los 100 caracteres.',
-            'cantidad.required' => 'La cantidad es obligatoria.',
-            'cantidad.numeric' => 'La cantidad debe ser un valor numérico.',
-            'cantidad.min' => 'La cantidad no puede ser negativa.',
-            'unidadMedida.required' => 'La unidad de medida es obligatoria.',
-            'unidadMedida.max' => 'La unidad de medida no debe exceder los 20 caracteres.',
-            'motivo.required' => 'El motivo es obligatorio.',
-            'motivo.max' => 'El motivo no debe exceder los 255 caracteres.',
+            'idColmena'           => 'required|numeric|min:1|exists:colmena,idColmena',
+            'observaciones'       => 'nullable|string|max:255',
+        ], [
+            'tipoAlimento.required'        => 'El tipo de alimento es obligatorio.',
+            'cantidad.required'            => 'La cantidad es obligatoria.',
+            'cantidad.numeric'             => 'La cantidad debe ser un valor numérico.',
+            'cantidad.min'                 => 'La cantidad debe ser mayor a 0.',
+            'unidadMedida.required'        => 'La unidad de medida es obligatoria.',
+            'unidadMedida.in'              => 'La unidad de medida seleccionada no es válida.',
+            'motivo.required'              => 'El motivo es obligatorio.',
+            'motivo.max'                   => 'El motivo no debe exceder los 255 caracteres.',
             'fechaSuministracion.required' => 'La fecha de suministración es obligatoria.',
-            'fechaSuministracion.date' => 'La fecha de suministración debe ser una fecha válida.',
-            'idColmena.required' => 'La colmena es obligatoria.',
-            'idColmena.numeric' => 'La colmena debe ser un valor numérico.',
-            'idColmena.min' => 'La colmena seleccionada no es válida.',
-            'observaciones.max' => 'Las observaciones no deben exceder los 255 caracteres.',
+            'fechaSuministracion.date'     => 'La fecha de suministración debe ser una fecha válida.',
+            'idColmena.required'           => 'La colmena es obligatoria.',
+            'idColmena.exists'             => 'La colmena seleccionada no es válida.',
+            'observaciones.max'            => 'Las observaciones no deben exceder los 255 caracteres.',
         ]);
-        date_default_timezone_set('America/Caracas');
-        $fecha=date('Y-m-d H:i:s');
-        $user=Auth::user()->id; 
-        $alimentacion= new Alimentacion();
-        $alimentacion->tipoAlimento = $request->tipoAlimento;
-        $alimentacion->cantidad = $request->cantidad;
-        $alimentacion->unidadMedida = $request->unidadMedida;
-        $alimentacion->motivo = $request->motivo;
-        $alimentacion->fechaSuministracion = $request->fechaSuministracion;
-        $alimentacion->observaciones = $request->observaciones;
-        $alimentacion->idUsuario = $user;
-        $alimentacion->idColmena = $request->idColmena;
-        $alimentacion->save();
-         return redirect()->to('/alimentacion')->with('success', 'Alimentación registrada exitosamente.');
+
+        // Reglas adicionales según unidad de medida
+        $cantidad = (float) $request->cantidad;
+        $unidad   = $request->unidadMedida;
+
+        // Límites razonables por unidad (ajustables)
+        $maxPorUnidad = [
+            'gr' => 10000, // 10 000 g = 10 kg
+            'Kg' => 10,    // 10 kg máximo
+            'ml' => 2000,  // 2 L
+            'L'  => 5,     // 5 L máximo
+        ];
+
+        if (isset($maxPorUnidad[$unidad]) && $cantidad > $maxPorUnidad[$unidad]) {
+
+            $unidadTexto = match ($unidad) {
+                'gr' => 'gramos',
+                'Kg' => 'kilogramos',
+                'ml' => 'mililitros',
+                'L'  => 'litros',
+                default => 'unidad',
+            };
+
+            $max = $maxPorUnidad[$unidad];
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'cantidad' => "Para la unidad de medida '{$unidadTexto}' la cantidad máxima permitida es {$max}.",
+                ]);
+        }
+
+        return null; // Todo OK
     }
-    
+
+    // GUARDAR NUEVO
+    public function store(Request $request)
+    {
+        if ($respuesta = $this->validarAlimentacion($request)) {
+            return $respuesta; // vuelve con errores si falló la validación extra
+        }
+
+        date_default_timezone_set('America/La_Paz');
+        $user = Auth::id();
+
+        $alimentacion = new Alimentacion();
+        $alimentacion->tipoAlimento        = $request->tipoAlimento;
+        $alimentacion->cantidad            = $request->cantidad;
+        $alimentacion->unidadMedida        = $request->unidadMedida;
+        $alimentacion->motivo              = $request->motivo;
+        $alimentacion->fechaSuministracion = $request->fechaSuministracion;
+        $alimentacion->observaciones       = $request->observaciones;
+        $alimentacion->idUsuario           = $user;
+        $alimentacion->idColmena           = $request->idColmena;
+        $alimentacion->save();
+
+        return redirect()
+            ->route('alimentacion.index')
+            ->with('success', 'Alimentación registrada exitosamente.');
+    }
+
+    // FORM EDITAR
+    public function edit($id)
+    {
+        $alimentacion = Alimentacion::with('colmena.apiario')
+            ->where('idalimentacion', $id)
+            ->where('idUsuario', Auth::id())
+            ->firstOrFail();
+
+        $colmenas = Colmena::where('creadoPor', Auth::id())
+            ->where('estado', 'activo')
+            ->with('apiario')
+            ->get();
+
+        return view('alimentacion.edit', compact('alimentacion', 'colmenas'));
+    }
+
+    // ACTUALIZAR
+    public function update(Request $request, $id)
+    {
+        if ($respuesta = $this->validarAlimentacion($request)) {
+            return $respuesta; // vuelve con errores si falló la validación extra
+        }
+
+        $alimentacion = Alimentacion::where('idalimentacion', $id)
+            ->where('idUsuario', Auth::id())
+            ->firstOrFail();
+
+        $alimentacion->tipoAlimento        = $request->tipoAlimento;
+        $alimentacion->cantidad            = $request->cantidad;
+        $alimentacion->unidadMedida        = $request->unidadMedida;
+        $alimentacion->motivo              = $request->motivo;
+        $alimentacion->fechaSuministracion = $request->fechaSuministracion;
+        $alimentacion->observaciones       = $request->observaciones;
+        $alimentacion->idColmena           = $request->idColmena;
+        $alimentacion->save();
+
+        return redirect()
+            ->route('alimentacion.index')
+            ->with('successedit', 'Alimentación actualizada correctamente.');
+    }
+
+    // ELIMINAR
+    public function destroy($id)
+    {
+        $alimentacion = Alimentacion::where('idalimentacion', $id)
+            ->where('idUsuario', Auth::id())
+            ->firstOrFail();
+
+        $alimentacion->delete();
+
+        return redirect()
+            ->route('alimentacion.index')
+            ->with('successdelete', 'Alimentación eliminada correctamente.');
+    }
 }
