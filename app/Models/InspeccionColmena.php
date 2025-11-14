@@ -10,35 +10,55 @@ class InspeccionColmena extends Model
     use HasFactory;
 
     protected $table = 'inspeccioncolmena';
-    // Si tu PK es 'id' puedes omitir esta línea porque es el default:
-    // protected $primaryKey = 'id';
+    protected $primaryKey = 'id';
 
     public $timestamps = false;
 
     protected $fillable = [
         'idColmena',
         'idUser',
-        'estadoOperativo',
+
+        // ENUM oficiales
         'temperamento',
         'intensidadImportacion',
-        'estadoReyna',
-        'poblacion',         // corregido (antes había 'pobalcion')
+        'poblacion',
+        'estadoReina',
         'celdasReales',
+        'reservaMiel',
+        'reservaPolen',
         'patronPostura',
         'enfermedadPlaga',
-        'reservaPolen',
-        'reservaMiel',
+        'estadoOperativo',
+
+        // TEXT
+        'acciones_tomadas',
         'notas',
+
+        // Foto (varchar 255)
+        'evidencia_foto',
+
+        // Fechas
+        'fechaInspeccion',
+        'horaInspeccion',
+        'fechaCreacion',
+        'fechaActualizacion',
     ];
 
     protected $casts = [
-        'fechaCreacion'   => 'datetime',
-        'fechaActualizar' => 'datetime',
+        'fechaInspeccion'   => 'date',
+        'fechaCreacion'     => 'datetime',
+        'fechaActualizacion'=> 'datetime',
     ];
 
     // Relación: una inspección pertenece a una colmena
     public function colmena()
     {
         return $this->belongsTo(Colmena::class, 'idColmena', 'idColmena');
+    }
+
+    // Relación: usuario que creó la inspección
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'idUser', 'id');
     }
 }

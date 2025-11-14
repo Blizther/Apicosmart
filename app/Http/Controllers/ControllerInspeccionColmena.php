@@ -2,81 +2,163 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InspeccionColmena;
+use App\Models\Colmena;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ControllerInspeccionColmena extends Controller
 {
-    //
-    public function store(Request $request)
-{
-    // Tomamos idColmena del hidden/route y el usuario autenticado
-    $idColmena = $request->input('colmena_id')
-        ?? $request->input('idColmena')
-        ?? $request->route('id');
+    /**
+     * Reglas de validación comunes (crear + editar)
+     */
+    private function validar(Request $request)
+    {
+        return $request->validate([
+            // Fecha de inspección: obligatoria, formato fecha, no puede ser futura
+            'fechaInspeccion'       => 'required|date|before_or_equal:today',
 
-    $idUser = auth()->id() ?? $request->input('idUser');
+            // Selects con valores fijos (coinciden con tus ENUM de la BD)
+            'estadoOperativo'       => 'required|in:activa,inactiva,zanganera,huerfana,enferma',
+            'temperamento'          => 'required|in:muy_tranquila,tranquila,mediana,defensiva,muy_defensiva',
+            'intensidadImportacion' => 'required|in:muy_baja,baja,media,alta,muy_alta',
+            'estadoReina'           => 'required|in:activa_buena_postura,postura_reducida,vieja,no_vista,ausente',
 
-    // VALIDACIÓN: solo tipos y longitudes según tu SQL
-    $data = $request->validate([
-        'estadoOperativo'       => ['required','string','in:activa,inactiva,zanganera,huerfana,en_division,enferma'],
-        'temperamento'           => ['nullable','string','max:45'],
-        'intensidadImportacion'  => ['nullable','string','max:45'], // en BD es "IntensidadImportacion"
-        'estadoReyna'            => ['nullable','string','max:45'],
-        'reservaMiel'            => ['nullable','string','max:45'],
-        'reservaPolen'           => ['nullable','string','max:45'],
+            'reservaMiel'           => 'required|in:sin_reservas,baja,media,alta_muchas_reservas',
+            'reservaPolen'          => 'required|in:sin_reservas,baja,media,alta_mucho_polen',
 
-        // checkboxes llegan como array -> luego haremos join a varchar(45)
-        'celdasReales'           => ['nullable','array'],
-        'celdasReales.*'         => ['nullable','string','max:45'],
-        'patronPostura'          => ['nullable','array'],
-        'patronPostura.*'        => ['nullable','string','max:45'],
-        'enfermedadPlaga'        => ['nullable','array'],
-        'enfermedadPlaga.*'      => ['nullable','string','max:45'],
+            'celdasReales'          => 'required|in:no_hay,en_progresion,tapadas,destruidas,varias_enjambron',
 
-        'notas'                  => ['nullable','string'], // TEXT
-    ]);
-    $data['celdasReales'] = isset($data['celdasReales']) ? implode(', ', $data['celdasReales']) : null;
-    // Validaciones mínimas de claves
-    if (empty($idColmena) || empty($idUser)) {
-        return back()->withErrors('Falta id de colmena o usuario.')->withInput();
+            'patronPostura'         => 'required|in:patron_cerrado,larvas_amarillas,huecos_en_marco,cria_zangano_abundante,mucha_cria_operculada,sin_corona_miel,sospecha_loque',
+
+            'enfermedadPlaga'       => 'required|in:ninguna,loque_europea,loque_americana,varroa,hormigas,otra',
+
+            // Notas opcionales
+            'notas'                 => 'nullable|string|max:500',
+        ]);
     }
 
-    // Une arrays de checkboxes a "valor1, valor2" y limita a 45 chars
-    $join = function ($v) {
-        if (is_array($v)) $v = implode(', ', $v);
-        return $v !== null ? Str::limit($v, 45, '') : null;
-    };
+    /**
+     * Lista de inspecciones de UNA colmena
+     */
+    public function index($idColmena)
+    {
+        $colmena = Colmena::with('apiario')->findOrFail($idColmena);
 
-    // Payload EXACTO a los nombres de tus columnas
-    $row = [
-        'idColmena'             => (int) $idColmena,
-        'idUser'                => (int) $idUser,
-        'estadoOperativo'      => $data['estadoOperativo'] ?? null,
+        $inspecciones = InspeccionColmena::where('idColmena', $idColmena)
+            ->orderByDesc('fechaInspeccion')   // primero la fecha más reciente
+            ->orderByDesc('id')                // luego por ID por si hay misma fecha
+            ->get();
 
-        'temperamento'          => $data['temperamento'] ?? null,
-        'IntensidadImportacion' => $data['intensidadImportacion'] ?? null, // mapeo de name -> columna
-        'estadoReyna'           => $data['estadoReyna'] ?? null,
-        'reservaMiel'           => $data['reservaMiel'] ?? null,
-        'reservaPolen'          => $data['reservaPolen'] ?? null,
-
-        'celdasReales'          => $join($data['celdasReales'] ?? null),
-        'patronPostura'         => $join($data['patronPostura'] ?? null),
-        'enfermedadPlaga'       => $join($data['enfermedadPlaga'] ?? null),
-
-        'notas'                 => $data['notas'] ?? null,
-        // fechas usan DEFAULT de la BD
-    ];
-
-    try {
-        DB::table('inspeccioncolmena')->insert($row);
-    } catch (\Throwable $e) {
-        return back()->withErrors('No se pudo guardar la inspección: '.$e->getMessage())->withInput();
+        return view('inspeccion.index', [
+            'inspecciones'  => $inspecciones,
+            'id'            => $colmena->idColmena,
+            'codigoColmena' => $colmena->codigo,
+            'nombreApiario' => $colmena->apiario->nombre ?? 'Sin apiario',
+        ]);
     }
 
-    return redirect()
-        ->route('colmenas.verinspeccion', ['id' => $idColmena])
-        ->with('success', 'Inspección registrada correctamente.');
-}
+    /**
+     * Formulario para crear una inspección de UNA colmena
+     */
+    public function create($idColmena)
+    {
+        $colmena = Colmena::with('apiario')->findOrFail($idColmena);
+
+        return view('inspeccion.create', [
+            'id'            => $colmena->idColmena,
+            'codigoColmena' => $colmena->codigo,
+            'nombreApiario' => $colmena->apiario->nombre ?? 'Sin apiario',
+        ]);
+    }
+
+    /**
+     * Guardar nueva inspección
+     */
+    public function store(Request $request, $idColmena)
+    {
+        $colmena = Colmena::findOrFail($idColmena);
+        $userId  = Auth::id();
+
+        $data = $this->validar($request);
+
+        $insp = new InspeccionColmena();
+        $insp->idColmena              = $colmena->idColmena;
+        $insp->idUser                 = $userId;
+        $insp->fechaInspeccion        = $data['fechaInspeccion'];
+        $insp->estadoOperativo        = $data['estadoOperativo'];
+        $insp->temperamento           = $data['temperamento'];
+        $insp->intensidadImportacion  = $data['intensidadImportacion'];
+        $insp->estadoReina            = $data['estadoReina'];
+        $insp->reservaMiel            = $data['reservaMiel'];
+        $insp->reservaPolen           = $data['reservaPolen'];
+        $insp->celdasReales           = $data['celdasReales'];
+        $insp->patronPostura          = $data['patronPostura'];
+        $insp->enfermedadPlaga        = $data['enfermedadPlaga'];
+        $insp->notas                  = $data['notas'] ?? null;
+
+        $insp->save();
+
+        return redirect()
+            ->route('inspeccion.index', $colmena->idColmena)
+            ->with('success', 'Inspección registrada correctamente.');
+    }
+
+    /**
+     * Formulario de edición
+     */
+    public function edit($id)
+    {
+        $inspeccion = InspeccionColmena::with('colmena.apiario')->findOrFail($id);
+        $colmena    = $inspeccion->colmena;
+
+        return view('inspeccion.edit', [
+            'inspeccion'    => $inspeccion,
+            'id'            => $colmena->idColmena,
+            'codigoColmena' => $colmena->codigo,
+            'nombreApiario' => $colmena->apiario->nombre ?? 'Sin apiario',
+        ]);
+    }
+
+    /**
+     * Actualizar inspección
+     */
+    public function update(Request $request, $id)
+    {
+        $inspeccion = InspeccionColmena::findOrFail($id);
+        $data       = $this->validar($request);
+
+        $inspeccion->fechaInspeccion        = $data['fechaInspeccion'];
+        $inspeccion->estadoOperativo        = $data['estadoOperativo'];
+        $inspeccion->temperamento           = $data['temperamento'];
+        $inspeccion->intensidadImportacion  = $data['intensidadImportacion'];
+        $inspeccion->estadoReina            = $data['estadoReina'];
+        $inspeccion->reservaMiel            = $data['reservaMiel'];
+        $inspeccion->reservaPolen           = $data['reservaPolen'];
+        $inspeccion->celdasReales           = $data['celdasReales'];
+        $inspeccion->patronPostura          = $data['patronPostura'];
+        $inspeccion->enfermedadPlaga        = $data['enfermedadPlaga'];
+        $inspeccion->notas                  = $data['notas'] ?? null;
+
+        $inspeccion->save();
+
+        return redirect()
+            ->route('inspeccion.index', $inspeccion->idColmena)
+            ->with('successedit', 'Inspección actualizada correctamente.');
+    }
+
+    /**
+     * Eliminar inspección
+     */
+    public function destroy($id)
+    {
+        $inspeccion = InspeccionColmena::findOrFail($id);
+        $colmenaId  = $inspeccion->idColmena;
+
+        $inspeccion->delete();
+
+        return redirect()
+            ->route('inspeccion.index', $colmenaId)
+            ->with('successdelete', 'Inspección eliminada correctamente.');
+    }
 }

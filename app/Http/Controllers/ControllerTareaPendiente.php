@@ -18,19 +18,23 @@ class ControllerTareaPendiente extends Controller
             ->where('idUser', $userId)
             ->whereHas('colmena', function ($q) {
                 $q->where('estado', 'activo')
-                  ->whereHas('apiario', function ($q2) {
-                      $q2->where('estado', 'activo');
-                  });
+                ->whereHas('apiario', function ($q2) {
+                    $q2->where('estado', 'activo');
+                });
             });
 
-        // Lista principal
+        // LISTA PRINCIPAL
         $tareas = (clone $baseQuery)
             ->with('colmena.apiario')
+            // 1) Completadas al final
+            ->orderByRaw("CASE WHEN estado = 'completada' THEN 1 ELSE 0 END")
+            // 2) Prioridad: urgente > alta > media > baja
             ->orderByRaw("FIELD(prioridad, 'urgente','alta','media','baja')")
-            ->orderBy('fechaFin', 'asc')
+            // 3) Fecha fin más cercana primero (las NULL al final)
+            ->orderByRaw("fechaFin IS NULL, fechaFin ASC")
             ->get();
 
-        // Totales
+        // TOTALES (se quedan igual)
         $totalPendientes = (clone $baseQuery)
             ->whereIn('estado', ['pendiente', 'enProgreso'])
             ->count();
@@ -51,6 +55,7 @@ class ControllerTareaPendiente extends Controller
             'totalVencidas'   => $totalVencidas,
         ]);
     }
+
 
     public function create()
     {

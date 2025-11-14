@@ -52,7 +52,7 @@ sin ese código el guardado no se activa
                             placeholder="Código" name="codigo" value="{{ old('codigo') }}" required autocomplete="off" readonly>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="apiario" class="form-label">Selecciona un Apiario</label>
+                        <label for="apiario" class="form-label">Selecciona un Apiario *</label>
                         <select id="apiario" name="apiario" class="form-control" required>
                             <option value="">-- Selecciona --</option>
                             apiarios del usuario autenticado
@@ -67,7 +67,7 @@ sin ese código el guardado no se activa
                         </select>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
-                        <label for="fechaFabricacion">Fecha de instalación</label>
+                        <label for="fechaFabricacion">Fecha de instalación *</label>
                         <input type="date" class="form-control" id="fechaInstalacionFisica"
                             placeholder="Fecha de Fabricacion" name="fechaInstalacionFisica" value="{{ old('fechaInstalacionFisica') }}"
                             max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required autocomplete="off">

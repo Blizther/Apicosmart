@@ -21,12 +21,24 @@
         </div>
         <div class="col-md-3">
             <label>Desde</label>
-            <input type="date" id="fechaInicio" class="form-control">
+            <input
+                type="date"
+                id="fechaInicio"
+                class="form-control"
+                max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
+            >
         </div>
+
         <div class="col-md-3">
             <label>Hasta</label>
-            <input type="date" id="fechaFin" class="form-control">
+            <input
+                type="date"
+                id="fechaFin"
+                class="form-control"
+                max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
+            >
         </div>
+
         <div class="col-md-2 d-flex align-items-end">
             <button id="btnAplicarFiltro" class="btn btn-success w-100">Aplicar Filtros</button>
         </div>
@@ -210,11 +222,18 @@ $(document).ready(function() {
 
     // Evento aplicar filtro
     $('#btnAplicarFiltro').click(function() {
+
+        // Validar fechas antes de recargar gráficos
+        if (!validarFechas()) {
+            return;
+        }
+
         for (let key in charts) {
             charts[key].destroy();
         }
         cargarGraficos();
     });
+
 
     cargarGraficos(); // carga inicial
 

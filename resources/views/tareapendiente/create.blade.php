@@ -27,7 +27,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <label for="idColmena" class="form-label">Colmena</label>
+                    <label for="idColmena" class="form-label">Colmena *</label>
                     <select name="idColmena" id="idColmena" class="form-select" required>
                         <option value="" disabled {{ old('idColmena') ? '' : 'selected' }}>
                             Seleccione una colmena
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="tipo" class="form-label">Tipo de tarea</label>
+                    <label for="tipo" class="form-label">Tipo de tarea *</label>
                     <select name="tipo" id="tipo" class="form-select" required>
                         <option value="" disabled {{ old('tipo') ? '' : 'selected' }}>Seleccione tipo</option>
                         <option value="inspeccion"   {{ old('tipo') == 'inspeccion' ? 'selected' : '' }}>Inspección</option>
@@ -77,7 +77,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="titulo" class="form-label">Título</label>
+                    <label for="titulo" class="form-label">Título *</label>
                     <input
                         type="text"
                         class="form-control"

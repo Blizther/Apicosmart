@@ -134,7 +134,7 @@ class ControllerAlimentacion extends Controller
     public function edit($id)
     {
         $alimentacion = Alimentacion::with('colmena.apiario')
-            ->where('idalimentacion', $id)
+            ->where('idAlimentacion', $id)
             ->where('idUsuario', Auth::id())
             ->firstOrFail();
 
@@ -153,7 +153,7 @@ class ControllerAlimentacion extends Controller
             return $respuesta; // vuelve con errores si falló la validación extra
         }
 
-        $alimentacion = Alimentacion::where('idalimentacion', $id)
+        $alimentacion = Alimentacion::where('idAlimentacion', $id)
             ->where('idUsuario', Auth::id())
             ->firstOrFail();
 
@@ -174,7 +174,7 @@ class ControllerAlimentacion extends Controller
     // ELIMINAR
     public function destroy($id)
     {
-        $alimentacion = Alimentacion::where('idalimentacion', $id)
+        $alimentacion = Alimentacion::where('idAlimentacion', $id)
             ->where('idUsuario', Auth::id())
             ->firstOrFail();
 

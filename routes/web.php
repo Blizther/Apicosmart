@@ -89,14 +89,20 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::get('/colmenas/proximo-codigo/{idApiario}', [ControllerColmena::class, 'proximoCodigo'])->name('colmenas.proximoCodigo');
 
     Route::resource('/colmenas', ControllerColmena::class);
-    Route::get('/colmenas/{id}/verInspeccion', [ControllerColmena::class, 'verinspeccion'])->name('colmenas.verinspeccion');
-    Route::get('/colmenas/{id}/agregarinspeccion', [ControllerColmena::class, 'agregarinspeccion'])->name('colmenas.agregarinspeccion');
-    Route::post('/colmenas/guardarinspeccion', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
     Route::get('/colmenas/{id}/editar', [ControllerColmena::class, 'edit'])->name('colmenas.edit');
     Route::get('/colmenas/{id}/guardarcolmena', [ControllerColmena::class, 'update'])->name('colmenas.update');
     Route::put('/colmenas/editarcolmena/{id}', [ControllerColmena::class, 'update'])->name('colmenas.update');
     //detalles de la colmena
     Route::get('/colmenas/{id}', [ControllerColmena::class, 'show'])->name('colmenas.show');
+
+    /********* SECCION INSPECCIONES DE COLMENA *********/
+    Route::get('/colmenas/{idColmena}/inspecciones', [ControllerInspeccionColmena::class, 'index'])->name('inspeccion.index');
+    Route::get('/colmenas/{idColmena}/inspecciones/crear', [ControllerInspeccionColmena::class, 'create'])->name('inspeccion.create');
+    Route::post('/colmenas/{idColmena}/inspecciones/guardar', [ControllerInspeccionColmena::class, 'store'])->name('inspeccion.store');
+    Route::get('/inspecciones/{id}/editar', [ControllerInspeccionColmena::class, 'edit'])->name('inspeccion.edit');
+    Route::put('/inspecciones/{id}/actualizar', [ControllerInspeccionColmena::class, 'update'])->name('inspeccion.update');
+    Route::delete('/inspecciones/{id}/eliminar', [ControllerInspeccionColmena::class, 'destroy'])->name('inspeccion.destroy');
+
 
     /******** SECCION COSECHA ********/
     Route::get('/cosechas', [ControllerCosecha::class, 'index'])->name('cosechas.index');

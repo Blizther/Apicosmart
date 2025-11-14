@@ -6,30 +6,30 @@
     <div class="row g-4">
         <div class="col-sm-12">
             @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
             @endif
 
             @if (session('successdelete'))
-            <div class="alert alert-success">
-                {{ session('successdelete') }}
-            </div>
+                <div class="alert alert-success">
+                    {{ session('successdelete') }}
+                </div>
             @endif
 
             @if (session('successedit'))
-            <div class="alert alert-success">
-                {{ session('successedit') }}
-            </div>
+                <div class="alert alert-success">
+                    {{ session('successedit') }}
+                </div>
             @endif
         </div>
     </div>
 
     <div class="mb-3">
-        <a href="{{ route('colmenas.create')}}" class="btn btn-success">
+        <a href="{{ route('colmenas.create') }}" class="btn btn-success">
             <i class="fa fa-plus"></i> Agregar colmena
         </a>
-        <a href="{{ route('colmenas.createLote')}}" class="btn btn-primary ms-2">
+        <a href="{{ route('colmenas.createLote') }}" class="btn btn-primary ms-2">
             <i class="fa fa-layer-group"></i> Agregar colmenas por lote
         </a>
     </div>
@@ -59,42 +59,50 @@
                     <tbody>
                         @php $correlativo = 1; @endphp
                         @foreach ($colmenas as $colmena)
-                        <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
-                            <th scope="row">{{ $correlativo }}</th>
-                            <td>{{ $colmena->codigo }}</td>
-                            <td>{{ $colmena->apiario->nombre }}</td>
-                            <td>{{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y ') }}</td>
-                            <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
-                            <td>{{ $colmena->cantidadMarco }}</td>
-                            <td>{{ $colmena->modelo }}</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                    <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
-                                        Ver Inspecciones
-                                    </a>
-                                    <a href="{{ route('colmenas.show', $colmena->idColmena) }}" class="btn btn-info btn-sm">
-                                        Detalles
-                                    </a>
-                                    <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
-                                        Editar
-                                    </a>
+                            <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
+                                <th scope="row">{{ $correlativo }}</th>
+                                <td>{{ $colmena->codigo }}</td>
+                                <td>{{ $colmena->apiario->nombre }}</td>
+                                <td>
+                                    @if($colmena->fechaInstalacionFisica)
+                                        {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y') }}
+                                    @else
+                                        Sin registro
+                                    @endif
+                                </td>
+                                <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
+                                <td>{{ $colmena->cantidadMarco }}</td>
+                                <td>{{ $colmena->modelo }}</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                        {{-- NUEVA RUTA PARA VER INSPECCIONES --}}
+                                        <a href="{{ route('inspeccion.index', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
+                                            Ver inspecciones
+                                        </a>
 
-                                    <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" 
-                                        method="POST" 
-                                        class="m-0 p-0 form-eliminar-colmena">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" 
-                                                class="btn btn-danger btn-sm btn-eliminar-colmena"
-                                                data-codigo="{{ $colmena->codigo }}">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                                        <a href="{{ route('colmenas.show', $colmena->idColmena) }}" class="btn btn-info btn-sm">
+                                            Detalles
+                                        </a>
 
-                        </tr>
-                        @php $correlativo++; @endphp
+                                        <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
+                                            Editar
+                                        </a>
+
+                                        <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}"
+                                              method="POST"
+                                              class="m-0 p-0 form-eliminar-colmena">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm btn-eliminar-colmena"
+                                                    data-codigo="{{ $colmena->codigo }}">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @php $correlativo++; @endphp
                         @endforeach
                     </tbody>
                 </table>

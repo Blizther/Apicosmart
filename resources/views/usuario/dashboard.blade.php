@@ -190,9 +190,11 @@
     <div class="col-lg-5">
         <div class="ibox float-e-margins">
             <div class="ibox float-e-margins">
+
                 @php
                     $ultima = Auth::user()->ultimaInspeccion;
-                    // si la última inspección pertenece a colmena/apiario inactivo, la ignoramos
+
+                    // ignorar colmenas o apiarios inactivos
                     if ($ultima && (
                         !$ultima->colmena ||
                         $ultima->colmena->estado !== 'activo' ||
@@ -201,32 +203,31 @@
                     )) {
                         $ultima = null;
                     }
-                    $ultimaFecha = $ultima ? (Auth::user()->ultima_inspeccion_fecha ?? null) : null;
+
+                    $ultimaFecha = $ultima
+                        ? \Carbon\Carbon::parse($ultima->fechaInspeccion)->format('d/m/Y')
+                        : null;
                 @endphp
-                
+
                 <div class="ibox-title">
                     <span class="label label-warning pull-right">
-                        colmena # {{ $ultima && $ultima->colmena ? $ultima->colmena->codigo : 'N/A' }}
+                        Colmena #{{ $ultima->colmena->codigo ?? 'N/A' }}
                         -
-                        {{ $ultima && $ultima->colmena && $ultima->colmena->apiario ? $ultima->colmena->apiario->nombre : 'N/A' }}
+                        {{ $ultima->colmena->apiario->nombre ?? 'N/A' }}
                     </span>
                     <h5>Última inspección</h5>
                 </div>
 
-                {{-- NUEVA PRIMERA FILA: info de colmena y apiario --}}
+                {{-- Info colmena / apiario --}}
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-xs-6">
                             <small class="stats-label">Colmena</small>
-                            <h4>
-                                {{ $ultima && $ultima->colmena ? $ultima->colmena->codigo : 'N/A' }}
-                            </h4>
+                            <h4>{{ $ultima->colmena->codigo ?? 'N/A' }}</h4>
                         </div>
                         <div class="col-xs-6">
                             <small class="stats-label">Apiario</small>
-                            <h4>
-                                {{ $ultima && $ultima->colmena && $ultima->colmena->apiario ? $ultima->colmena->apiario->nombre : 'N/A' }}
-                            </h4>
+                            <h4>{{ $ultima->colmena->apiario->nombre ?? 'N/A' }}</h4>
                         </div>
                     </div>
                 </div>
@@ -236,26 +237,19 @@
                     <div class="row">
                         <div class="col-xs-4">
                             <small class="stats-label">Fecha inspección</small>
-                            <h4> {{ $ultimaFecha ? $ultimaFecha : 'N/A' }}</h4>
+                            <h4>{{ $ultimaFecha ?? 'N/A' }}</h4>
                         </div>
+
                         <div class="col-xs-4">
                             <small class="stats-label">Estado Colmena</small>
-                            @php
-                                $estado = $ultima ? $ultima->estadoOperativo : 'N/A';
-                                $color = match (strtolower($estado)) {
-                                    'activa' => 'text-success',     // verde
-                                    'zanganera' => 'text-warning',   // amarillo
-                                    'enferma' => 'label-danger',     // rojo
-                                    default => 'text-muted',         // gris
-                                };
-                            @endphp
-                            <h4 class="{{ $color }}">
-                                {{ $estado }}
+                            <h4 class="text-success">
+                                {{ $ultima->estadoOperativo ?? 'N/A' }}
                             </h4>
                         </div>
+
                         <div class="col-xs-4">
                             <small class="stats-label">Temperamento</small>
-                            <h4> {{ $ultima ? $ultima->temperamento : 'N/A' }} </h4>
+                            <h4>{{ $ultima->temperamento ?? 'N/A' }}</h4>
                         </div>
                     </div>
                 </div>
@@ -264,80 +258,60 @@
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-xs-4">
-                            <small class="stats-label">Estado reyna</small>
-                            <h4>{{ $ultima ? $ultima->estadoReyna : 'N/A' }}</h4>
+                            <small class="stats-label">Estado reina</small>
+                            <h4>{{ $ultima->estadoReina ?? 'N/A' }}</h4>
                         </div>
 
                         <div class="col-xs-4">
                             <small class="stats-label">Reserva Miel</small>
-                            <h4>{{ $ultima ? $ultima->reservaMiel : 'N/A' }}</h4>
+                            <h4>{{ $ultima->reservaMiel ?? 'N/A' }}</h4>
                         </div>
+
                         <div class="col-xs-4">
                             <small class="stats-label">Reserva polen</small>
-                            <h4>{{ $ultima ? $ultima->reservaPolen : 'N/A' }}</h4>
+                            <h4>{{ $ultima->reservaPolen ?? 'N/A' }}</h4>
                         </div>
                     </div>
                 </div>
 
-                {{-- FILA 3 --}}
+                {{-- FILA 3 - EnfermedadPlaga --}}
                 <div class="ibox-content">
                     <div class="row">
+                        {{-- Hormigas --}}
                         <div class="col-xs-4">
                             <small class="stats-label">Hormigas</small>
                             @php
-                                $hormigas = $ultima ? $ultima->hormigas : null;
-                                if(is_null($hormigas)){
-                                    $colorHormigas = 'text-muted';
-                                } elseif($hormigas == 0){
-                                    $colorHormigas = 'text-success';
-                                } else {
-                                    $colorHormigas = 'label-danger';
-                                }
+                                $hormigas = $ultima ? $ultima->enfermedadPlaga === 'hormigas' : null;
+                                $color = $hormigas ? 'label-danger' : 'text-success';
                             @endphp
-                            <h4 class="{{ $colorHormigas }}">
-                                {{ $ultima ? ($ultima->hormigas == 0 ? 'No' : 'Sí') : 'N/A' }}   
-                            </h4>
+                            <h4 class="{{ $color }}">{{ $hormigas ? 'Sí' : 'No' }}</h4>
                         </div>
 
+                        {{-- Varroa --}}
                         <div class="col-xs-4">
                             <small class="stats-label">Varroa</small>
                             @php
-                                $varroa = $ultima ? $ultima->varroa : null;
-                                if(is_null($varroa)){
-                                    $colorVarroa = 'text-muted';
-                                } elseif($varroa == 0){
-                                    $colorVarroa = 'text-success';
-                                } else {
-                                    $colorVarroa = 'label-danger';
-                                }
+                                $varroa = $ultima ? $ultima->enfermedadPlaga === 'varroa' : null;
+                                $color = $varroa ? 'label-danger' : 'text-success';
                             @endphp
-                            <h4 class="{{ $colorVarroa }}">
-                                {{ $ultima ? ($ultima->varroa == 0 ? 'No' : 'Sí') : 'N/A' }}
-                            </h4>
+                            <h4 class="{{ $color }}">{{ $varroa ? 'Sí' : 'No' }}</h4>
                         </div>
 
+                        {{-- Loque europea --}}
                         <div class="col-xs-4">
                             <small class="stats-label">Loque europea</small>
                             @php
-                                $loque = $ultima ? $ultima->loque_europea : null;
-                                if(is_null($loque)){
-                                    $colorLoque = 'text-muted';
-                                } elseif($loque == 0){
-                                    $colorLoque = 'text-success';
-                                } else {
-                                    $colorLoque = 'label-danger';
-                                }
+                                $loque = $ultima ? $ultima->enfermedadPlaga === 'loque_europea' : null;
+                                $color = $loque ? 'label-danger' : 'text-success';
                             @endphp
-                            <h4 class="{{ $colorLoque }}">
-                                {{ $ultima ? ($ultima->loque_europea == 0 ? 'No' : 'Sí') : 'N/A' }}
-                            </h4>
+                            <h4 class="{{ $color }}">{{ $loque ? 'Sí' : 'No' }}</h4>
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
-
     </div>
+
 </div>
 @endsection
