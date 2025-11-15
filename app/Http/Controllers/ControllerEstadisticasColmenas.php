@@ -31,9 +31,22 @@ class ControllerEstadisticasColmenas extends Controller
         return $query;
     }
 
+    /**
+     * Construye la etiqueta que se mostrará en el gráfico:
+     * "NombreApiario - CodigoColmena"
+     */
+    private function etiquetaColmena(Colmena $colmena): string
+    {
+        $apiario = $colmena->apiario;
+        $nombreApiario = $apiario ? $apiario->nombre : 'Sin apiario';
+        $codigo = $colmena->codigo ?? 'Sin código';
+
+        return $nombreApiario . ' - ' . $codigo;
+    }
+
     public function inspecciones(Request $request)
     {
-        $colmenas = Colmena::with('inspecciones')
+        $colmenas = Colmena::with(['inspecciones', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
             ->whereHas('apiario', function ($q) {
@@ -50,10 +63,10 @@ class ControllerEstadisticasColmenas extends Controller
                 $colmena->inspecciones(),
                 $request->desde,
                 $request->hasta,
-                'fechaCreacion'
+                'fechaInspeccion' 
             )->count();
 
-            $labels[] = $colmena->codigo;
+            $labels[] = $this->etiquetaColmena($colmena);
             $values[] = $count;
         }
 
@@ -62,7 +75,7 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function cosecha(Request $request)
     {
-        $colmenas = Colmena::with('cosechas')
+        $colmenas = Colmena::with(['cosechas', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
             ->whereHas('apiario', function ($q) {
@@ -82,7 +95,7 @@ class ControllerEstadisticasColmenas extends Controller
                 'fechaCosecha'
             )->sum('peso');
 
-            $labels[] = $colmena->codigo;
+            $labels[] = $this->etiquetaColmena($colmena);
             $values[] = $peso;
         }
 
@@ -91,7 +104,7 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function tratamientos(Request $request)
     {
-        $colmenas = Colmena::with('tratamientos')
+        $colmenas = Colmena::with(['tratamientos', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
             ->whereHas('apiario', function ($q) {
@@ -111,7 +124,7 @@ class ControllerEstadisticasColmenas extends Controller
                 'fechaAdministracion'
             )->count();
 
-            $labels[] = $colmena->codigo;
+            $labels[] = $this->etiquetaColmena($colmena);
             $values[] = $count;
         }
 
@@ -120,7 +133,7 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function alimentaciones(Request $request)
     {
-        $colmenas = Colmena::with('alimentaciones')
+        $colmenas = Colmena::with(['alimentaciones', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
             ->whereHas('apiario', function ($q) {
@@ -140,7 +153,7 @@ class ControllerEstadisticasColmenas extends Controller
                 'fechaSuministracion'
             )->count();
 
-            $labels[] = $colmena->codigo;
+            $labels[] = $this->etiquetaColmena($colmena);
             $values[] = $count;
         }
 

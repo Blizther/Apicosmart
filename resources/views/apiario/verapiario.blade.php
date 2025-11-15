@@ -90,7 +90,7 @@
                                 <td>{{ $colmena->modelo }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                        <a href="{{ route('colmenas.verinspeccion', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
+                                        <a href="{{ route('colmenas.index', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
                                             Ver Inspecciones
                                         </a>
                                         <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">

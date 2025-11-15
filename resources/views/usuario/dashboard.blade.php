@@ -111,8 +111,8 @@
                             <th>Estado</th>
                             <th>Fecha Fin</th>
                             <th>Prioridad</th>
-                            <th>titulo</th>
-                            <th>Descripcion</th>
+                            <th>Titulo</th>
+                            <th>Colmena</th>
                         </tr>
                     </thead>
                     <tbody>

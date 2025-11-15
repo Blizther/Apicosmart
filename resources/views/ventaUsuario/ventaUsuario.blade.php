@@ -129,16 +129,11 @@
             <label>Cliente</label>
             <input type="text" name="cliente_nombre" class="form-control form-control-sm" value="{{ old('cliente_nombre') }}">
           </div>
-          <div class="mb-2">
-            <label>Documento</label>
-            <input type="text" name="cliente_doc" class="form-control form-control-sm" value="{{ old('cliente_doc') }}">
-          </div>
           <div class="mb-3">
             <label>Método de pago</label>
             <select name="metodo_pago" class="form-control form-control-sm">
               <option value="efectivo">Efectivo</option>
               <option value="qr">QR</option>
-              <option value="tarjeta">Tarjeta</option>
             </select>
           </div>
           <button class="btn btn-success btn-sm" type="submit" @if(empty($cart)) disabled @endif>Confirmar venta</button>

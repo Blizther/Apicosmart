@@ -7,7 +7,7 @@
     </button>
 </div>
 
-<!-- 🔹 FILTROS -->
+<!-- FILTROS -->
 <div class="card p-3 mb-4" id="filtros">
     <div class="row">
         <div class="col-md-4">
@@ -45,13 +45,16 @@
     </div>
 </div>
 
-<!-- 📄 CONTENIDO DEL REPORTE -->
+<!-- CONTENIDO DEL REPORTE -->
 <div class="wrapper wrapper-content animated fadeInRight" id="reporteContenido">
     <div class="text-center mb-4">
         <img src="{{ asset('img/logoApicoSmart.jpg') }}" alt="Logo" style="height: 80px;">
         <h2 class="mt-2 mb-0">ApicoSmart</h2>
         <p class="mb-0">Cochabamba, Bolivia</p>
-        <p class="mb-0">{{ Auth::user()->nombre }} {{ Auth::user()->primerApellido }} | Email: {{ Auth::user()->email }}</p>
+        <p class="mb-0">
+            {{ Auth::user()->nombre }} {{ Auth::user()->primerApellido }}
+            | Email: {{ Auth::user()->email }}
+        </p>
         <hr>
         <h4>Reporte Estadístico por Colmenas</h4>
         <span id="nombreApiarioSeleccionado" style="font-weight: normal; font-size: 0.9em;"></span>
@@ -59,7 +62,7 @@
     </div>
 
     <div class="row">
-        <!-- 🟠 Inspecciones -->
+        <!-- Inspecciones -->
         <div class="col-lg-6">
             <div class="ibox">
                 <div class="ibox-title"><h5>Cantidad de Inspecciones por Colmena</h5></div>
@@ -68,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <!-- 🟣 Alimentaciones -->
+        <!-- Alimentaciones -->
         <div class="col-lg-6">
             <div class="ibox">
                 <div class="ibox-title"><h5>Cantidad de Alimentaciones por Colmena</h5></div>
@@ -77,11 +80,10 @@
                 </div>
             </div>
         </div>
-        
     </div>
 
     <div class="row">
-        <!-- 🔵 Tratamientos -->
+        <!-- Tratamientos -->
         <div class="col-lg-6">
             <div class="ibox">
                 <div class="ibox-title"><h5>Cantidad de Tratamientos por Colmena</h5></div>
@@ -90,7 +92,7 @@
                 </div>
             </div>
         </div>
-        <!-- 🟢 Cosecha -->
+        <!-- Cosecha -->
         <div class="col-lg-6">
             <div class="ibox">
                 <div class="ibox-title"><h5>Porcentaje y Total de Cosecha por Colmena</h5></div>
@@ -111,6 +113,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+
+// Validar rango de fechas
+function validarFechas() {
+    const inicio = $('#fechaInicio').val();
+    const fin = $('#fechaFin').val();
+
+    // Sin fechas: se permite
+    if (!inicio && !fin) {
+        return true;
+    }
+
+    // Solo una de las dos: se permite (filtro abierto)
+    if (inicio && !fin) return true;
+    if (!inicio && fin) return true;
+
+    // Ambas fechas: validar que inicio <= fin
+    if (inicio > fin) {
+        alert('La fecha "Desde" no puede ser mayor que la fecha "Hasta".');
+        return false;
+    }
+
+    return true;
+}
+
 $(document).ready(function() {
 
     const totalGraficos = 4;
@@ -126,32 +152,35 @@ $(document).ready(function() {
 
     function cargarGraficos() {
         graficosCargados = 0;
+        $('#btnExportarPDF').prop('disabled', true); // mientras se cargan
+
         const apiarioId = $('#apiarioSelect').val();
         const inicio = $('#fechaInicio').val();
         const fin = $('#fechaFin').val();
+
         // Nombre del apiario
-    let nombreApiario = $('#apiarioSelect option:selected').text();
-    if(nombreApiario === '-- Todos --') nombreApiario = 'Todos los Apiarios';
+        let nombreApiario = $('#apiarioSelect option:selected').text();
+        if (nombreApiario === '-- Todos --') nombreApiario = 'Todos los Apiarios';
 
-    // Formatear fechas (dd/mm/yyyy)
-    let fechaTexto = '';
-    if(inicio && fin) {
-        const fechaDesde = new Date(inicio);
-        const fechaHasta = new Date(fin);
-        fechaTexto = ` | ${fechaDesde.getDate().toString().padStart(2,'0')}/` +
-                     `${(fechaDesde.getMonth()+1).toString().padStart(2,'0')}/` +
-                     `${fechaDesde.getFullYear()} a ` +
-                     `${fechaHasta.getDate().toString().padStart(2,'0')}/` +
-                     `${(fechaHasta.getMonth()+1).toString().padStart(2,'0')}/` +
-                     `${fechaHasta.getFullYear()}`;
-    }
+        // Formatear fechas (dd/mm/yyyy)
+        let fechaTexto = '';
+        if (inicio && fin) {
+            const fechaDesde = new Date(inicio);
+            const fechaHasta = new Date(fin);
+            fechaTexto = ` | ${fechaDesde.getDate().toString().padStart(2,'0')}/` +
+                         `${(fechaDesde.getMonth()+1).toString().padStart(2,'0')}/` +
+                         `${fechaDesde.getFullYear()} a ` +
+                         `${fechaHasta.getDate().toString().padStart(2,'0')}/` +
+                         `${(fechaHasta.getMonth()+1).toString().padStart(2,'0')}/` +
+                         `${fechaHasta.getFullYear()}`;
+        }
 
-    // Actualizar el título con apiario y fechas
-    $('#nombreApiarioSeleccionado').text(`- ${nombreApiario}${fechaTexto}`);
+        // Actualizar el título con apiario y fechas
+        $('#nombreApiarioSeleccionado').text(`- ${nombreApiario}${fechaTexto}`);
 
         const params = { apiario: apiarioId, desde: inicio, hasta: fin };
 
-        // 🟠 Inspecciones
+        // Inspecciones
         $.get("{{ route('estadisticas.colmenas.inspecciones') }}", params, function(data) {
             charts.inspecciones = new Chart($('#graficoInspecciones'), {
                 type: 'bar',
@@ -163,12 +192,15 @@ $(document).ready(function() {
                         backgroundColor: '#F9B233'
                     }]
                 },
-                options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
             });
             graficoListo();
         });
 
-        // 🟢 Cosecha (pie)
+        // Cosecha
         $.get("{{ route('estadisticas.colmenas.cosecha') }}", params, function(data) {
             charts.cosecha = new Chart($('#graficoCosecha'), {
                 type: 'bar',
@@ -180,12 +212,15 @@ $(document).ready(function() {
                         backgroundColor: ['#3A4F26','#5C7F38','#A0C13F','#CBE86B']
                     }]
                 },
-                options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
             });
             graficoListo();
         });
 
-        // 🔵 Tratamientos
+        // Tratamientos
         $.get("{{ route('estadisticas.colmenas.tratamientos') }}", params, function(data) {
             charts.tratamientos = new Chart($('#graficoTratamientos'), {
                 type: 'bar',
@@ -197,12 +232,15 @@ $(document).ready(function() {
                         backgroundColor: '#9CC3DA'
                     }]
                 },
-                options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
             });
             graficoListo();
         });
 
-        // 🟣 Alimentaciones
+        // Alimentaciones
         $.get("{{ route('estadisticas.colmenas.alimentaciones') }}", params, function(data) {
             charts.alimentaciones = new Chart($('#graficoAlimentaciones'), {
                 type: 'bar',
@@ -214,7 +252,10 @@ $(document).ready(function() {
                         backgroundColor: '#A5668B'
                     }]
                 },
-                options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
             });
             graficoListo();
         });
@@ -228,16 +269,20 @@ $(document).ready(function() {
             return;
         }
 
+        // Destruir gráficos existentes si ya fueron creados
         for (let key in charts) {
-            charts[key].destroy();
+            if (charts[key]) {
+                charts[key].destroy();
+            }
         }
+
         cargarGraficos();
     });
 
+    // Carga inicial
+    cargarGraficos();
 
-    cargarGraficos(); // carga inicial
-
-    // 🧾 EXPORTAR PDF
+    // Exportar PDF
     $('#btnExportarPDF').click(function() {
         const { jsPDF } = window.jspdf;
         const contenido = document.getElementById('reporteContenido');
@@ -255,6 +300,7 @@ $(document).ready(function() {
             const imgHeight = canvas.height * imgWidth / canvas.width;
             let position = 10;
             let heightLeft = imgHeight;
+
             pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
 
             while (heightLeft > pdf.internal.pageSize.getHeight()) {
