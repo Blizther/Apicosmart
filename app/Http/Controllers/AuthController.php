@@ -31,6 +31,10 @@ class AuthController extends Controller
             {
                 return redirect()->intended('/usuario/inicio');
             }
+            if (Auth::user()->rol === 'colaborador')
+            {
+                return redirect()->intended('/usuario/inicio');
+            }
         }
 
         return back()->withErrors(['nombreUsuario' => 'Usuario y/o Contraseña inválidas'])->withInput();

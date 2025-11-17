@@ -56,9 +56,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">Rol</label>
-                    <select name="rol" class="form-select" required>
-                        <option value="usuario" {{ $user->rol === 'usuario' ? 'selected' : '' }}>Usuario</option>
-                        <option value="administrador" {{ $user->rol === 'administrador' ? 'selected' : '' }}>Administrador</option>
+                    <select name="rol" class="form-control" required>
+                        @if($user->rol === 'colaborador')
+                            <option value="colaborador" {{ $user->rol === 'colaborador' ? 'selected' : '' }}>Colaborador</option>
+                        @else
+                            <option value="usuario" {{ $user->rol === 'usuario' ? 'selected' : '' }}>Usuario</option>
+                            <option value="administrador" {{ $user->rol === 'administrador' ? 'selected' : '' }}>Administrador</option>
+                        @endif
                     </select>
                 </div>
 

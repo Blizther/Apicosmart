@@ -9,14 +9,32 @@ use Illuminate\Support\Facades\Auth;
 
 class ControllerCosecha extends Controller
 {
+    /**
+     * Obtener el ID del dueño (apicultor) según quién está logueado.
+     */
+    private function getOwnerId(): int
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'colaborador') {
+            // el colaborador trabaja sobre los datos del apicultor
+            return (int) $user->idusuario;
+        }
+
+        // usuario normal (apicultor)
+        return (int) $user->id;
+    }
+
     // LISTA
     public function index()
     {
+        $ownerId = $this->getOwnerId();
+
         $cosechas = Cosecha::with('colmena.apiario')
             ->where('estado', 'activo')
-            ->whereHas('colmena', function ($query) {
+            ->whereHas('colmena', function ($query) use ($ownerId) {
                 $query->where('estado', 'activo')
-                      ->where('creadoPor', Auth::id());
+                      ->where('creadoPor', $ownerId);
             })
             ->orderBy('fechaCosecha', 'desc')
             ->orderBy('idCosecha', 'desc')
@@ -28,7 +46,9 @@ class ControllerCosecha extends Controller
     // FORM CREAR
     public function create()
     {
-        $colmenas = Colmena::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->with('apiario')
             ->get();
@@ -41,7 +61,7 @@ class ControllerCosecha extends Controller
     {
         $request->validate(
             [
-                'peso'          => 'required|numeric|min:0.1|max:50', // 0.1–50 kg
+                'peso'          => 'required|numeric|min:0.1|max:50',
                 'estadoMiel'    => 'required|string|max:20',
                 'fechaCosecha'  => 'required|date',
                 'idColmena'     => 'required|numeric|min:1',
@@ -71,14 +91,22 @@ class ControllerCosecha extends Controller
     {
         $this->validarCosecha($request);
 
+        $ownerId = $this->getOwnerId();
+
+        // Aseguramos que la colmena pertenece al dueño y está activa
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
+            ->firstOrFail();
+
         date_default_timezone_set('America/La_Paz');
 
         $cosecha = new Cosecha();
-        $cosecha->idUsuario     = Auth::id();
+        $cosecha->idUsuario     = $ownerId;                // siempre el dueño
         $cosecha->peso          = $request->peso;
         $cosecha->estadoMiel    = $request->estadoMiel;
         $cosecha->fechaCosecha  = $request->fechaCosecha;
-        $cosecha->idColmena     = $request->idColmena;
+        $cosecha->idColmena     = $colmena->idColmena;
         $cosecha->observaciones = $request->observaciones;
         $cosecha->estado        = 'activo';
 
@@ -97,16 +125,18 @@ class ControllerCosecha extends Controller
     // FORM EDITAR
     public function edit($id)
     {
+        $ownerId = $this->getOwnerId();
+
         $cosecha = Cosecha::with('colmena.apiario')
             ->where('idCosecha', $id)
             ->where('estado', 'activo')
-            ->whereHas('colmena', function ($query) {
+            ->whereHas('colmena', function ($query) use ($ownerId) {
                 $query->where('estado', 'activo')
-                      ->where('creadoPor', Auth::id());
+                      ->where('creadoPor', $ownerId);
             })
             ->firstOrFail();
 
-        $colmenas = Colmena::where('creadoPor', Auth::id())
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->with('apiario')
             ->get();
@@ -119,18 +149,26 @@ class ControllerCosecha extends Controller
     {
         $this->validarCosecha($request);
 
+        $ownerId = $this->getOwnerId();
+
         $cosecha = Cosecha::where('idCosecha', $id)
             ->where('estado', 'activo')
-            ->whereHas('colmena', function ($query) {
+            ->whereHas('colmena', function ($query) use ($ownerId) {
                 $query->where('estado', 'activo')
-                      ->where('creadoPor', Auth::id());
+                      ->where('creadoPor', $ownerId);
             })
+            ->firstOrFail();
+
+        // Revalidar que la colmena seleccionada pertenece al dueño
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
             ->firstOrFail();
 
         $cosecha->peso          = $request->peso;
         $cosecha->estadoMiel    = $request->estadoMiel;
         $cosecha->fechaCosecha  = $request->fechaCosecha;
-        $cosecha->idColmena     = $request->idColmena;
+        $cosecha->idColmena     = $colmena->idColmena;
         $cosecha->observaciones = $request->observaciones;
 
         $cosecha->save();
@@ -140,11 +178,20 @@ class ControllerCosecha extends Controller
             ->with('successedit', 'Cosecha actualizada exitosamente.');
     }
 
-    // ELIMINAR (lógico)
+    // ELIMINAR (lógico) – SOLO el usuario dueño puede eliminar
     public function destroy($id)
     {
+        if (Auth::user()->rol === 'colaborador') {
+            abort(403, 'No tienes permiso para eliminar cosechas.');
+        }
+
+        $ownerId = $this->getOwnerId();
+
         $cosecha = Cosecha::where('idCosecha', $id)
             ->where('estado', 'activo')
+            ->whereHas('colmena', function ($query) use ($ownerId) {
+                $query->where('creadoPor', $ownerId);
+            })
             ->firstOrFail();
 
         $cosecha->estado = 'inactivo';

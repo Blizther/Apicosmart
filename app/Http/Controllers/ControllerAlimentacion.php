@@ -9,14 +9,33 @@ use Illuminate\Support\Facades\Auth;
 
 class ControllerAlimentacion extends Controller
 {
+    /**
+     * Obtener el ID del dueño (apicultor) según quién está logueado.
+     * - usuario      => usa su propio id
+     * - colaborador  => usa idusuario (dueño)
+     */
+    private function getOwnerId(): int
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'colaborador') {
+            return (int) $user->idusuario;
+        }
+
+        return (int) $user->id;
+    }
+
     // LISTA
     public function index()
     {
+        $ownerId = $this->getOwnerId();
+
         $alimentaciones = Alimentacion::with(['colmena.apiario'])
-            ->where('idUsuario', Auth::id())
-            // Solo colmenas activas y apiarios activos
-            ->whereHas('colmena', function ($q) {
+            ->where('idUsuario', $ownerId)
+            // Solo colmenas activas del dueño y apiarios activos
+            ->whereHas('colmena', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
+                  ->where('creadoPor', $ownerId)
                   ->whereHas('apiario', function ($q2) {
                       $q2->where('estado', 'activo');
                   });
@@ -31,9 +50,9 @@ class ControllerAlimentacion extends Controller
     // FORM CREAR
     public function create()
     {
-        $idUser = Auth::id();
+        $ownerId = $this->getOwnerId();
 
-        $colmenas = Colmena::where('creadoPor', $idUser)
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->with('apiario')
             ->get();
@@ -111,8 +130,15 @@ class ControllerAlimentacion extends Controller
             return $respuesta; // vuelve con errores si falló la validación extra
         }
 
+        $ownerId = $this->getOwnerId();
+
+        // Asegurar que la colmena pertenece al dueño y está activa
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
+            ->firstOrFail();
+
         date_default_timezone_set('America/La_Paz');
-        $user = Auth::id();
 
         $alimentacion = new Alimentacion();
         $alimentacion->tipoAlimento        = $request->tipoAlimento;
@@ -121,8 +147,8 @@ class ControllerAlimentacion extends Controller
         $alimentacion->motivo              = $request->motivo;
         $alimentacion->fechaSuministracion = $request->fechaSuministracion;
         $alimentacion->observaciones       = $request->observaciones;
-        $alimentacion->idUsuario           = $user;
-        $alimentacion->idColmena           = $request->idColmena;
+        $alimentacion->idUsuario           = $ownerId;           // siempre el dueño
+        $alimentacion->idColmena           = $colmena->idColmena;
         $alimentacion->save();
 
         return redirect()
@@ -133,12 +159,14 @@ class ControllerAlimentacion extends Controller
     // FORM EDITAR
     public function edit($id)
     {
+        $ownerId = $this->getOwnerId();
+
         $alimentacion = Alimentacion::with('colmena.apiario')
             ->where('idAlimentacion', $id)
-            ->where('idUsuario', Auth::id())
+            ->where('idUsuario', $ownerId)
             ->firstOrFail();
 
-        $colmenas = Colmena::where('creadoPor', Auth::id())
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->with('apiario')
             ->get();
@@ -153,8 +181,16 @@ class ControllerAlimentacion extends Controller
             return $respuesta; // vuelve con errores si falló la validación extra
         }
 
+        $ownerId = $this->getOwnerId();
+
         $alimentacion = Alimentacion::where('idAlimentacion', $id)
-            ->where('idUsuario', Auth::id())
+            ->where('idUsuario', $ownerId)
+            ->firstOrFail();
+
+        // Validar que la colmena seleccionada pertenece al dueño y está activa
+        $colmena = Colmena::where('idColmena', $request->idColmena)
+            ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
             ->firstOrFail();
 
         $alimentacion->tipoAlimento        = $request->tipoAlimento;
@@ -163,7 +199,7 @@ class ControllerAlimentacion extends Controller
         $alimentacion->motivo              = $request->motivo;
         $alimentacion->fechaSuministracion = $request->fechaSuministracion;
         $alimentacion->observaciones       = $request->observaciones;
-        $alimentacion->idColmena           = $request->idColmena;
+        $alimentacion->idColmena           = $colmena->idColmena;
         $alimentacion->save();
 
         return redirect()
@@ -174,8 +210,15 @@ class ControllerAlimentacion extends Controller
     // ELIMINAR
     public function destroy($id)
     {
+        // El colaborador NO puede eliminar alimentaciones
+        if (Auth::user()->rol === 'colaborador') {
+            abort(403, 'No tienes permiso para eliminar registros de alimentación.');
+        }
+
+        $ownerId = $this->getOwnerId();
+
         $alimentacion = Alimentacion::where('idAlimentacion', $id)
-            ->where('idUsuario', Auth::id())
+            ->where('idUsuario', $ownerId)
             ->firstOrFail();
 
         $alimentacion->delete();

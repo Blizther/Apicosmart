@@ -9,18 +9,35 @@ use App\Models\Colmena;
 
 class ControllerTareaPendiente extends Controller
 {
+    /**
+     * Obtener el ID del dueño (apicultor) según quién está logueado.
+     * - usuario      => usa su propio id
+     * - colaborador  => usa idusuario (dueño)
+     */
+    private function getOwnerId(): int
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'colaborador') {
+            return (int) $user->idusuario;
+        }
+
+        return (int) $user->id;
+    }
+
     public function index()
     {
-        $userId = Auth::id();
+        $ownerId = $this->getOwnerId();
 
-        // Base: tareas del usuario, no eliminadas, ligadas a colmenas y apiarios activos
+        // Base: tareas del dueño, no eliminadas, ligadas a colmenas y apiarios activos
         $baseQuery = TareaPendiente::activas()
-            ->where('idUser', $userId)
-            ->whereHas('colmena', function ($q) {
+            ->where('idUser', $ownerId)
+            ->whereHas('colmena', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                ->whereHas('apiario', function ($q2) {
-                    $q2->where('estado', 'activo');
-                });
+                  ->where('creadoPor', $ownerId)
+                  ->whereHas('apiario', function ($q2) {
+                      $q2->where('estado', 'activo');
+                  });
             });
 
         // LISTA PRINCIPAL
@@ -34,7 +51,7 @@ class ControllerTareaPendiente extends Controller
             ->orderByRaw("fechaFin IS NULL, fechaFin ASC")
             ->get();
 
-        // TOTALES (se quedan igual)
+        // TOTALES
         $totalPendientes = (clone $baseQuery)
             ->whereIn('estado', ['pendiente', 'enProgreso'])
             ->count();
@@ -56,11 +73,12 @@ class ControllerTareaPendiente extends Controller
         ]);
     }
 
-
     public function create()
     {
-        // Colmenas SOLO del usuario, activas y de apiarios activos
-        $colmenas = Colmena::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        // Colmenas SOLO del dueño, activas y de apiarios activos
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->whereHas('apiario', function ($q) {
                 $q->where('estado', 'activo');
@@ -73,6 +91,8 @@ class ControllerTareaPendiente extends Controller
 
     public function store(Request $request)
     {
+        $ownerId = $this->getOwnerId();
+
         $request->validate([
             'idColmena'         => 'required|exists:colmena,idColmena',
             'tipo'              => 'required|in:inspeccion,cosecha,tratamiento,alimentacion,mantenimiento',
@@ -84,15 +104,16 @@ class ControllerTareaPendiente extends Controller
             'fechaFin'          => 'required|date|after_or_equal:fechaInicio',
             'fechaRecordatorio' => 'nullable|date|before_or_equal:fechaFin',
         ], [
-            'fechaInicio.required'        => 'La fecha de inicio es obligatoria.',
-            'fechaFin.required'           => 'La fecha de fin es obligatoria.',
-            'fechaFin.after_or_equal'     => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
-            'fechaRecordatorio.before_or_equal' => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
+            'fechaInicio.required'               => 'La fecha de inicio es obligatoria.',
+            'fechaFin.required'                  => 'La fecha de fin es obligatoria.',
+            'fechaFin.after_or_equal'            => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+            'fechaRecordatorio.before_or_equal'  => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
         ]);
 
-        // Verificar que la colmena está activa y su apiario también
+        // Verificar que la colmena está activa, su apiario activo y que pertenece al dueño
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
             ->whereHas('apiario', function ($q) {
                 $q->where('estado', 'activo');
             })
@@ -105,7 +126,7 @@ class ControllerTareaPendiente extends Controller
         }
 
         TareaPendiente::create([
-            'idUser'            => Auth::id(),
+            'idUser'            => $ownerId,          // dueño de la tarea
             'idColmena'         => $request->idColmena,
             'titulo'            => $request->titulo,
             'descripcion'       => $request->descripcion,
@@ -114,7 +135,7 @@ class ControllerTareaPendiente extends Controller
             'fechaInicio'       => $request->fechaInicio,
             'fechaFin'          => $request->fechaFin,
             'fechaRecordatorio' => $request->fechaRecordatorio,
-            'creadoPor'         => Auth::id(),
+            'creadoPor'         => Auth::id(),        // quien creó (usuario o colaborador)
             'tipo'              => $request->tipo,
             'eliminado'         => 'activo',
         ]);
@@ -124,12 +145,14 @@ class ControllerTareaPendiente extends Controller
 
     public function edit($id)
     {
+        $ownerId = $this->getOwnerId();
+
         $tarea = TareaPendiente::activas()
             ->where('idTareaPendiente', $id)
-            ->where('idUser', Auth::id())
+            ->where('idUser', $ownerId)
             ->firstOrFail();
 
-        $colmenas = Colmena::where('creadoPor', Auth::id())
+        $colmenas = Colmena::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->whereHas('apiario', function ($q) {
                 $q->where('estado', 'activo');
@@ -142,6 +165,8 @@ class ControllerTareaPendiente extends Controller
 
     public function update(Request $request, $id)
     {
+        $ownerId = $this->getOwnerId();
+
         $request->validate([
             'idColmena'         => 'required|exists:colmena,idColmena',
             'tipo'              => 'required|in:inspeccion,cosecha,tratamiento,alimentacion,mantenimiento',
@@ -153,15 +178,16 @@ class ControllerTareaPendiente extends Controller
             'fechaFin'          => 'required|date|after_or_equal:fechaInicio',
             'fechaRecordatorio' => 'nullable|date|before_or_equal:fechaFin',
         ], [
-            'fechaInicio.required'        => 'La fecha de inicio es obligatoria.',
-            'fechaFin.required'           => 'La fecha de fin es obligatoria.',
-            'fechaFin.after_or_equal'     => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
-            'fechaRecordatorio.before_or_equal' => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
+            'fechaInicio.required'               => 'La fecha de inicio es obligatoria.',
+            'fechaFin.required'                  => 'La fecha de fin es obligatoria.',
+            'fechaFin.after_or_equal'            => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+            'fechaRecordatorio.before_or_equal'  => 'La fecha de recordatorio no puede ser posterior a la fecha de fin.',
         ]);
 
-        // Verificar colmena activa + apiario activo
+        // Verificar colmena activa + apiario activo + que sea del dueño
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
+            ->where('creadoPor', $ownerId)
             ->whereHas('apiario', function ($q) {
                 $q->where('estado', 'activo');
             })
@@ -175,7 +201,7 @@ class ControllerTareaPendiente extends Controller
 
         $tarea = TareaPendiente::activas()
             ->where('idTareaPendiente', $id)
-            ->where('idUser', Auth::id())
+            ->where('idUser', $ownerId)
             ->firstOrFail();
 
         $tarea->update([
@@ -195,9 +221,16 @@ class ControllerTareaPendiente extends Controller
 
     public function destroy($id)
     {
+        // 🔒 El colaborador NO puede eliminar tareas
+        if (Auth::user()->rol === 'colaborador') {
+            abort(403, 'No tienes permiso para eliminar tareas pendientes.');
+        }
+
+        $ownerId = $this->getOwnerId();
+
         $tarea = TareaPendiente::activas()
             ->where('idTareaPendiente', $id)
-            ->where('idUser', Auth::id())
+            ->where('idUser', $ownerId)
             ->firstOrFail();
 
         $tarea->eliminado = 'inactivo';

@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
@@ -11,9 +11,11 @@ class ControllerApiario extends Controller
 {
     public function index()
     {
-        // Solo apiarios activos del usuario logueado
-        $idUser = Auth::id();
-        $apiarios = Apiario::where('creadoPor', $idUser)
+        // ID lógico del dueño (usuario o dueño del colaborador)
+        $ownerId = Auth::user()->ownerId();
+
+        // Solo apiarios activos del dueño
+        $apiarios = Apiario::where('creadoPor', $ownerId)
                             ->where('estado', 'activo')
                             ->get();
 
@@ -22,11 +24,21 @@ class ControllerApiario extends Controller
 
     public function create()
     {
+        // Solo el usuario (apicultor) puede crear apiarios
+        if (Auth::user()->rol !== 'usuario') {
+            abort(403, 'No tienes permiso para crear apiarios.');
+        }
+
         return view('apiario.create');
     }
 
     public function store(Request $request)
     {
+        // Solo el usuario (apicultor) puede guardar apiarios
+        if (Auth::user()->rol !== 'usuario') {
+            abort(403, 'No tienes permiso para crear apiarios.');
+        }
+
         $userId = Auth::id();
 
         $request->validate([
@@ -47,13 +59,13 @@ class ControllerApiario extends Controller
 
         date_default_timezone_set('America/La_Paz');
         $fecha = date('Y-m-d H:i:s');
-        $user = Auth::user()->id;
+        $user  = Auth::user()->id;
 
         $apiario = new Apiario();
-        $apiario->nombre = $request->nombre;
+        $apiario->nombre   = $request->nombre;
         $apiario->vegetacion = $request->vegetacion;
-        $apiario->altitud = $request->altitud;
-        $apiario->latitud = $request->latitud;
+        $apiario->altitud  = $request->altitud;
+        $apiario->latitud  = $request->latitud;
         $apiario->longitud = $request->longitud;
         $apiario->creadoPor = $user;
         $apiario->fechaCreacion = $fecha;
@@ -74,12 +86,28 @@ class ControllerApiario extends Controller
 
     public function edit(string $id)
     {
-        $apiario = Apiario::findOrFail($id);
+        // Solo el usuario (apicultor) puede editar apiarios
+        if (Auth::user()->rol !== 'usuario') {
+            abort(403, 'No tienes permiso para editar apiarios.');
+        }
+
+        $ownerId = Auth::user()->ownerId();
+
+        // Asegurarnos que el apiario pertenece al dueño
+        $apiario = Apiario::where('idApiario', $id)
+                          ->where('creadoPor', $ownerId)
+                          ->firstOrFail();
+
         return view('apiario.edit', compact('apiario'));
     }
 
     public function update(Request $request, string $id)
     {
+        // Solo el usuario (apicultor) puede actualizar apiarios
+        if (Auth::user()->rol !== 'usuario') {
+            abort(403, 'No tienes permiso para actualizar apiarios.');
+        }
+
         $request->validate([
             'nombre' => 'required|max:150',
             'vegetacion' => 'required|string|max:100',
@@ -88,7 +116,12 @@ class ControllerApiario extends Controller
             'estado' => 'required|string|max:8',
         ]);
 
-        $apiario = Apiario::findOrFail($id);
+        $ownerId = Auth::user()->ownerId();
+
+        $apiario = Apiario::where('idApiario', $id)
+                          ->where('creadoPor', $ownerId)
+                          ->firstOrFail();
+
         $data = $request->all();
         $apiario->update($data);
 
@@ -96,17 +129,26 @@ class ControllerApiario extends Controller
     }
 
     /**
-     * 🔥 ELIMINADO LÓGICO CORREGIDO
+     * Eliminado lógico corregido
      * NO permite eliminar apiarios con colmenas activas
      */
     public function destroy(string $id)
     {
-        $apiario = Apiario::findOrFail($id);
+        // Solo el usuario (apicultor) puede eliminar apiarios
+        if (Auth::user()->rol !== 'usuario') {
+            abort(403, 'No tienes permiso para eliminar apiarios.');
+        }
+
+        $ownerId = Auth::user()->ownerId();
+
+        $apiario = Apiario::where('idApiario', $id)
+                          ->where('creadoPor', $ownerId)
+                          ->firstOrFail();
 
         // 1) Verificar si tiene colmenas activas
         if ($apiario->colmenas()->where('estado', 'activo')->count() > 0) {
             return redirect()
-                ->route('apiario.index') // o ->to('/apiario') si así tienes la ruta
+                ->route('apiario.index')
                 ->with('error', 'Debe eliminar primero las colmenas activas de este apiario antes de eliminarlo.');
         }
 
@@ -115,19 +157,23 @@ class ControllerApiario extends Controller
         $apiario->save();
 
         return redirect()
-            ->route('apiario.index') // o ->to('/apiario')
+            ->route('apiario.index')
             ->with('successdelete', 'Apiario eliminado exitosamente.');
     }
 
-
     public function vercolmenas(string $id)
     {
-        $apiario = Apiario::findOrFail($id);
+        $ownerId = Auth::user()->ownerId();
 
-        // Mostrar solo colmenas activas
+        // Solo apiarios del dueño, activos
+        $apiario = Apiario::where('idApiario', $id)
+                          ->where('creadoPor', $ownerId)
+                          ->where('estado', 'activo')
+                          ->firstOrFail();
+
+        // Mostrar solo colmenas activas de ese apiario
         $colmenas = $apiario->colmenas()->where('estado', 'activo')->get();
 
         return view('apiario.verapiario', compact('apiario', 'colmenas'));
     }
-
 }

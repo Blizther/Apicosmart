@@ -44,7 +44,7 @@
             <div class="bg-light rounded h-100 p-3 row">
                 <h6 class="mb-4 col-12">Complete el formulario</h6>
 
-                {{-- Nombre (label arriba) --}}
+                {{-- Nombre --}}
                 <div class="mb-3 col-12 col-md-6">
                     <label for="nombre" class="form-label">Nombre*</label>
                     <small class="stats-label">(no debe ser repetido)</small>
@@ -52,7 +52,7 @@
                         placeholder="Nombre" name="nombre" value="{{ old('nombre') }}" required autocomplete="off">
                 </div>
 
-                {{-- vegetacion (label arriba) + aquí se muestra la ubicación guardada --}}
+                {{-- Vegetación --}}
                 <div class="mb-1 col-12 col-md-6">
                     <label for="vegetacion" class="form-label">Vegetación predominante</label>
                     <select name="vegetacion" id="vegetacion"  class="form-control" required>
@@ -67,25 +67,27 @@
                         <option value="ilusión" {{ old('vegetacion') == 'ilusión' ? 'selected' : '' }}>ilusión</option>
                         <option value="Otro" {{ old('vegetacion') == 'otro' ? 'selected' : '' }}>OTRO</option>
                     </select>
-                   
                 </div>
 
-                {{-- altitud (label arriba) --}}
+                {{-- Altitud --}}
                 <div class="mb-3 col-12 col-md-6">
                     <label for="altitud" class="form-label">Altitud*</label>
                     <small class="stats-label">metros/nivel del mar | max 4000</small>
                     <input type="number" class="form-control" id="altitud"
-                        placeholder="Altitud" name="altitud" value="{{ old('Altitud') }}" required autocomplete="off" min="0" step="1" max="4000">
+                        placeholder="Altitud" name="altitud" value="{{ old('Altitud') }}" required autocomplete="off"
+                        min="0" max="4000">
                 </div>
-                {{-- Imagen (label arriba) --}}
+
+                {{-- Imagen --}}
                 <div class="mb-3 col-12 col-md-6">
                     <label for="urlImagen">Subir Imagen</label>
-                        <input type="file" name="urlImagen" class="form-control">
+                    <input type="file" name="urlImagen" class="form-control">
                 </div>
+
+                {{-- Ubicación --}}
                 <div class="mb-3 col-12 col-md-6">
                     <label for="ubicacion" class="form-label">Ubicacion</label>
-                    <input
-                        type="text"
+                    <input type="text"
                         id="ubicacion"
                         class="form-control"
                         placeholder="Selecciona en el mapa y pulsa Guardar Ubicación"
@@ -93,7 +95,7 @@
                         readonly>
                 </div>
 
-                {{-- Mapa y guardado de ubicación --}}
+                {{-- Mapa --}}
                 <div class="col-12 mt-5 mb-5 pt-2">
                     <div id="map" style="height: 400px; width: 100%;"></div>
                     <div class="text-center">
@@ -104,8 +106,8 @@
                 </div>
 
                 {{-- Coordenadas ocultas --}}
-                <input type="hidden" name="latitud" id="latitud" value="">
-                <input type="hidden" name="longitud" id="longitud" value="">
+                <input type="hidden" name="latitud" id="latitud">
+                <input type="hidden" name="longitud" id="longitud">
 
                 {{-- Enviar --}}
                 <div class="col-12">
@@ -116,21 +118,29 @@
     </form>
 </div>
 
+{{-- ===================== SWEETALERT2 ===================== --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-apico-popup {
+        border-radius: 16px !important;
+    }
+</style>
+
 <script>
     let map, marker, selectedLatLng = null;
 
     function initMap() {
-        const initialPosition = {
-            lat: -17.38950,
-            lng: -66.15680
-        }; // Cochabamba
+        const initialPosition = { lat: -17.38950, lng: -66.15680 };
+
         map = new google.maps.Map(document.getElementById("map"), {
             center: initialPosition,
             zoom: 13,
         });
 
+        // Selección en mapa
         map.addListener("click", (e) => {
             selectedLatLng = e.latLng;
+
             if (marker) {
                 marker.setPosition(selectedLatLng);
             } else {
@@ -141,40 +151,53 @@
             }
         });
 
+        // Guardar ubicación
         document.getElementById("saveBtn").addEventListener("click", () => {
-    if (!selectedLatLng) {
-        alert("Primero selecciona una ubicación en el mapa");
-        return;
-    }
-    const lat = selectedLatLng.lat();
-    const lng = selectedLatLng.lng();
 
-    // setea hidden fields que usas en el backend
-    document.getElementById("latitud").value = lat;
-    document.getElementById("longitud").value = lng;
+            if (!selectedLatLng) {
+                Swal.fire({
+                    title: 'Atención',
+                    text: 'Primero selecciona una ubicación en el mapa',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#F9B233',
+                    customClass: { popup: 'swal2-apico-popup' }
+                });
+                return;
+            }
 
-    // muestra en el input de solo lectura
-    document.getElementById("ubicacion").value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            const lat = selectedLatLng.lat();
+            const lng = selectedLatLng.lng();
 
-    // habilita el submit
-    document.querySelector(".submit").disabled = false;
-});
-        // Bloquear envío si no hay coordenadas (por si presionan Enter)
+            document.getElementById("latitud").value = lat;
+            document.getElementById("longitud").value = lng;
+            document.getElementById("ubicacion").value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            document.querySelector(".submit").disabled = false;
+        });
+
+        // Validar submit
         document.getElementById("apiarioForm").addEventListener("submit", (ev) => {
             const lat = document.getElementById("latitud").value;
             const lng = document.getElementById("longitud").value;
+
             if (!lat || !lng) {
                 ev.preventDefault();
-                alert("Debes guardar una ubicación antes de enviar.");
+                Swal.fire({
+                    title: 'Atención',
+                    text: 'Debes guardar una ubicación antes de enviar.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#F9B233',
+                    customClass: { popup: 'swal2-apico-popup' }
+                });
             }
         });
     }
 
-    // Exponer callback al global para Google Maps
     window.initMap = initMap;
 </script>
 
-{{-- Usa tu misma API key (no cambio parámetros) --}}
+{{-- GOOGLE MAPS API --}}
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrPcgLHdIkpWRKXLYHX4Ou_JbEWBezWuw&callback=initMap">
 </script>

@@ -76,26 +76,30 @@
                                 <td>{{ $tarea->descripcion }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ route('tarea.edit', $tarea->idTareaPendiente) }}" class="btn btn-sm btn-warning">
+                                        {{-- EDITAR: usuario y colaborador --}}
+                                        <a href="{{ route('tarea.edit', $tarea->idTareaPendiente) }}"
+                                           class="btn btn-sm btn-warning">
                                             Editar
                                         </a>
-                                        <form action="{{ route('tarea.destroy', $tarea->idTareaPendiente) }}"
-                                            method="POST"
-                                            class="m-0 p-0 form-eliminar-tarea">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                    class="btn btn-sm btn-danger btn-eliminar-tarea"
-                                                    data-colmena="@if($tarea->colmena && $tarea->colmena->apiario)Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}@elseif($tarea->colmena)Colmena #{{ $tarea->colmena->codigo }}@else - @endif"
-                                                    data-fecha="{{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}"
-                                                    data-titulo="{{ $tarea->titulo }}">
-                                                Eliminar
-                                            </button>
-                                        </form>
+
+                                        {{-- ELIMINAR: SOLO USUARIO (apicultor) --}}
+                                        @if(auth()->user()->rol === 'usuario')
+                                            <form action="{{ route('tarea.destroy', $tarea->idTareaPendiente) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-tarea">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-eliminar-tarea"
+                                                        data-colmena="@if($tarea->colmena && $tarea->colmena->apiario)Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}@elseif($tarea->colmena)Colmena #{{ $tarea->colmena->codigo }}@else - @endif"
+                                                        data-fecha="{{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}"
+                                                        data-titulo="{{ $tarea->titulo }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
-
-
                             </tr>
                             @php $correlativo++; @endphp
                         @endforeach

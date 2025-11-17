@@ -1,5 +1,62 @@
-@extends('usuario.inicio')
+@extends('administrador.inicio')
 @section('content')
+
+@php
+    use App\Models\TareaPendiente;
+    use App\Models\InspeccionColmena;
+    use Illuminate\Support\Facades\Auth;
+
+    $user = Auth::user();
+
+    // ID lógico del dueño (apicultor principal: para usuario = su id, para colaborador = idusuario)
+    $ownerId = $user->ownerId();
+
+    // ================== TAREAS PROGRAMADAS (solo pendientes / en progreso) ==================
+    $tareas = TareaPendiente::activas()
+        ->where('idUser', $ownerId)                                  // usar ownerId en vez de $user->id
+        ->whereIn('estado', ['pendiente', 'enProgreso'])              // SOLO pendientes o en progreso
+        ->whereHas('colmena', function ($q) {
+            $q->where('estado', 'activo')
+              ->whereHas('apiario', function ($q2) {
+                  $q2->where('estado', 'activo');
+              });
+        })
+        // urgente > alta > media > baja
+        ->orderByRaw("FIELD(prioridad, 'urgente','alta','media','baja')")
+        // primero las que tienen fechaFin más cercana (las NULL al final)
+        ->orderByRaw("fechaFin IS NULL, fechaFin ASC")
+        ->take(6)
+        ->get();
+
+    // ================== ÚLTIMA INSPECCIÓN ==================
+    if ($user->rol === 'usuario') {
+        // DUEÑO: última inspección en cualquiera de SUS apiarios (hecha por él o por colaborador)
+        $ultima = InspeccionColmena::whereHas('colmena', function ($q) use ($user) {
+                $q->whereHas('apiario', function ($q2) use ($user) {
+                    $q2->where('estado', 'activo')
+                       ->where('creadoPor', $user->id);   // apiarios del dueño
+                });
+            })
+            ->orderBy('fechaInspeccion', 'desc')
+            ->first();
+    } else {
+        // COLABORADOR: última inspección que ÉL MISMO realizó
+        $ultima = InspeccionColmena::where('idUser', $user->id)
+            ->whereHas('colmena', function ($q) {
+                $q->where('estado', 'activo')
+                  ->whereHas('apiario', function ($q2) {
+                      $q2->where('estado', 'activo');
+                  });
+            })
+            ->orderBy('fechaInspeccion', 'desc')
+            ->first();
+    }
+
+    $ultimaFecha = $ultima
+        ? \Carbon\Carbon::parse($ultima->fechaInspeccion)->format('d/m/Y')
+        : null;
+@endphp
+
 <div class="container-fluid pt-4 px-4">
     <div class="row">
         <div class="col-lg-2">
@@ -10,7 +67,6 @@
                 <div class="ibox-content">
                     <img src="{{ asset('img/colmenar.png') }}" alt="Logo" style="width:60px; height:60px;">
                     <h1 class="no-margins">
-                        {{-- ANTES: Auth::user()->apiarios->count() --}}
                         {{ Auth::user()->apiarios()->where('estado', 'activo')->count() }}
                     </h1>
                 </div>
@@ -20,7 +76,7 @@
         <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>total colmenas</h5>
+                    <h5>colmenas totales</h5>
                 </div>
                 <div class="ibox-content">
                     <img src="{{ asset('img/cajaDeAbejas.png') }}" alt="Logo" style="width:60px; height:60px;">
@@ -59,33 +115,36 @@
             </div>
         </div>
 
-        <div class="col-lg-2">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>total productos</h5>
-                </div>
-                <div class="ibox-content">
-                    <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
-                    <h1 class="no-margins">
-                        {{ Auth::user()->cantidadProductosActivos() }}
-                    </h1>
+        @if(auth()->user()->rol != 'colaborador')
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>total productos</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->cantidadProductosActivos() }}
+                        </h1>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-2">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>total ventas</h5>
-                </div>
-                <div class="ibox-content">
-                    <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">
-                    <h1 class="no-margins">
-                        {{ Auth::user()->ventasRealizadas->count() }}
-                    </h1>
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>total ventas</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">
+                        <h1 class="no-margins">
+                            {{ Auth::user()->ventasRealizadas->count() }}
+                        </h1>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
+
     </div>
 </div>
 
@@ -111,25 +170,12 @@
                             <th>Estado</th>
                             <th>Fecha Fin</th>
                             <th>Prioridad</th>
-                            <th>Titulo</th>
-                            <th>Colmena</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(
-                            Auth::user()
-                                ->tareasPendientes()
-                                ->whereHas('colmena', function ($q) {
-                                    $q->where('estado', 'activo')
-                                      ->whereHas('apiario', function ($q2) {
-                                          $q2->where('estado', 'activo');
-                                      });
-                                })
-                                ->with('colmena.apiario')
-                                ->latest()
-                                ->take(6)
-                                ->get() as $tarea
-                        )
+                        @foreach($tareas as $tarea)
                             <tr>
                                 {{-- Estado --}}
                                 <td>
@@ -141,6 +187,8 @@
                                         <span class="label label-warning">En Progreso</span>
                                     @elseif($tarea->estado == 'cancelada')
                                         <span class="label label-danger">Cancelada</span>
+                                    @elseif($tarea->estado == 'vencida')
+                                        <span class="label label-danger">Vencida</span>
                                     @endif
                                 </td>
 
@@ -190,24 +238,6 @@
     <div class="col-lg-5">
         <div class="ibox float-e-margins">
             <div class="ibox float-e-margins">
-
-                @php
-                    $ultima = Auth::user()->ultimaInspeccion;
-
-                    // ignorar colmenas o apiarios inactivos
-                    if ($ultima && (
-                        !$ultima->colmena ||
-                        $ultima->colmena->estado !== 'activo' ||
-                        !$ultima->colmena->apiario ||
-                        $ultima->colmena->apiario->estado !== 'activo'
-                    )) {
-                        $ultima = null;
-                    }
-
-                    $ultimaFecha = $ultima
-                        ? \Carbon\Carbon::parse($ultima->fechaInspeccion)->format('d/m/Y')
-                        : null;
-                @endphp
 
                 <div class="ibox-title">
                     <span class="label label-warning pull-right">

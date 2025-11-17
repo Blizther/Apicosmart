@@ -12,15 +12,19 @@ class Colmena extends Model
     protected $table = 'colmena';
     protected $primaryKey = 'idColmena';
     protected $fillable = [
-        'idColmena',
-        'codigo',
-        'estado',
-        'creadoPor',
-        'idReina',
-        'cantidadMarco',
-        'modelo',
-        'idApiario'
+    'idColmena',
+    'codigo',
+    'estado',
+    'creadoPor',
+    'idReina',
+    'cantidadMarco',
+    'modelo',
+    'idApiario',
+    // 👇 agrega estos si quieres que se asignen por create()
+    'fechaInstalacionFisica',
+    'fechaCreacion',
     ];
+
 
     public $timestamps = false;
 

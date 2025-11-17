@@ -14,9 +14,25 @@ use Carbon\Carbon;
 
 class ControllerEstadisticasColmenas extends Controller
 {
+    /**
+     * Devuelve el ID del dueño (apicultor) según quién está logueado.
+     */
+    private function getOwnerId(): int
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'colaborador') {
+            return (int) $user->idusuario;
+        }
+
+        return (int) $user->id;
+    }
+
     public function index()
     {
-        $apiarios = Apiario::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $apiarios = Apiario::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->get();
 
@@ -32,7 +48,6 @@ class ControllerEstadisticasColmenas extends Controller
     }
 
     /**
-     * Construye la etiqueta que se mostrará en el gráfico:
      * "NombreApiario - CodigoColmena"
      */
     private function etiquetaColmena(Colmena $colmena): string
@@ -46,12 +61,14 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function inspecciones(Request $request)
     {
+        $ownerId = $this->getOwnerId();
+
         $colmenas = Colmena::with(['inspecciones', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
-            ->whereHas('apiario', function ($q) {
+            ->whereHas('apiario', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                  ->where('creadoPor', Auth::id());
+                  ->where('creadoPor', $ownerId);
             })
             ->get();
 
@@ -63,7 +80,7 @@ class ControllerEstadisticasColmenas extends Controller
                 $colmena->inspecciones(),
                 $request->desde,
                 $request->hasta,
-                'fechaInspeccion' 
+                'fechaInspeccion'
             )->count();
 
             $labels[] = $this->etiquetaColmena($colmena);
@@ -75,12 +92,14 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function cosecha(Request $request)
     {
+        $ownerId = $this->getOwnerId();
+
         $colmenas = Colmena::with(['cosechas', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
-            ->whereHas('apiario', function ($q) {
+            ->whereHas('apiario', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                  ->where('creadoPor', Auth::id());
+                  ->where('creadoPor', $ownerId);
             })
             ->get();
 
@@ -104,12 +123,14 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function tratamientos(Request $request)
     {
+        $ownerId = $this->getOwnerId();
+
         $colmenas = Colmena::with(['tratamientos', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
-            ->whereHas('apiario', function ($q) {
+            ->whereHas('apiario', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                  ->where('creadoPor', Auth::id());
+                  ->where('creadoPor', $ownerId);
             })
             ->get();
 
@@ -133,12 +154,14 @@ class ControllerEstadisticasColmenas extends Controller
 
     public function alimentaciones(Request $request)
     {
+        $ownerId = $this->getOwnerId();
+
         $colmenas = Colmena::with(['alimentaciones', 'apiario'])
             ->where('estado', 'activo')
             ->when($request->apiario, fn($q) => $q->where('idApiario', $request->apiario))
-            ->whereHas('apiario', function ($q) {
+            ->whereHas('apiario', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                  ->where('creadoPor', Auth::id());
+                  ->where('creadoPor', $ownerId);
             })
             ->get();
 

@@ -53,16 +53,35 @@
                                 <td>{{ $user->primerApellido }}</td>
                                 <td>{{ $user->segundoApellido }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td><span class="badge bg-info text-dark">{{ ucfirst($user->rol) }}</span></td>
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                        {{ ucfirst($user->rol) }}
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">Editar</a>
-                                    <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('¿Eliminar usuario?')">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                                    <div style="display: flex; gap: 1rem;">
+                                        {{-- Editar --}}
+                                        <a href="{{ route('users.edit', $user) }}">
+                                            <button class="btn btn-sm btn-warning" title="editar">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            </button>
+                                        </a>
+
+                                        {{-- Eliminar con SweetAlert2 --}}
+                                        <form action="{{ route('users.destroy', $user) }}"
+                                              method="POST"
+                                              class="m-0 p-0 form-eliminar-usuario">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger btn-eliminar-usuario"
+                                                    title="eliminar"
+                                                    data-nombre="{{ $user->nombre }} {{ $user->primerApellido }} {{ $user->segundoApellido }}"
+                                                    data-email="{{ $user->email }}">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -90,4 +109,56 @@
     </div>
 
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-usuario');
+
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const form   = this.closest('form');
+            const nombre = this.getAttribute('data-nombre') || '';
+            const email  = this.getAttribute('data-email') || '';
+
+            let texto = '¿Desea eliminar este usuario?';
+            let detalle = [];
+
+            if (nombre.trim() !== '') {
+                detalle.push(nombre);
+            }
+            if (email.trim() !== '') {
+                detalle.push(email);
+            }
+
+            if (detalle.length > 0) {
+                texto += ' ' + detalle.join(' - ');
+            }
+
+            Swal.fire({
+                title: 'Atención',
+                text: texto,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
+                customClass: { popup: 'swal2-apico-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+    .swal2-apico-popup {
+        border-radius: 16px !important;
+    }
+</style>
 @endsection

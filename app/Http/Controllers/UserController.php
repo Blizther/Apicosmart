@@ -15,8 +15,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        
+
         $q = trim((string) $request->input('q', ''));
 
+        if(Auth::user()->rol=='usuario'){
+            $iduser=Auth::id();
+            $users = User::where('idusuario',$iduser)->where('estado',1)->get();
+        }else{
         $users = User::query()
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
@@ -30,7 +36,8 @@ class UserController extends Controller
             ->orderBy('nombre')
             ->orderBy('primerApellido')
             ->paginate(10)                      // usa paginación para no cargar todo
-            ->appends(['q' => $q]);             // conserva el término al paginar
+            ->appends(['q' => $q]);           // conserva el término al paginar
+        }
 
         return view('users.index', compact('users', 'q'));
     }
@@ -56,9 +63,13 @@ class UserController extends Controller
             'telefono' => 'required|string|max:20',
             'nombreUsuario' => 'required|string|max:50|unique:users,nombreUsuario',
             'password' => 'required|string|min:8|confirmed',
-            'rol' => ['required', Rule::in(['usuario', 'administrador'])], // <-- añadir
+            'rol' => ['required', Rule::in(['usuario', 'administrador','colaborador'])], // <-- añadir
         ]);
 
+        $idusuario=null;
+        if(Auth::user()->rol=='usuario'){
+            $idusuario=Auth::id();
+        }
 
         User::create([
             'nombre' => $request->nombre,
@@ -69,6 +80,7 @@ class UserController extends Controller
             'nombreUsuario' => $request->nombreUsuario,
             'password' => Hash::make($request->password),
             'rol' => $request->rol, // <-- añadir
+            'idusuario' =>$idusuario,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuario creado.');
@@ -91,6 +103,15 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
+    public function editpermiso($id)
+    {
+        return view('users.permisos');
+    }
+    public function updatepermiso(Request $request)
+    {
+        return redirect()->route('users.index')->with('success', 'Permisos actualizados.');
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -103,7 +124,7 @@ class UserController extends Controller
             'email'           => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'telefono'        => 'required|string|max:20',
             'nombreUsuario'   => ['required', 'string', 'max:50', Rule::unique('users', 'nombreUsuario')->ignore($user->id)],
-            'rol'             => ['required', Rule::in(['usuario', 'administrador'])],
+            'rol'             => ['required', Rule::in(['usuario', 'administrador','colaborador'])],
             'password'        => 'nullable|min:6',
         ]);
 

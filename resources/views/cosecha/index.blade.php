@@ -60,27 +60,30 @@
                                     <td>{{ $cosecha->observaciones }}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            {{-- EDITAR --}}
+                                            {{-- EDITAR (usuario y colaborador) --}}
                                             <a href="{{ route('cosechas.edit', $cosecha->idCosecha) }}"
-                                               class="btn btn-sm btn-warning">
+                                            class="btn btn-sm btn-warning">
                                                 Editar
                                             </a>
 
-                                            {{-- ELIMINAR --}}
-                                            <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}"
-                                                  method="POST"
-                                                  class="m-0 p-0 form-eliminar-cosecha">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button"
-                                                        class="btn btn-sm btn-danger btn-eliminar-cosecha"
-                                                        data-colmena="Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}"
-                                                        data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                            {{-- ELIMINAR: SOLO usuario, NO colaborador --}}
+                                            @if(auth()->user()->rol === 'usuario')
+                                                <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}"
+                                                    method="POST"
+                                                    class="m-0 p-0 form-eliminar-cosecha">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger btn-eliminar-cosecha"
+                                                            data-colmena="Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                            data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
+
                                 </tr>
                                 @php $correlativo++; @endphp
                             @endif

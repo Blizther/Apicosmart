@@ -23,21 +23,23 @@
         @endforeach
     </div>
 
-    <!-- Botón agregar apiario -->
+    <!-- Botón agregar apiario: SOLO USUARIO, no colaborador -->
+    @if(auth()->user()->rol === 'usuario')
     <div class="mb-3">
         <a href="{{ route('apiario.create') }}" class="btn btn-success">
             <i class="fa fa-plus"></i> Agregar Apiario
         </a>
     </div>
+    @endif
+
     <hr>
 
     <!-- Mapa colapsable (INSPINIA) -->
-    <div class="ibox float-e-margins collapsed"><!-- importante: clase collapsed -->
+    <div class="ibox float-e-margins collapsed">
         <div class="ibox-title">
             <h5>Ubicación de mis Apiarios</h5>
             <div class="ibox-tools">
                 <a class="collapse-link">
-                    {{-- Ojo: Inspinia usa fa-chevron-up y cambia el ícono con la clase collapsed --}}
                     <i class="fa fa-chevron-up"></i>
                 </a>
             </div>
@@ -75,6 +77,8 @@
                         </div>
                     </div>
 
+                    {{-- Footer con acciones: SOLO USUARIO, el colaborador NO puede editar ni eliminar --}}
+                    @if(auth()->user()->rol === 'usuario')
                     <div class="card-footer d-flex justify-content-center gap-2">
                         <a href="{{ route('apiario.edit', $apiario->idApiario) }}" 
                            class="btn btn-warning btn-sm" title="Editar">
@@ -95,6 +99,7 @@
                             </button>
                         </form>
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -149,6 +154,10 @@
     background: transparent;
     border-top: none;
 }
+
+.swal2-apico-popup {
+    border-radius: 16px !important;
+}
 </style>
 
 <!-- Leaflet CSS y JS -->
@@ -157,8 +166,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ==== Inicializar mapa normalmente ====
-    var map = L.map('map').setView([-33.45, -70.66], 6); // valor inicial, luego se ajusta con fitBounds
+    // ==== Inicializar mapa ====
+    var map = L.map('map').setView([-33.45, -70.66], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -186,16 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ==== Arreglar tamaño cuando se abre el panel ====
+    // Ajustar mapa cuando se abre el panel
     if (window.$) {
         $(document).on('click', '.collapse-link', function () {
             var ibox = $(this).closest('.ibox');
-
-            // Antes del click el ibox tiene o no la clase 'collapsed'
             var seVaAbrir = ibox.hasClass('collapsed');
 
             if (seVaAbrir) {
-                // Esperar a que termine la animación del slideDown de Inspinia
                 setTimeout(function () {
                     map.invalidateSize();
                     if (markers.getLayers().length > 0) {
@@ -247,11 +253,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-
-<style>
-.swal2-apico-popup {
-    border-radius: 16px !important;
-}
-</style>
 
 @endsection

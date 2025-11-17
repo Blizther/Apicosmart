@@ -89,14 +89,24 @@
                 <!-- ROL -->
                 <div class="mb-3">
                     <label for="rol" class="form-label">Rol</label>
-                    <select id="rol" name="rol" class="form-select @error('rol') is-invalid @enderror" required>
+                    @if(auth()->user()->rol == 'usuario')
+                    <select id="rol" name="rol" class="form-control" required readonly>
+                        <option value="colaborador" selected>Colaborador</option>
+                    </select>
+
+                    @else
+                    <select id="rol" name="rol" class="form-control @error('rol') is-invalid @enderror" required>
                         <option value="usuario" {{ old('rol','usuario') === 'usuario' ? 'selected' : '' }}>Usuario</option>
                         <option value="administrador" {{ old('rol','usuario') === 'administrador' ? 'selected' : '' }}>Administrador</option>
                     </select>
                     @error('rol') <div class="invalid-feedback">{{ $message }}</div> @enderror
+
+                    @endif
+
+                    
                 </div>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-end" style="padding-top: 2rem; padding-bottom: 2rem;">
                     <button type="submit" class="btn btn-primary">Registrar</button>
                 </div>
             </form>

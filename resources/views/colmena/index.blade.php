@@ -25,6 +25,8 @@
         </div>
     </div>
 
+    {{-- Botones de agregar: SOLO para usuario, no colaborador --}}
+    @if(auth()->user()->rol === 'usuario')
     <div class="mb-3">
         <a href="{{ route('colmenas.create') }}" class="btn btn-success">
             <i class="fa fa-plus"></i> Agregar colmena
@@ -33,6 +35,7 @@
             <i class="fa fa-layer-group"></i> Agregar colmenas por lote
         </a>
     </div>
+    @endif
 
     <div class="row g-4">
         <div class="col-sm-12">
@@ -75,30 +78,36 @@
                                 <td>{{ $colmena->modelo }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                        {{-- NUEVA RUTA PARA VER INSPECCIONES --}}
+
+                                        {{-- Ver inspecciones: SIEMPRE --}}
                                         <a href="{{ route('inspeccion.index', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
                                             Ver inspecciones
                                         </a>
 
+                                        {{-- Detalles: SIEMPRE --}}
                                         <a href="{{ route('colmenas.show', $colmena->idColmena) }}" class="btn btn-info btn-sm">
                                             Detalles
                                         </a>
 
-                                        <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
-                                            Editar
-                                        </a>
+                                        {{-- Editar y Eliminar: SOLO USUARIO (no colaborador) --}}
+                                        @if(auth()->user()->rol === 'usuario')
+                                            <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
+                                                Editar
+                                            </a>
 
-                                        <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}"
-                                              method="POST"
-                                              class="m-0 p-0 form-eliminar-colmena">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                    class="btn btn-danger btn-sm btn-eliminar-colmena"
-                                                    data-codigo="{{ $colmena->codigo }}">
-                                                Eliminar
-                                            </button>
-                                        </form>
+                                            <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-colmena">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-danger btn-sm btn-eliminar-colmena"
+                                                        data-codigo="{{ $colmena->codigo }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        @endif
+
                                     </div>
                                 </td>
                             </tr>
@@ -130,8 +139,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#3A4F26',  // verde ApicoSmart
-                cancelButtonColor: '#F9B233',   // amarillo ApicoSmart
+                confirmButtonColor: '#3A4F26',
+                cancelButtonColor: '#F9B233',
                 customClass: { popup: 'swal2-apico-popup' }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -156,7 +165,7 @@ td .d-flex form {
 }
 
 td .d-flex .btn {
-    margin: 0 2px; /* separación uniforme entre botones */
+    margin: 0 2px;
 }
 </style>
 @endsection

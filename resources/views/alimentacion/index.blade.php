@@ -111,29 +111,32 @@
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
 
-                                                {{-- EDITAR --}}
+                                                {{-- EDITAR: usuario y colaborador --}}
                                                 <a href="{{ route('alimentacion.edit', $alimentacion->idalimentacion) }}"
-                                                   class="btn btn-sm btn-warning">
+                                                class="btn btn-sm btn-warning">
                                                     Editar
                                                 </a>
 
-                                                {{-- ELIMINAR --}}
-                                                <form action="{{ route('alimentacion.destroy', $alimentacion->idalimentacion) }}"
-                                                      method="POST"
-                                                      class="m-0 p-0 form-eliminar-alimentacion">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                {{-- ELIMINAR: SOLO usuario (apicultor), NO colaborador --}}
+                                                @if(auth()->user()->rol === 'usuario')
+                                                    <form action="{{ route('alimentacion.destroy', $alimentacion->idalimentacion) }}"
+                                                        method="POST"
+                                                        class="m-0 p-0 form-eliminar-alimentacion">
+                                                        @csrf
+                                                        @method('DELETE')
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger btn-eliminar-alimentacion"
-                                                            data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
-                                                            data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
-                                                            data-alimento="{{ $alimentacion->tipoAlimento }}">
-                                                        Eliminar
-                                                    </button>
-                                                </form>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-danger btn-eliminar-alimentacion"
+                                                                data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                                data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
+                                                                data-alimento="{{ $alimentacion->tipoAlimento }}">
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </div>
                                         </td>
+
                                     </tr>
                                     @php $correlativo++; @endphp
                                 @endif

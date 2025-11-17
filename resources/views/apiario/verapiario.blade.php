@@ -1,7 +1,8 @@
 @extends('usuario.inicio')
 @section('content')
 <div class="container-fluid pt-4 px-4">
-    <!-- Botón volver -->
+
+    {{-- Botón volver --}}
     <div class="row g-4">
         <div class="col-sm-12">
             <a href="{{ route('apiario.index')}}" class="btn btn-warning">
@@ -11,7 +12,7 @@
         </div>
     </div>
 
-    <!-- Título del Apiario -->
+    {{-- Título del Apiario --}}
     <div class="row g-4 mt-2">
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -20,34 +21,36 @@
         </div>
     </div>
 
-    <!-- Información general y mapa -->
+    {{-- Info general + mapa --}}
     <div class="row g-4 mt-2">
-        <!-- Información general -->
+        {{-- Información general --}}
         <div class="col-sm-12 col-md-12">
             <div class="bg-light rounded p-4">
                 <h3>Información General</h3>
                 <div class="row align-items-center">
-                    <!-- Columna izquierda: datos -->
+                    {{-- Columna izquierda: datos --}}
                     <div class="col-md-8">
                         <p><strong>Vegetación:</strong> {{ $apiario->vegetacion }}</p>
                         <p><strong>Altitud:</strong> {{ $apiario->altitud }} metros</p>
-                        <p><strong>Estado:</strong> {{ $apiario->estado ? 'Activo' : 'Inactivo' }}</p>
+                        <p><strong>Estado:</strong>
+                            {{ $apiario->estado === 'activo' ? 'Activo' : 'Inactivo' }}
+                        </p>
                     </div>
 
-                    <!-- Columna derecha: imagen -->
+                    {{-- Columna derecha: imagen --}}
                     @if(!empty($apiario->urlImagen))
-                    <div class="col-md-4 text-center">
-                        <img src="{{ asset($apiario->urlImagen) }}" 
-                            alt="Imagen del Apiario" 
-                            class="img-fluid rounded shadow-sm" 
-                            style="max-height: 200px; border-radius: 12px; object-fit: cover;">
-                    </div>
+                        <div class="col-md-4 text-center">
+                            <img src="{{ asset($apiario->urlImagen) }}" 
+                                alt="Imagen del Apiario" 
+                                class="img-fluid rounded shadow-sm" 
+                                style="max-height: 200px; border-radius: 12px; object-fit: cover;">
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
 
-        <!-- Ubicación -->
+        {{-- Ubicación --}}
         <div class="col-sm-12 col-md-12">
             <div class="bg-light rounded p-4">
                 @if($colmenas->count() == 0)
@@ -61,80 +64,97 @@
         </div>
     </div>
 
-    <!-- Tabla de colmenas -->
+    {{-- Tabla de colmenas --}}
     <div class="row g-4 mt-4">
         <div class="col-sm-12 col-md-12">
             @if($colmenas->count() > 0)
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>NRO</th>
-                            <th>Código</th>
-                            <th>Fecha registro</th>
-                            <th>Estado</th>
-                            <th>Cantidad de Marcos</th>
-                            <th>Modelo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $correlativo = 1; @endphp
-                        @foreach ($colmenas as $colmena)
-                            <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
-                                <th>{{ $correlativo }}</th>
-                                <td>{{ $colmena->codigo }}</td>
-                                <td>{{ \Carbon\Carbon::parse($colmena->fechaCreacion)->format('d/m/Y H:i:s') }}</td>
-                                <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
-                                <td>{{ $colmena->cantidadMarco }}</td>
-                                <td>{{ $colmena->modelo }}</td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                        <a href="{{ route('colmenas.index', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
-                                            Ver Inspecciones
-                                        </a>
-                                        <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
-                                            Editar
-                                        </a>
+                @php
+                    $correlativo    = 1;
+                    $esColaborador  = auth()->user()->rol === 'colaborador';
+                @endphp
 
-                                        {{-- Botón eliminar con SweetAlert --}}
-                                        <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" 
-                                              method="POST" 
-                                              class="m-0 p-0 form-eliminar-colmena">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" 
-                                                    class="btn btn-danger btn-sm btn-eliminar-colmena"
-                                                    data-codigo="{{ $colmena->codigo }}">
-                                                Eliminar
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>NRO</th>
+                                <th>Código</th>
+                                <th>Fecha registro</th>
+                                <th>Estado</th>
+                                <th>Cantidad de Marcos</th>
+                                <th>Modelo</th>
+                                <th>Acciones</th>
                             </tr>
-                            @php $correlativo++; @endphp
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach ($colmenas as $colmena)
+                                <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
+                                    <th>{{ $correlativo }}</th>
+                                    <td>{{ $colmena->codigo }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($colmena->fechaCreacion)->format('d/m/Y H:i:s') }}</td>
+                                    <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
+                                    <td>{{ $colmena->cantidadMarco }}</td>
+                                    <td>{{ $colmena->modelo }}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                            {{-- Ver inspecciones: SIEMPRE --}}
+                                            <a href="{{ route('inspeccion.index', $colmena->idColmena) }}"
+                                               class="btn btn-primary btn-sm">
+                                                Ver inspecciones
+                                            </a>
+
+                                            {{-- Editar / Eliminar: SOLO si NO es colaborador --}}
+                                            @if(!$esColaborador)
+                                                <a href="{{ route('colmenas.edit', $colmena->idColmena) }}"
+                                                   class="btn btn-warning btn-sm">
+                                                    Editar
+                                                </a>
+
+                                                {{-- Botón eliminar con SweetAlert --}}
+                                                <form action="{{ route('colmenas.destroy', $colmena->idColmena) }}" 
+                                                      method="POST" 
+                                                      class="m-0 p-0 form-eliminar-colmena">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                            class="btn btn-danger btn-sm btn-eliminar-colmena"
+                                                            data-codigo="{{ $colmena->codigo }}">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @php $correlativo++; @endphp
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @else
-                <p class="text-center text-danger mt-3">No hay colmenas registradas para este apiario.</p>
+                <p class="text-center text-danger mt-3">
+                    No hay colmenas registradas para este apiario.
+                </p>
             @endif
         </div>
     </div>
 </div>
 
-<!-- Leaflet CSS y JS -->
+{{-- Leaflet CSS y JS --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+{{-- SweetAlert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var lat = {{ $apiario->latitud ?? 'null' }};
-    var lng = {{ $apiario->longitud ?? 'null' }};
+    var lat              = {{ $apiario->latitud ?? 'null' }};
+    var lng              = {{ $apiario->longitud ?? 'null' }};
     var cantidadColmenas = {{ $colmenas->count() ?? 0 }};
 
-    if(lat && lng){
+    // ==== Mapa ====
+    if (lat && lng) {
         var map = L.map('map').setView([lat, lng], 14);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -144,10 +164,12 @@ document.addEventListener('DOMContentLoaded', function() {
         var popupContent = `<strong>{{ $apiario->nombre }}</strong><br>
                             Vegetación: {{ $apiario->vegetacion ?? 'N/A' }}<br>
                             Altitud: {{ $apiario->altitud ?? 'N/A' }} m<br>`;
-        if(cantidadColmenas > 0){
+        if (cantidadColmenas > 0) {
             popupContent += `Total colmenas: ${cantidadColmenas}`;
         } else {
-            popupContent += `<span style="color:red; font-weight:bold;">Este apiario no tiene colmenas registradas</span>`;
+            popupContent += `<span style="color:red; font-weight:bold;">
+                                Este apiario no tiene colmenas registradas
+                             </span>`;
         }
 
         L.marker([lat, lng])
@@ -155,15 +177,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .bindPopup(popupContent)
             .openPopup();
     } else {
-        document.getElementById('map').innerHTML = '<p style="color:red;">No hay coordenadas registradas para este apiario</p>';
+        document.getElementById('map').innerHTML =
+            '<p style="color:red;">No hay coordenadas registradas para este apiario</p>';
     }
 
-    // SweetAlert para eliminar colmenas
+    // ==== SweetAlert para eliminar colmenas (solo aplica si el usuario ve el botón) ====
     const botonesEliminar = document.querySelectorAll('.btn-eliminar-colmena');
 
     botonesEliminar.forEach(function (boton) {
         boton.addEventListener('click', function () {
-            const form = this.closest('form');
+            const form   = this.closest('form');
             const codigo = this.getAttribute('data-codigo') || '';
 
             Swal.fire({
@@ -185,9 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-<!-- SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
 .table-danger {

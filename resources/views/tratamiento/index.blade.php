@@ -92,28 +92,32 @@
                                     {{-- ACCIONES --}}
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            {{-- EDITAR --}}
+                                            {{-- EDITAR: usuario y colaborador --}}
                                             <a href="{{ route('tratamiento.edit', $tratamiento->idTratamiento) }}"
-                                               class="btn btn-sm btn-warning">
+                                            class="btn btn-sm btn-warning">
                                                 Editar
                                             </a>
 
-                                            {{-- ELIMINAR --}}
-                                            <form action="{{ route('tratamiento.destroy', $tratamiento->idTratamiento) }}"
-                                                  method="POST"
-                                                  class="m-0 p-0 form-eliminar-tratamiento">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button"
-                                                        class="btn btn-sm btn-danger btn-eliminar-tratamiento"
-                                                        data-colmena="@if($colmena && $colmena->apiario)Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}@elseif($colmena)Colmena #{{ $colmena->codigo }}@else - @endif"
-                                                        data-fecha="{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}"
-                                                        data-problema="{{ $tratamiento->problemaTratado }}">
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                            {{-- ELIMINAR: SOLO usuario (apicultor), NO colaborador --}}
+                                            @if(auth()->user()->rol === 'usuario')
+                                                <form action="{{ route('tratamiento.destroy', $tratamiento->idTratamiento) }}"
+                                                    method="POST"
+                                                    class="m-0 p-0 form-eliminar-tratamiento">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger btn-eliminar-tratamiento"
+                                                            data-colmena="@if($colmena && $colmena->apiario)Colmena #{{ $colmena->codigo }} - {{ $colmena->apiario->nombre }}@elseif($colmena)Colmena #{{ $colmena->codigo }}@else - @endif"
+                                                            data-fecha="{{ \Carbon\Carbon::parse($tratamiento->fechaAdministracion)->format('d/m/Y') }}"
+                                                            data-problema="{{ $tratamiento->problemaTratado }}">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
+
+
                                 </tr>
                                 @php $correlativo++; @endphp
                             @endforeach

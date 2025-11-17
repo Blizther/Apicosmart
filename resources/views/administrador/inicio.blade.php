@@ -313,6 +313,20 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 2px solid #3A4F26;
         }
+        /* Centrar el texto "Bienvenido a ApicoSmart" en la barra superior */
+        .navbar.navbar-static-top {
+            position: relative;
+        }
+
+        .navbar-top-links .welcome-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+
+
     </style>
 
 </head>
@@ -346,20 +360,107 @@
                     <div class="logo-element"></div>
                 </li>
 
-                @if(auth()->user()->rol === 'administrador')
+               {{-- ======== MÓDULOS PARA USUARIO Y COLABORADOR ======== --}}
+
+                {{-- PRODUCTOS: solo para usuario --}}
+                @if(auth()->user()->rol == 'usuario')
                 <li>
-                    <a href="{{ route('users.index') }}">
-                        <i class="fa fa-user"></i>
-                        <span class="nav-label">Administrar Usuarios</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('fabricados.index') }}">
-                        <i class="fa fa-cogs"></i>
-                        <span class="nav-label">Ver dispositivos fabricados</span>
+                    <a href="{{ url('productos') }}" title="Productos">
+                        <i class="fa fa-cubes"></i> <span class="nav-label">Productos</span>
                     </a>
                 </li>
                 @endif
+
+                {{-- APIARIOS: usuario y colaborador --}}
+                @if(auth()->user()->rol == 'usuario' || auth()->user()->rol == 'colaborador')
+                <li>
+                    <a href="{{ route('apiario.index') }}" title="Apiarios">
+                        <i class="fa fa-pagelines"></i> <span class="nav-label">Apiarios</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('colmenas.index') }}" title="Colmenas">
+                        <i class="fa fa-archive"></i> <span class="nav-label">Colmenas</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('cosechas.index') }}" title="Cosechas">
+                        <i class="fa fa-align-center"></i> <span class="nav-label">Cosechas</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('tratamiento.index') }}" title="Tratamientos">
+                        <i class="fa fa-plus-circle"></i> <span class="nav-label">Tratamientos</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('alimentacion.index') }}" title="Alimentación">
+                        <i class="fa fa-tint"></i> <span class="nav-label">Alimentación</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('tarea.index') }}" title="Tareas pendientes">
+                        <i class="fa fa-check-square-o"></i> <span class="nav-label">Tareas pendientes</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-line-chart"></i> 
+                        <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        <li><a href="{{route('estadisticas.index')}}"><i class="fa fa-bar-chart"></i> General</a></li>
+                        <li><a href="{{route('estadisticas.colmenas.index')}}"><i class="fa fa-pie-chart"></i> Por Colmena</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="{{ route('mis.dispositivos') }}" title="Dispositivos">
+                        <i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span>
+                    </a>
+                </li>
+                @endif
+
+
+                {{-- ======== MÓDULOS SOLO PARA USUARIO (NO COLABORADOR) ======== --}}
+                @if(auth()->user()->rol == 'usuario')
+                <li>
+                    <a href="{{ url('ventaUsuario') }}" title="Realizar venta">
+                        <i class="fa fa-pencil-square-o"></i><span class="nav-label">Realizar venta</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url('reporteUsuario') }}" title="Reporte venta">
+                        <i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span>
+                    </a>
+                </li>
+                @endif
+
+
+                {{-- ADMINISTRAR USUARIOS: solo admin o usuario --}}
+                @if(auth()->user()->rol === 'administrador' || auth()->user()->rol === 'usuario')
+                <li>
+                    <a href="{{ route('users.index') }}">
+                        <i class="fa fa-user"></i> <span class="nav-label">Administrar Usuarios</span>
+                    </a>
+                </li>
+                @endif
+
+                {{-- DISPOSITIVOS FABRICADOS: solo administrador --}}
+                @if(auth()->user()->rol === 'administrador')
+                <li>
+                    <a href="{{ route('fabricados.index') }}">
+                        <i class="fa fa-cogs"></i> <span class="nav-label">Ver dispositivos fabricados</span>
+                    </a>
+                </li>
+                @endif
+
             </ul>
         </div>
     </nav>
@@ -384,41 +485,7 @@
                         <span class="welcome-text">Bienvenido a ApicoSmart</span>
                     </li>
 
-                    <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                            <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-messages">
-                            <li class="divider"></li>
-                            <li class="divider"></li>
-                            <li>
-                                <div class="text-center link-block">
-                                    <a href="mailbox.html">
-                                        <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                            <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-alerts">
-                            <li class="divider"></li>
-                            <li class="divider"></li>
-                            <li class="divider"></li>
-                            <li>
-                                <div class="text-center link-block">
-                                    <a href="notifications.html">
-                                        <strong>See All Alerts</strong>
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                   
 
                     <li>
                         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

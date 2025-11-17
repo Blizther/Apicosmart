@@ -9,10 +9,25 @@ use App\Models\Cosecha;
 use App\Models\Tratamiento;
 use App\Models\Alimentacion;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Carbon\Carbon; // no lo usas, lo puedes dejar o quitar
 
 class ControllerEstadisticas extends Controller
 {
+    /**
+     * Devuelve el ID del dueño de los datos:
+     * - usuario      => su propio id
+     * - colaborador  => idusuario (apicultor dueño)
+     */
+    private function getOwnerId(): int
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'colaborador') {
+            return (int) $user->idusuario;
+        }
+
+        return (int) $user->id;
+    }
+
     public function index()
     {
         return view('estadisticas.index');
@@ -21,7 +36,9 @@ class ControllerEstadisticas extends Controller
     // 🔹 1. Cantidad de colmenas por apiario
     public function colmenasPorApiario()
     {
-        $apiarios = Apiario::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $apiarios = Apiario::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
             ->withCount(['colmenas' => function ($q) {
                 $q->where('estado', 'activo');
@@ -37,11 +54,16 @@ class ControllerEstadisticas extends Controller
     // 🔹 2. Peso total de cosecha por apiario
     public function pesoCosechaPorApiario()
     {
-        $apiarios = Apiario::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $apiarios = Apiario::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
-            ->with(['colmenas' => function ($q) {
-                $q->where('estado', 'activo');
-            }, 'colmenas.cosechas'])
+            ->with([
+                'colmenas' => function ($q) {
+                    $q->where('estado', 'activo');
+                },
+                'colmenas.cosechas'
+            ])
             ->get();
 
         $labels = [];
@@ -67,11 +89,16 @@ class ControllerEstadisticas extends Controller
     // 🔹 3. Cantidad de tratamientos por apiario
     public function tratamientosPorApiario()
     {
-        $apiarios = Apiario::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $apiarios = Apiario::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
-            ->with(['colmenas' => function ($q) {
-                $q->where('estado', 'activo');
-            }, 'colmenas.tratamientos'])
+            ->with([
+                'colmenas' => function ($q) {
+                    $q->where('estado', 'activo');
+                },
+                'colmenas.tratamientos'
+            ])
             ->get();
 
         $labels = [];
@@ -97,11 +124,16 @@ class ControllerEstadisticas extends Controller
     // 🔹 4. Cantidad de alimentaciones por apiario
     public function alimentacionesPorApiario()
     {
-        $apiarios = Apiario::where('creadoPor', Auth::id())
+        $ownerId = $this->getOwnerId();
+
+        $apiarios = Apiario::where('creadoPor', $ownerId)
             ->where('estado', 'activo')
-            ->with(['colmenas' => function ($q) {
-                $q->where('estado', 'activo');
-            }, 'colmenas.alimentaciones'])
+            ->with([
+                'colmenas' => function ($q) {
+                    $q->where('estado', 'activo');
+                },
+                'colmenas.alimentaciones'
+            ])
             ->get();
 
         $labels = [];
