@@ -17,7 +17,7 @@
     <div class="col-md-4">
       <div class="bg-light rounded p-3">
         <div><small class="text-muted">Fecha</small></div>
-        <div><strong>{{ \Carbon\Carbon::parse($venta->fecha)->format('Y-m-d H:i') }}</strong></div>
+        <div><strong>{{ \Carbon\Carbon::parse($venta->fecha)->format('Y-m-d') }}</strong></div>
       </div>
     </div>
     <div class="col-md-4">

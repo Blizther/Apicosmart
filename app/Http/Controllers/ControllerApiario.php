@@ -33,15 +33,16 @@ class ControllerApiario extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Solo el usuario (apicultor) puede guardar apiarios
-        if (Auth::user()->rol !== 'usuario') {
-            abort(403, 'No tienes permiso para crear apiarios.');
-        }
+{
+    // Solo el usuario (apicultor) puede guardar apiarios
+    if (Auth::user()->rol !== 'usuario') {
+        abort(403, 'No tienes permiso para crear apiarios.');
+    }
 
-        $userId = Auth::id();
+    $userId = Auth::id();
 
-        $request->validate([
+    $request->validate(
+        [
             'nombre' => [
                 'required',
                 'max:150',
@@ -55,34 +56,42 @@ class ControllerApiario extends Controller
             'altitud' => 'numeric',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
-        ]);
+        ],
+        [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max'      => 'El nombre no debe superar 150 caracteres.',
+            'nombre.unique'   => 'Ya existe un apiario con ese nombre.',
+            // si quieres, puedes seguir agregando mensajes personalizados
+        ]
+    );
 
-        date_default_timezone_set('America/La_Paz');
-        $fecha = date('Y-m-d H:i:s');
-        $user  = Auth::user()->id;
+    date_default_timezone_set('America/La_Paz');
+    $fecha = date('Y-m-d H:i:s');
+    $user  = Auth::user()->id;
 
-        $apiario = new Apiario();
-        $apiario->nombre   = $request->nombre;
-        $apiario->vegetacion = $request->vegetacion;
-        $apiario->altitud  = $request->altitud;
-        $apiario->latitud  = $request->latitud;
-        $apiario->longitud = $request->longitud;
-        $apiario->creadoPor = $user;
-        $apiario->fechaCreacion = $fecha;
+    $apiario = new Apiario();
+    $apiario->nombre   = $request->nombre;
+    $apiario->vegetacion = $request->vegetacion;
+    $apiario->altitud  = $request->altitud;
+    $apiario->latitud  = $request->latitud;
+    $apiario->longitud = $request->longitud;
+    $apiario->creadoPor = $user;
+    $apiario->fechaCreacion = $fecha;
 
-        if ($request->hasFile('urlImagen')) {
-            $file = $request->file('urlImagen');
-            $nombreArchivo = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads'), $nombreArchivo);
-            $apiario->urlImagen = 'uploads/' . $nombreArchivo;
-        }
-
-        // Estado activo por defecto
-        $apiario->estado = 'activo';
-        $apiario->save();
-
-        return redirect()->to('/apiario')->with('success', 'Apiario creado exitosamente.');
+    if ($request->hasFile('urlImagen')) {
+        $file = $request->file('urlImagen');
+        $nombreArchivo = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads'), $nombreArchivo);
+        $apiario->urlImagen = 'uploads/' . $nombreArchivo;
     }
+
+    // Estado activo por defecto
+    $apiario->estado = 'activo';
+    $apiario->save();
+
+    return redirect()->to('/apiario')->with('success', 'Apiario creado exitosamente.');
+}
+
 
     public function edit(string $id)
     {

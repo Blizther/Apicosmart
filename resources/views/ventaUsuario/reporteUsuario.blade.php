@@ -101,7 +101,7 @@
                         @endphp
                         <tr>
                             <td>{{ $correlativo }}</td>
-                            <td>{{ \Carbon\Carbon::parse($v->fecha)->format('Y-m-d H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($v->fecha)->format('Y-m-d') }}</td>
                             <td class="text-end">{{ number_format($v->total, 2) }}</td>
                             <td class="text-center">
                                 <span class="badge bg-{{ $badge }}">{{ $estadoTxt }}</span>

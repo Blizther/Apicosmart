@@ -95,7 +95,6 @@
                       @csrf
                       <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
                       <input type="number" name="cantidad" min="1" value="{{ $item['cantidad'] }}" class="form-control form-control-sm" style="width:80px;">
-                      <button class="btn btn-secondary btn-sm" type="submit">OK</button>
                     </form>
                   </td>
                   <td>{{ number_format($item['precio'],2) }}</td>

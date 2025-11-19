@@ -313,69 +313,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 2px solid #3A4F26;
         }
-
-        /* ============================
-           AJUSTE DEL TÍTULO EN LA BARRA (MISMO DEL USUARIO)
-           ============================ */
-
-        /* Barra superior relativa */
-        .navbar.navbar-static-top {
-            position: relative;
-        }
-
-        /* Hacemos flex los elementos de la derecha de la barra */
-        .nav.navbar-top-links.navbar-right {
-            display: flex;
-            align-items: center;
-            margin-right: 15px;
-        }
-
-        /* El contenedor del título ocupa el espacio central */
-        .navbar-top-links .welcome-container {
-            flex: 1 1 auto;
-            text-align: center;
-            position: static !important;
-            left: auto !important;
-            top: auto !important;
-            transform: none !important;
-        }
-
-        /* Los demás <li> (salir, tareas, etc.) se quedan a la derecha */
-        .navbar-top-links > li:not(.welcome-container) {
-            flex: 0 0 auto;
-        }
-
-        /* Mismo estilo de título que en el layout de USUARIO */
-        .welcome-text-nav {
-            font-size: 40px;   /* escritorio */
-            line-height: 1.2;
-            white-space: nowrap;
-            font-weight: 700;
-            color: #3A4F26;
-            text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
-            font-family: "Segoe UI", Arial, sans-serif;
-        }
-
-        /* RESPONSIVE NAVBAR (igual que usuario) */
-        @media (max-width: 768px) {
-            .nav.navbar-top-links.navbar-right {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .navbar-top-links .welcome-container {
-                order: -1;
-                width: 100%;
-                margin-bottom: 5px;
-            }
-
-            .welcome-text-nav {
-                font-size: 20px;  /* móvil / tablet pequeña */
-                white-space: normal;
-                display: block;
-            }
-        }
-
     </style>
 
 </head>
@@ -409,105 +346,89 @@
                     <div class="logo-element"></div>
                 </li>
 
-                {{-- ======== MÓDULOS PARA USUARIO Y COLABORADOR ======== --}}
-
-                {{-- PRODUCTOS: solo para usuario --}}
-                @if(auth()->user()->rol == 'usuario')
-                <li>
-                    <a href="{{ url('productos') }}" title="Productos">
-                        <i class="fa fa-cubes"></i> <span class="nav-label">Productos</span>
-                    </a>
-                </li>
-                @endif
-
-                {{-- APIARIOS: usuario y colaborador --}}
                 @if(auth()->user()->rol == 'usuario' || auth()->user()->rol == 'colaborador')
                 <li>
+                    <a href="<?php echo asset('') ?>productos" title="Productos"><i class="fa fa-cubes"></i> <span class="nav-label"> Productos</span></a>
+                </li>
+
+                <li>
                     <a href="{{ route('apiario.index') }}" title="Apiarios">
-                        <i class="fa fa-pagelines"></i> <span class="nav-label">Apiarios</span>
+                        <i class="fa fa-pagelines"></i>
+                        <span class="nav-label"> Apiarios</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="{{ route('colmenas.index') }}" title="Colmenas">
-                        <i class="fa fa-archive"></i> <span class="nav-label">Colmenas</span>
+                    <a href="{{route('colmenas.index')}}" title="Colmenas">
+                        <i class="fa fa-archive"></i>
+                        <span class="nav-label"> Colmenas</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="{{ route('cosechas.index') }}" title="Cosechas">
-                        <i class="fa fa-align-center"></i> <span class="nav-label">Cosechas</span>
+                    <a href="{{route('cosechas.index')}}" title="Cosechas">
+                        <i class="fa fa-align-center"></i>
+                        <span class="nav-label"> Cosechas</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{ route('tratamiento.index') }}" title="Tratamientos">
-                        <i class="fa fa-plus-circle"></i> <span class="nav-label">Tratamientos</span>
+                        <i class="fa fa-plus-circle"></i>
+                        <span class="nav-label"> Tratamientos</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="{{ route('alimentacion.index') }}" title="Alimentación">
-                        <i class="fa fa-tint"></i> <span class="nav-label">Alimentación</span>
+                    <a href="{{ route('alimentacion.index') }}" title="alimentacion">
+                        <i class="fa fa-tint"></i>
+                        <span class="nav-label"> Alimentación</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="{{ route('tarea.index') }}" title="Tareas pendientes">
-                        <i class="fa fa-check-square-o"></i> <span class="nav-label">Tareas pendientes</span>
+                    <a href="{{ route('tarea.index') }}" title="tarea">
+                        <i class="fa fa-check-square-o"></i>
+                        <span class="nav-label"> Tareas pendientes</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-line-chart"></i> 
-                        <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span>
-                    </a>
+                    <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Estadísticas</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li><a href="{{route('estadisticas.index')}}"><i class="fa fa-bar-chart"></i> General</a></li>
                         <li><a href="{{route('estadisticas.colmenas.index')}}"><i class="fa fa-pie-chart"></i> Por Colmena</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="{{ route('mis.dispositivos') }}" title="Dispositivos">
-                        <i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span>
-                    </a>
+                    <a href="{{ route('mis.dispositivos') }}" title="Dispositivos"><i class="fa fa-thermometer-half"></i> <span class="nav-label">Dispositivos</span></a>
                 </li>
                 @endif
-
-                {{-- ======== MÓDULOS SOLO PARA USUARIO (NO COLABORADOR) ======== --}}
                 @if(auth()->user()->rol == 'usuario')
+                <li class="">
+                    <a href="<?php echo asset('') ?>ventaUsuario" title="Realizar venta"><i class="fa fa-pencil-square-o"></i><span class="nav-label"> Realizar venta</span></a>
+                </li>
                 <li>
-                    <a href="{{ url('ventaUsuario') }}" title="Realizar venta">
-                        <i class="fa fa-pencil-square-o"></i><span class="nav-label">Realizar venta</span>
-                    </a>
+                    <a href="<?php echo asset('') ?>reporteUsuario" title="Reporte venta"><i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span></a>
                 </li>
 
-                <li>
-                    <a href="{{ url('reporteUsuario') }}" title="Reporte venta">
-                        <i class="fa fa-bar-chart"></i> <span class="nav-label">Reportes de venta</span>
-                    </a>
-                </li>
                 @endif
 
-                {{-- ADMINISTRAR USUARIOS: solo admin o usuario --}}
                 @if(auth()->user()->rol === 'administrador' || auth()->user()->rol === 'usuario')
                 <li>
                     <a href="{{ route('users.index') }}">
-                        <i class="fa fa-user"></i> <span class="nav-label">Administrar Usuarios</span>
+                        <i class="fa fa-user"></i>
+                        <span class="nav-label">Administrar Usuarios</span>
                     </a>
                 </li>
                 @endif
 
-                {{-- DISPOSITIVOS FABRICADOS: solo administrador --}}
                 @if(auth()->user()->rol === 'administrador')
                 <li>
                     <a href="{{ route('fabricados.index') }}">
-                        <i class="fa fa-cogs"></i> <span class="nav-label">Ver dispositivos fabricados</span>
+                        <i class="fa fa-cogs"></i>
+                        <span class="nav-label">Ver dispositivos fabricados</span>
                     </a>
                 </li>
                 @endif
-
             </ul>
         </div>
     </nav>
@@ -516,12 +437,12 @@
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
-                    <!-- botón hamburguesa -->
+                    <!-- botón hamburguesa (verde) -->
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="#">
                         <i class="fa fa-bars"></i>
                     </a>
 
-                    <!-- botón casita que lleva al dashboard admin -->
+                    <!-- botón casita (amarillo) que lleva al dashboard admin -->
                     <a class="minimalize-styl-only btn btn-success" href="{{ url('/administrador/inicio') }}">
                         <i class="fa fa-home"></i>
                     </a>
@@ -529,9 +450,48 @@
 
                 <ul class="nav navbar-top-links navbar-right">
                     <li class="welcome-container">
-                        <span class="welcome-text-nav">
-                            @yield('navbar_title', 'Bienvenido a ApicoSmart')
-                        </span>
+                        <span class="welcome-text">Bienvenido a ApicoSmart</span>
+                    </li>
+
+                    <li class="dropdown" style="display: none;">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-messages">
+                            <li class="divider"></li>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a href="mailbox.html">
+                                        <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li class="divider">
+                            </li>
+                            <p>holaa</p>
+                            <li class="divider">
+                                
+                            </li>
+                            <p>holaa 22</p>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a href="notifications.html">
+                                        <strong>See All Alerts</strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
                     </li>
 
                     <li>

@@ -9,7 +9,7 @@
                     <h5>Total usuarios</h5>
                 </div>
                 <div class="ibox-content">
-                    <img src="{{ asset('img/usuarios.png') }}" alt="Logo" style="width:60px; height:60px;">
+                    <img src="{{ asset('img/usuario.png') }}" alt="Logo" style="width:60px; height:60px;">
                     <h1 class="no-margins">
                         {{ \App\Models\User::count() }}
                     </h1>

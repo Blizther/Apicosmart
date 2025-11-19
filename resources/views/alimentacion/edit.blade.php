@@ -153,5 +153,35 @@
 
     </div>
 </div>
+<script>
+    const unidadPorAlimento = {
+        'torta proteica': 'gr',
+        'jarabe azucar': 'ml',
+        'sustituto polen': 'gr',
+        'agua vitaminada': 'ml',
+        'otro': ''
+    };
+
+    function actualizarUnidadMedidaSegunAlimento() {
+        const tipoSelect   = document.getElementById('tipoAlimento');
+        const unidadSelect = document.getElementById('unidadMedida');
+
+        const tipo = tipoSelect.value;
+        const unidadSugerida = unidadPorAlimento[tipo] || '';
+
+        if (unidadSugerida) {
+            unidadSelect.value = unidadSugerida;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tipoSelect = document.getElementById('tipoAlimento');
+        tipoSelect.addEventListener('change', actualizarUnidadMedidaSegunAlimento);
+
+        // Para que ajuste correctamente cuando ya existe un valor guardado
+        actualizarUnidadMedidaSegunAlimento();
+    });
+</script>
+
 
 @endsection
