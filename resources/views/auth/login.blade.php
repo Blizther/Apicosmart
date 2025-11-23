@@ -195,10 +195,6 @@
 
             <button type="submit">Iniciar Sesión</button>
         </form>
-
-        <div class="opciones">
-            <a href="#">¿Olvidaste tu contraseña?</a>
-        </div>
     </div>
 </body>
 </html>
