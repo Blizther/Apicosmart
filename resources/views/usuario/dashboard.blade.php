@@ -76,7 +76,7 @@
         <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>colmenas totales</h5>
+                    <h5>Colmenas totales</h5>
                 </div>
                 <div class="ibox-content">
                     <img src="{{ asset('img/cajaDeAbejas.png') }}" alt="Logo" style="width:60px; height:60px;">
@@ -104,7 +104,7 @@
         <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>cantidad de sensores</h5>
+                    <h5>Cantidad de sensores</h5>
                 </div>
                 <div class="ibox-content">
                     <img src="{{ asset('img/sensorTemperatura.png') }}" alt="Logo" style="width:60px; height:60px;">
@@ -119,7 +119,7 @@
             <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>total productos</h5>
+                        <h5>Total productos</h5>
                     </div>
                     <div class="ibox-content">
                         <img src="{{ asset('img/tarro-de-miel.png') }}" alt="Logo" style="width:60px; height:60px;">
@@ -133,7 +133,7 @@
             <div class="col-lg-2">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>total ventas</h5>
+                        <h5>Total ventas</h5>
                     </div>
                     <div class="ibox-content">
                         <img src="{{ asset('img/ventas.png') }}" alt="Logo" style="width:60px; height:60px;">

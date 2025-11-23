@@ -44,7 +44,7 @@
                     <label for="segundoApellido" class="form-label">Apellido Materno</label>
                     <input type="text" id="segundoApellido" name="segundoApellido"
                         class="form-control @error('segundoApellido') is-invalid @enderror"
-                        value="{{ old('segundoApellido') }}" required>
+                        value="{{ old('segundoApellido') }}" >
                     @error('segundoApellido') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 

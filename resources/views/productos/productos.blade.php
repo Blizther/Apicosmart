@@ -37,7 +37,7 @@
     <div class="row g-4">
         <div class="col-sm-12">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <h1>Panel de ventas</h1>
+                <h1>Panel de Productos</h1>
             </div>
         </div>
 
