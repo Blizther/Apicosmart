@@ -62,87 +62,98 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $correlativo = 1; @endphp
+                            @php 
+                                $correlativo = ($alimentaciones->currentPage() - 1) * $alimentaciones->perPage() + 1; 
+                            @endphp
 
-                            @foreach ($alimentaciones as $alimentacion)
+                            @forelse ($alimentaciones as $alimentacion)
                                 @php
                                     $colmena = $alimentacion->colmena;
                                     $apiario = $colmena ? $colmena->apiario : null;
                                 @endphp
 
-                                @if($colmena && $apiario)
-                                    <tr>
-                                        <th scope="row">{{ $correlativo }}</th>
+                                <tr>
+                                    <th scope="row">{{ $correlativo }}</th>
 
-                                        {{-- Fecha --}}
-                                        <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
+                                    {{-- Fecha --}}
+                                    <td>{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}</td>
 
-                                        {{-- Colmena - Apiario --}}
-                                        <td>
-                                            Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}
-                                        </td>
+                                    {{-- Colmena - Apiario --}}
+                                    <td>
+                                        Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}
+                                    </td>
 
-                                        {{-- Alimento --}}
-                                        <td>{{ $alimentacion->tipoAlimento }}</td>
+                                    {{-- Alimento --}}
+                                    <td>{{ $alimentacion->tipoAlimento }}</td>
 
-                                        {{-- Cantidad + unidad --}}
-                                        <td>
-                                            {{ $alimentacion->cantidad }}
-                                            @if($alimentacion->unidadMedida == 'gr')
-                                                g
-                                            @elseif($alimentacion->unidadMedida == 'Kg')
-                                                kg
-                                            @elseif($alimentacion->unidadMedida == 'ml')
-                                                mL
-                                            @elseif($alimentacion->unidadMedida == 'L')
-                                                L
-                                            @else
-                                                {{ $alimentacion->unidadMedida }}
+                                    {{-- Cantidad + unidad --}}
+                                    <td>
+                                        {{ $alimentacion->cantidad }}
+                                        @if($alimentacion->unidadMedida == 'gr')
+                                            g
+                                        @elseif($alimentacion->unidadMedida == 'Kg')
+                                            kg
+                                        @elseif($alimentacion->unidadMedida == 'ml')
+                                            mL
+                                        @elseif($alimentacion->unidadMedida == 'L')
+                                            L
+                                        @else
+                                            {{ $alimentacion->unidadMedida }}
+                                        @endif
+                                    </td>
+
+                                    {{-- Motivo --}}
+                                    <td>{{ $alimentacion->motivo }}</td>
+
+                                    {{-- Observaciones --}}
+                                    <td>{{ $alimentacion->observaciones }}</td>
+
+                                    {{-- ACCIONES --}}
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+
+                                            {{-- EDITAR: usuario y colaborador --}}
+                                            <a href="{{ route('alimentacion.edit', $alimentacion->idalimentacion) }}"
+                                               class="btn btn-sm btn-warning">
+                                                Editar
+                                            </a>
+
+                                            {{-- ELIMINAR: SOLO usuario (apicultor), NO colaborador --}}
+                                            @if(auth()->user()->rol === 'usuario')
+                                                <form action="{{ route('alimentacion.destroy', $alimentacion->idalimentacion) }}"
+                                                      method="POST"
+                                                      class="m-0 p-0 form-eliminar-alimentacion">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger btn-eliminar-alimentacion"
+                                                            data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                            data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
+                                                            data-alimento="{{ $alimentacion->tipoAlimento }}">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
                                             @endif
-                                        </td>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                        {{-- Motivo --}}
-                                        <td>{{ $alimentacion->motivo }}</td>
-
-                                        {{-- Observaciones --}}
-                                        <td>{{ $alimentacion->observaciones }}</td>
-
-                                        {{-- ACCIONES --}}
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-2">
-
-                                                {{-- EDITAR: usuario y colaborador --}}
-                                                <a href="{{ route('alimentacion.edit', $alimentacion->idalimentacion) }}"
-                                                class="btn btn-sm btn-warning">
-                                                    Editar
-                                                </a>
-
-                                                {{-- ELIMINAR: SOLO usuario (apicultor), NO colaborador --}}
-                                                @if(auth()->user()->rol === 'usuario')
-                                                    <form action="{{ route('alimentacion.destroy', $alimentacion->idalimentacion) }}"
-                                                        method="POST"
-                                                        class="m-0 p-0 form-eliminar-alimentacion">
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <button type="button"
-                                                                class="btn btn-sm btn-danger btn-eliminar-alimentacion"
-                                                                data-colmena="Colmena #{{ $colmena->codigo }} - {{ $apiario->nombre }}"
-                                                                data-fecha="{{ \Carbon\Carbon::parse($alimentacion->fechaSuministracion)->format('d/m/Y') }}"
-                                                                data-alimento="{{ $alimentacion->tipoAlimento }}">
-                                                            Eliminar
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    @php $correlativo++; @endphp
-                                @endif
-                            @endforeach
+                                @php $correlativo++; @endphp
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">
+                                        No hay registros de alimentación.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                {{-- Links de paginación --}}
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $alimentaciones->links() }}
                 </div>
             </div>
         </div>

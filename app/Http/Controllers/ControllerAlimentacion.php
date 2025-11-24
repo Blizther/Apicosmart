@@ -42,7 +42,7 @@ class ControllerAlimentacion extends Controller
             })
             ->orderBy('fechaSuministracion', 'desc')
             ->orderBy('idAlimentacion', 'desc')
-            ->get();
+            ->paginate(10); // ✅ paginación
 
         return view('alimentacion.index', compact('alimentaciones'));
     }
@@ -89,16 +89,14 @@ class ControllerAlimentacion extends Controller
             'observaciones.max'            => 'Las observaciones no deben exceder los 255 caracteres.',
         ]);
 
-        // Reglas adicionales según unidad de medida
         $cantidad = (float) $request->cantidad;
         $unidad   = $request->unidadMedida;
 
-        // Límites razonables por unidad (ajustables)
         $maxPorUnidad = [
-            'gr' => 10000, // 10 000 g = 10 kg
-            'Kg' => 10,    // 10 kg máximo
-            'ml' => 2000,  // 2 L
-            'L'  => 5,     // 5 L máximo
+            'gr' => 10000,
+            'Kg' => 10,
+            'ml' => 2000,
+            'L'  => 5,
         ];
 
         if (isset($maxPorUnidad[$unidad]) && $cantidad > $maxPorUnidad[$unidad]) {
@@ -120,19 +118,18 @@ class ControllerAlimentacion extends Controller
                 ]);
         }
 
-        return null; // Todo OK
+        return null;
     }
 
     // GUARDAR NUEVO
     public function store(Request $request)
     {
         if ($respuesta = $this->validarAlimentacion($request)) {
-            return $respuesta; // vuelve con errores si falló la validación extra
+            return $respuesta;
         }
 
         $ownerId = $this->getOwnerId();
 
-        // Asegurar que la colmena pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -147,7 +144,7 @@ class ControllerAlimentacion extends Controller
         $alimentacion->motivo              = $request->motivo;
         $alimentacion->fechaSuministracion = $request->fechaSuministracion;
         $alimentacion->observaciones       = $request->observaciones;
-        $alimentacion->idUsuario           = $ownerId;           // siempre el dueño
+        $alimentacion->idUsuario           = $ownerId;
         $alimentacion->idColmena           = $colmena->idColmena;
         $alimentacion->save();
 
@@ -178,7 +175,7 @@ class ControllerAlimentacion extends Controller
     public function update(Request $request, $id)
     {
         if ($respuesta = $this->validarAlimentacion($request)) {
-            return $respuesta; // vuelve con errores si falló la validación extra
+            return $respuesta;
         }
 
         $ownerId = $this->getOwnerId();
@@ -187,7 +184,6 @@ class ControllerAlimentacion extends Controller
             ->where('idUsuario', $ownerId)
             ->firstOrFail();
 
-        // Validar que la colmena seleccionada pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -210,7 +206,6 @@ class ControllerAlimentacion extends Controller
     // ELIMINAR
     public function destroy($id)
     {
-        // El colaborador NO puede eliminar alimentaciones
         if (Auth::user()->rol === 'colaborador') {
             abort(403, 'No tienes permiso para eliminar registros de alimentación.');
         }

@@ -25,7 +25,7 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombres</label>
+                    <label for="nombre" class="form-label">Nombres *</label>
                     <input type="text" id="nombre" name="nombre"
                         class="form-control @error('nombre') is-invalid @enderror"
                         value="{{ old('nombre') }}" required>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="primerApellido" class="form-label">Apellido Paterno</label>
+                    <label for="primerApellido" class="form-label">Apellido Paterno *</label>
                     <input type="text" id="primerApellido" name="primerApellido"
                         class="form-control @error('primerApellido') is-invalid @enderror"
                         value="{{ old('primerApellido') }}" required>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <label for="email" class="form-label">Correo Electrónico *</label>
                     <input type="email" id="email" name="email"
                         class="form-control @error('email') is-invalid @enderror"
                         value="{{ old('email') }}" required>
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="nombreUsuario" class="form-label">Nombre de Usuario</label>
+                    <label for="nombreUsuario" class="form-label">Nombre de Usuario *</label>
                     <input type="text" id="nombreUsuario" name="nombreUsuario"
                         class="form-control @error('nombreUsuario') is-invalid @enderror"
                         value="{{ old('nombreUsuario') }}" required>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Contraseña</label>
+                    <label for="password" class="form-label">Contraseña *</label>
                     <input type="password" id="password" name="password"
                         class="form-control @error('password') is-invalid @enderror"
                         required>
@@ -73,13 +73,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                    <label for="password_confirmation" class="form-label">Confirmar Contraseña *</label>
                     <input type="password" id="password_confirmation" name="password_confirmation"
                         class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="telefono" class="form-label">Teléfono</label>
+                    <label for="telefono" class="form-label">Teléfono *</label>
                     <input type="tel" id="telefono" name="telefono"
                         class="form-control @error('telefono') is-invalid @enderror"
                         value="{{ old('telefono') }}" required>

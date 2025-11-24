@@ -15,25 +15,16 @@ class ControllerInspeccionColmena extends Controller
     private function validar(Request $request)
     {
         return $request->validate([
-            // Fecha de inspección: obligatoria, formato fecha, no puede ser futura
             'fechaInspeccion'       => 'required|date|before_or_equal:today',
-
-            // Selects con valores fijos (coinciden con tus ENUM de la BD)
             'estadoOperativo'       => 'required|in:activa,inactiva,zanganera,huerfana,enferma',
             'temperamento'          => 'required|in:muy_tranquila,tranquila,mediana,defensiva,muy_defensiva',
             'intensidadImportacion' => 'required|in:muy_baja,baja,media,alta,muy_alta',
             'estadoReina'           => 'required|in:activa_buena_postura,postura_reducida,vieja,no_vista,ausente',
-
             'reservaMiel'           => 'required|in:sin_reservas,baja,media,alta_muchas_reservas',
             'reservaPolen'          => 'required|in:sin_reservas,baja,media,alta_mucho_polen',
-
             'celdasReales'          => 'required|in:no_hay,en_progresion,tapadas,destruidas,varias_enjambron',
-
             'patronPostura'         => 'required|in:patron_cerrado,larvas_amarillas,huecos_en_marco,cria_zangano_abundante,mucha_cria_operculada,sin_corona_miel,sospecha_loque',
-
             'enfermedadPlaga'       => 'required|in:ninguna,loque_europea,loque_americana,varroa,hormigas,otra',
-
-            // Notas opcionales
             'notas'                 => 'nullable|string|max:500',
         ]);
     }
@@ -46,9 +37,9 @@ class ControllerInspeccionColmena extends Controller
         $colmena = Colmena::with('apiario')->findOrFail($idColmena);
 
         $inspecciones = InspeccionColmena::where('idColmena', $idColmena)
-            ->orderByDesc('fechaInspeccion')   // primero la fecha más reciente
-            ->orderByDesc('id')                // luego por ID por si hay misma fecha
-            ->get();
+            ->orderByDesc('fechaInspeccion')
+            ->orderByDesc('id')
+            ->paginate(10); // ✅ paginación
 
         return view('inspeccion.index', [
             'inspecciones'  => $inspecciones,

@@ -24,12 +24,12 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label class="form-label">Nombre</label>
+                    <label class="form-label">Nombre *</label>
                     <input type="text" name="nombre" class="form-control" value="{{ $user->nombre }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Apellido Paterno</label>
+                    <label class="form-label">Apellido Paterno *</label>
                     <input type="text" name="primerApellido" class="form-control" value="{{ $user->primerApellido }}" required>
                 </div>
 
@@ -39,23 +39,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email *</label>
                     <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Teléfono</label>
+                    <label class="form-label">Teléfono *</label>
                     <input type="text" name="telefono" class="form-control"
                         value="{{ old('telefono', $user->telefono) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Nombre de usuario</label>
+                    <label class="form-label">Nombre de usuario *</label>
                     <input type="text" name="nombreUsuario" class="form-control"
                         value="{{ old('nombreUsuario', $user->nombreUsuario) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Rol</label>
+                    <label class="form-label">Rol *</label>
                     <select name="rol" class="form-control" required>
                         @if($user->rol === 'colaborador')
                             <option value="colaborador" {{ $user->rol === 'colaborador' ? 'selected' : '' }}>Colaborador</option>
@@ -65,11 +65,7 @@
                         @endif
                     </select>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Contraseña (opcional)</label>
-                    <input type="password" name="password" class="form-control" placeholder="Dejar vacío si no desea cambiar">
-                </div>
+                
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-success">Actualizar</button>

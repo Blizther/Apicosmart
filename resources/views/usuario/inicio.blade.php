@@ -9,18 +9,11 @@
     <title>@yield('title', 'ApicoSmart')</title>
     <link rel="icon" type="image/png" href="{{ asset('img/abeja.png') }}">
 
-    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+    {{-- CSS base --}}
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
-    <script src="{{asset('js/bootstrap.min.js')}}"></script>
-
     <link href="{{asset('font-awesome/css/font-awesome.css')}}" rel="stylesheet">
-
-    <!-- Toastr style -->
     <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
-
-    <!-- Gritter -->
     <link href="{{asset('js/plugins/gritter/jquery.gritter.css')}}" rel="stylesheet">
-    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
@@ -279,19 +272,17 @@
             background-color: #f8d7da !important;
             color: #842029 !important;
         }
-        /* Centrar el texto "Bienvenido a ApicoSmart" en la barra superior */
         .navbar.navbar-static-top {
             position: relative;
         }
-
         .navbar-top-links .welcome-container {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
         }
-
     </style>
+    @yield('styles')
 </head>
 
 <body>
@@ -316,9 +307,12 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html"><i class="fa fa-id-card-o"></i> Profile</a></li>
-                                <li><a href="contacts.html"><i class="fa fa-address-book-o"></i> Contacts</a></li>
-                                <li><a href="mailbox.html"><i class="fa fa-envelope-o"></i> Mailbox</a></li>
+                                {{-- editar perfil --}}
+                                <li>
+                                    <a href="#" data-toggle="modal" data-target="#modalPerfil">
+                                        <i class="fa fa-pencil"></i> Editar perfil
+                                    </a>
+                                </li>
                                 <li class="divider"></li>
                             </ul>
                         </div>
@@ -327,7 +321,6 @@
 
                     {{-- ================== MENÚ LATERAL ================== --}}
 
-                    {{-- 1) Productos: SOLO el usuario (apicultor), NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="<?php echo asset('') ?>productos" title="Productos">
@@ -337,7 +330,6 @@
                         </li>
                     @endif
 
-                    {{-- 2) Módulos compartidos: usuario + colaborador --}}
                     @if(auth()->user()->rol == 'usuario' || auth()->user()->rol == 'colaborador')
 
                         <li>
@@ -392,7 +384,6 @@
 
                     @endif
 
-                    {{-- 2.5) Dispositivos: SOLO usuario, NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="{{ route('mis.dispositivos') }}" title="Dispositivos">
@@ -402,7 +393,6 @@
                         </li>
                     @endif
 
-                    {{-- 3) Ventas y reportes: SOLO usuario, NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="<?php echo asset('') ?>ventaUsuario" title="Realizar venta">
@@ -417,7 +407,6 @@
                             </a>
                         </li>
 
-                        {{-- Administrar usuarios: solo el apicultor dueño, NO colaborador --}}
                         <li>
                             <a href="{{ route('users.index') }}">
                                 <i class="fa fa-user"></i>
@@ -441,6 +430,8 @@
                         <li class="welcome-container">
                             <span class="welcome-text">Bienvenido a ApicoSmart</span>
                         </li>
+
+                        {{-- tus dropdowns de mensajes/notificaciones/etc --}}
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                                 <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
@@ -534,16 +525,26 @@
 
                 </nav>
             </div>
+
             <div>
+                {{-- mensaje success --}}
+                @if(session('success'))
+                    <div class="alert alert-success" style="margin:15px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 @yield('content')
             </div>
 
         </div>
     </div>
 
-    <!-- scripts que ya tenías -->
+    {{-- JS base: 1 sola vez --}}
     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
+
+    {{-- plugins --}}
     <script src="{{asset('js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
     <script src="{{asset('js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
     <script src="{{asset('js/plugins/flot/jquery.flot.js')}}"></script>
@@ -575,6 +576,18 @@
             }, 1300);
         });
     </script>
+
+    {{-- incluir modal --}}
+    @include('perfil.perfilmodal')
+
+    {{-- reabrir modal si hubo error --}}
+    @if($errors->any())
+    <script>
+        $(function () {
+            $('#modalPerfil').modal('show');
+        });
+    </script>
+    @endif
 
     @yield('scripts')
 </body>

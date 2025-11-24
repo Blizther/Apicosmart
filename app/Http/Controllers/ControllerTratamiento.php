@@ -44,7 +44,7 @@ class ControllerTratamiento extends Controller
             })
             ->orderBy('fechaAdministracion', 'desc')
             ->orderBy('idTratamiento', 'desc')
-            ->get();
+            ->paginate(10); // ✅ paginación
 
         return view('tratamiento.index', compact('tratamientos'));
     }
@@ -56,7 +56,6 @@ class ControllerTratamiento extends Controller
     {
         $ownerId = $this->getOwnerId();
 
-        // Cargar las colmenas del dueño (apicultor) y que tengan estado activo
         $colmenas = Colmena::where('creadoPor', $ownerId)
                     ->where('estado', 'activo')
                     ->with('apiario')
@@ -71,21 +70,21 @@ class ControllerTratamiento extends Controller
     private function validarTratamiento(Request $request)
     {
         $request->validate([
-            'problemaTratado'        => 'required|string|max:255',
-            'tratamientoAdministrado'=> 'required|string|max:255',
-            'descripcion'            => 'nullable|string',
-            'fechaAdministracion'    => 'required|date',
-            'idColmena'              => 'required|numeric|min:1',
+            'problemaTratado'         => 'required|string|max:255',
+            'tratamientoAdministrado' => 'required|string|max:255',
+            'descripcion'             => 'nullable|string',
+            'fechaAdministracion'     => 'required|date',
+            'idColmena'               => 'required|numeric|min:1',
         ], [
-            'problemaTratado.required'         => 'El problema tratado es obligatorio.',
-            'problemaTratado.max'              => 'El problema tratado no debe exceder los 255 caracteres.',
-            'tratamientoAdministrado.required' => 'El tratamiento administrado es obligatorio.',
-            'tratamientoAdministrado.max'      => 'El tratamiento administrado no debe exceder los 255 caracteres.',
-            'fechaAdministracion.required'     => 'La fecha de administración es obligatoria.',
-            'fechaAdministracion.date'         => 'La fecha de administración debe ser una fecha válida.',
-            'idColmena.required'               => 'La colmena es obligatoria.',
-            'idColmena.numeric'                => 'La colmena debe ser un valor numérico válido.',
-            'idColmena.min'                    => 'La colmena seleccionada no es válida.',
+            'problemaTratado.required'          => 'El problema tratado es obligatorio.',
+            'problemaTratado.max'               => 'El problema tratado no debe exceder los 255 caracteres.',
+            'tratamientoAdministrado.required'  => 'El tratamiento administrado es obligatorio.',
+            'tratamientoAdministrado.max'       => 'El tratamiento administrado no debe exceder los 255 caracteres.',
+            'fechaAdministracion.required'      => 'La fecha de administración es obligatoria.',
+            'fechaAdministracion.date'          => 'La fecha de administración debe ser una fecha válida.',
+            'idColmena.required'                => 'La colmena es obligatoria.',
+            'idColmena.numeric'                 => 'La colmena debe ser un valor numérico válido.',
+            'idColmena.min'                     => 'La colmena seleccionada no es válida.',
         ]);
     }
 
@@ -98,13 +97,11 @@ class ControllerTratamiento extends Controller
 
         $ownerId = $this->getOwnerId();
 
-        // Asegurar que la colmena pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
             ->firstOrFail();
 
-        // ✅ VALIDACIÓN EXTRA: evitar duplicados (misma colmena + problema + tratamiento + fecha)
         $existe = Tratamiento::where('idUsuario', $ownerId)
             ->where('idColmena', $colmena->idColmena)
             ->where('problemaTratado', $request->problemaTratado)
@@ -128,8 +125,8 @@ class ControllerTratamiento extends Controller
         $tratamiento->tratamientoAdministrado = $request->tratamientoAdministrado;
         $tratamiento->descripcion             = $request->descripcion;
         $tratamiento->fechaAdministracion     = $request->fechaAdministracion;
-        $tratamiento->idUsuario               = $ownerId;             // siempre el dueño
-        $tratamiento->idColmena               = $colmena->idColmena;  // colmena del dueño
+        $tratamiento->idUsuario               = $ownerId;
+        $tratamiento->idColmena               = $colmena->idColmena;
         $tratamiento->save();
 
         return redirect()
@@ -166,13 +163,12 @@ class ControllerTratamiento extends Controller
 
         $ownerId = $this->getOwnerId();
 
-        // ✅ VALIDACIÓN EXTRA TAMBIÉN EN UPDATE (evitar duplicados)
         $existe = Tratamiento::where('idUsuario', $ownerId)
             ->where('idColmena', $request->idColmena)
             ->where('problemaTratado', $request->problemaTratado)
             ->where('tratamientoAdministrado', $request->tratamientoAdministrado)
             ->whereDate('fechaAdministracion', $request->fechaAdministracion)
-            ->where('idTratamiento', '!=', $id)   // excluir el que estamos editando
+            ->where('idTratamiento', '!=', $id)
             ->exists();
 
         if ($existe) {
@@ -188,7 +184,6 @@ class ControllerTratamiento extends Controller
             ->where('idUsuario', $ownerId)
             ->firstOrFail();
 
-        // Validar que la colmena seleccionada pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -199,7 +194,6 @@ class ControllerTratamiento extends Controller
         $tratamiento->descripcion             = $request->descripcion;
         $tratamiento->fechaAdministracion     = $request->fechaAdministracion;
         $tratamiento->idColmena               = $colmena->idColmena;
-
         $tratamiento->save();
 
         return redirect()
@@ -212,7 +206,6 @@ class ControllerTratamiento extends Controller
      */
     public function destroy(string $id)
     {
-        // El colaborador NO puede eliminar tratamientos
         if (Auth::user()->rol === 'colaborador') {
             abort(403, 'No tienes permiso para eliminar tratamientos.');
         }

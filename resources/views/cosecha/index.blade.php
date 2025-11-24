@@ -45,51 +45,67 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $correlativo = 1; @endphp
-                        @foreach ($cosechas as $cosecha)
+                        @php 
+                            $correlativo = ($cosechas->currentPage() - 1) * $cosechas->perPage() + 1; 
+                        @endphp
+
+                        @forelse ($cosechas as $cosecha)
                             @php
                                 $colmena = $cosecha->colmena;
                                 $apiario = $colmena ? $colmena->apiario : null;
                             @endphp
-                            @if($colmena && $apiario)
-                                <tr>
-                                    <th scope="row">{{ $correlativo }}</th>
-                                    <td>Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}</td>
-                                    <td>{{ $cosecha->peso }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
-                                    <td>{{ $cosecha->observaciones }}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            {{-- EDITAR (usuario y colaborador) --}}
-                                            <a href="{{ route('cosechas.edit', $cosecha->idCosecha) }}"
-                                            class="btn btn-sm btn-warning">
-                                                Editar
-                                            </a>
 
-                                            {{-- ELIMINAR: SOLO usuario, NO colaborador --}}
-                                            @if(auth()->user()->rol === 'usuario')
-                                                <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}"
-                                                    method="POST"
-                                                    class="m-0 p-0 form-eliminar-cosecha">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger btn-eliminar-cosecha"
-                                                            data-colmena="Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}"
-                                                            data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
-                                                        Eliminar
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </div>
-                                    </td>
+                            <tr>
+                                <th scope="row">{{ $correlativo }}</th>
+                                <td>
+                                    Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}
+                                </td>
+                                <td>{{ $cosecha->peso }}</td>
+                                <td>{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}</td>
+                                <td>{{ $cosecha->observaciones }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
 
-                                </tr>
-                                @php $correlativo++; @endphp
-                            @endif
-                        @endforeach
+                                        {{-- EDITAR (usuario y colaborador) --}}
+                                        <a href="{{ route('cosechas.edit', $cosecha->idCosecha) }}"
+                                           class="btn btn-sm btn-warning">
+                                            Editar
+                                        </a>
+
+                                        {{-- ELIMINAR: SOLO usuario, NO colaborador --}}
+                                        @if(auth()->user()->rol === 'usuario')
+                                            <form action="{{ route('cosechas.destroy', $cosecha->idCosecha) }}"
+                                                  method="POST"
+                                                  class="m-0 p-0 form-eliminar-cosecha">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-eliminar-cosecha"
+                                                        data-colmena="Colmena # {{ $colmena->codigo }} - {{ $apiario->nombre }}"
+                                                        data-fecha="{{ \Carbon\Carbon::parse($cosecha->fechaCosecha)->format('d/m/Y') }}">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+
+                            @php $correlativo++; @endphp
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                    No hay cosechas registradas.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Links de paginación --}}
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $cosechas->links() }}
             </div>
         </div>
     </div>

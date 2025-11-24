@@ -54,19 +54,22 @@ class UserController extends Controller
         'password'        => 'required|string|min:8|confirmed',
         'rol'             => ['required', Rule::in(['usuario','administrador','colaborador'])],
     ], [
-        // TELÉFONO
         'telefono.required' => 'El teléfono es obligatorio.',
         'telefono.digits'   => 'El teléfono debe contener exactamente 8 dígitos.',
-
-        // PASSWORD
         'password.required'  => 'La contraseña es obligatoria.',
         'password.min'       => 'La contraseña debe tener al menos 8 caracteres.',
         'password.confirmed' => 'La confirmación de contraseña no coincide.',
+        'nombreUsuario.unique' => 'El nombre de usuario ya está en uso.',
+        'email.unique'         => 'El correo electrónico ya está en uso.',
     ]);
 
     $idusuario = Auth::user()->rol == 'usuario' ? Auth::id() : null;
 
-    User::create([
+    // 1) Generar token
+    $token = \Illuminate\Support\Str::random(64);
+
+    // 2) Crear usuario pendiente de verificación
+    $user = User::create([
         'nombre'          => $request->nombre,
         'primerApellido'  => $request->primerApellido,
         'segundoApellido' => $request->segundoApellido,
@@ -76,10 +79,18 @@ class UserController extends Controller
         'password'        => Hash::make($request->password),
         'rol'             => $request->rol,
         'idusuario'       => $idusuario,
+        'email_verified_at' => null,
+        'verification_token' => $token,
     ]);
 
-    return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
+    // 3) Enviar email de verificación
+    \Illuminate\Support\Facades\Mail::to($user->email)
+        ->send(new \App\Mail\VerifyEmailApicoSmart($user));
+
+    return redirect()->route('users.index')
+        ->with('success', 'Usuario creado correctamente. Se envió un correo para verificar la cuenta.');
 }
+
 
 
     public function edit(string $id)
@@ -108,12 +119,13 @@ class UserController extends Controller
         'telefono'        => 'required|digits:8',
         'nombreUsuario'   => ['required','string','max:50', Rule::unique('users','nombreUsuario')->ignore($user->id)],
         'rol'             => ['required', Rule::in(['usuario','administrador','colaborador'])],
-        'password'        => 'nullable|min:8|confirmed',
+        'password'        => 'nullable|min:8',
     ], [
         'telefono.digits' => 'El teléfono debe contener exactamente 8 dígitos.',
 
         'password.min'       => 'La contraseña debe tener al menos 8 caracteres.',
-        'password.confirmed' => 'La confirmación de contraseña no coincide.',
+        'nombreUsuario.unique' => 'El nombre de usuario ya está en uso.',
+        'email.unique'         => 'El correo electrónico ya está en uso.',
     ]);
 
         $user->nombre          = $request->nombre;
