@@ -21,22 +21,6 @@
 
 <div class="container-fluid pt-4 px-4">
 
-    {{-- Botones (correctos como pediste) --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ url('/reporteUsuario') }}" class="btn btn-sm btn-warning text-white">
-        Volver
-        </a>
-
-  <div class="row g-3 mb-3">
-    <div class="col-md-4">
-      <div class="bg-light rounded p-3">
-        <div><small class="text-muted">Fecha</small></div>
-        <div><strong>{{ \Carbon\Carbon::parse($venta->fecha)->format('Y-m-d') }}</strong></div>
-      </div>
-
-        <button id="btnExportarPDF" class="btn btn-primary btn-sm">
-            <i class="fa fa-file-pdf-o"></i> Exportar a PDF
-        </button>
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div class="d-flex gap-2">
             <a href="{{ url('/reporteUsuario') }}" class="btn btn-sm btn-volver">

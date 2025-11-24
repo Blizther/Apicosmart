@@ -130,48 +130,15 @@ sin ese código el guardado no se activa
 </div>
 
 <script>
-    // Mapa tipoAlimento -> unidadMedida sugerida
-    const unidadPorAlimento = {
-        'torta proteica': 'gr',
-        'jarabe azucar': 'ml',
-        'sustituto polen': 'gr',
-        'agua vitaminada': 'ml',
-        'otro': ''
-    };
-
-    function actualizarUnidadMedidaSegunAlimento() {
-        const tipoSelect   = document.getElementById('tipoAlimento');
-        const unidadSelect = document.getElementById('unidadMedida');
-
-        if (!tipoSelect || !unidadSelect) return;
-
-        const tipo = tipoSelect.value;
-        const unidadSugerida = unidadPorAlimento[tipo] || '';
-
-        if (unidadSugerida) {
-            // Si hay una unidad configurada para ese alimento, la seleccionamos
-            unidadSelect.value = unidadSugerida;
+    document.getElementById('apiario').addEventListener('change', function() {
+        let total = this.options[this.selectedIndex].getAttribute('data-total');
+        if (total !== null) {
+            document.getElementById('codigo').value = parseInt(total) + 1;
         } else {
-            // Si no, dejamos la opción por defecto (sin seleccionar)
-            // Solo si actualmente no hay nada elegido
-            if (!unidadSelect.value) {
-                unidadSelect.selectedIndex = 0; // normalmente la opción "Seleccione unidad..."
-            }
+            document.getElementById('codigo').value = '';
         }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const tipoSelect = document.getElementById('tipoAlimento');
-        if (!tipoSelect) return;
-
-        // Cuando cambie el tipo de alimento
-        tipoSelect.addEventListener('change', actualizarUnidadMedidaSegunAlimento);
-
-        // Por si viene con old(...) después de un error de validación
-        actualizarUnidadMedidaSegunAlimento();
     });
 </script>
-
 
 <!-- Sale & Revenue End -->
 @endsection

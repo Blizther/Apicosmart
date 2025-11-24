@@ -1,4 +1,4 @@
-@extends('usuario.template')
+@extends('administrador.inicio')
 @section('content')
 
 @php

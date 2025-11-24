@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -18,306 +18,7 @@
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
 
-    <>
-    .navbar-default.navbar-static-side {
-        background: #3A4F26;
-        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-    }
-    .navbar-static-side .sidebar-collapse {
-        background: #3A4F26;
-    }
-    #side-menu .nav-header {
-        background: linear-gradient(180deg, #3A4F26 0%, #334522 100%);
-        padding: 25px 20px 20px;
-        border-bottom: 1px solid rgba(0, 0, 0, .35);
-    }
-    #side-menu .nav-header .img-circle {
-        border: 3px solid #F9B233;
-        padding: 2px;
-    }
-    #side-menu .nav-header .font-bold,
-    #side-menu .nav-header .text-muted {
-        color: #EDD29C;
-    }
-    #side-menu .nav-header .text-muted {
-        opacity: .85;
-    }
-    #side-menu>li>a {
-        color: #EDD29C;
-        font-size: 16px;
-        background-color: transparent;
-        padding: 12px 20px;
-        border-left: 4px solid transparent;
-        transition:
-            background-color 0.18s ease,
-            color 0.18s ease,
-            border-color 0.18s ease,
-            padding-left 0.18s ease;
-        display: block;
-        text-decoration: none;
-    }
-    #side-menu>li>a>i {
-        color: inherit;
-        width: 18px;
-        text-align: center;
-        margin-right: 8px;
-        opacity: .95;
-        font-size: 25px;
-    }
-    #side-menu>li\a:hover,
-    #side-menu>li>a:focus {
-        background: rgba(0, 0, 0, .12);
-        color: #FFFFFF;
-        border-left-color: #F9B233;
-        padding-left: 24px;
-    }
-    #side-menu>li.active>a,
-    #side-menu>li.mm-active>a {
-        background: rgba(0, 0, 0, .22);
-        color: #FFFFFF;
-        border-left-color: #F9B233;
-        font-weight: 600;
-    }
-    #side-menu .fa.arrow {
-        color: #EDD29C;
-        transition: transform .18s ease, color .18s ease;
-    }
-    #side-menu li.mm-active>a .fa.arrow {
-        transform: rotate(90deg);
-        color: #F9B233;
-    }
-    #side-menu .nav-second-level {
-        background: #334522;
-        padding: 6px 0;
-    }
-    #side-menu .nav-second-level li a {
-        color: #EAD7AA;
-        padding: 9px 20px 9px 44px;
-        font-size: 13.5px;
-        border-left: 4px solid transparent;
-    }
-    #side-menu .nav-second-level li a:hover {
-        background: rgba(0, 0, 0, .14);
-        color: #FFFFFF;
-        border-left-color: #F9B233;
-    }
-    #side-menu>li {
-        border-bottom: 1px solid rgba(0, 0, 0, .18);
-    }
-    #side-menu>li:last-child {
-        border-bottom: none;
-    }
-    #side-menu .nav-label::after {
-        content: '';
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        margin-left: 8px;
-        background: transparent;
-    }
-    #side-menu li.has-alert>a .nav-label::after {
-        background: #F9B233;
-        box-shadow: 0 0 0 3px rgba(249, 178, 51, .15);
-    }
-    #side-menu .dropdown-menu {
-        background: #2B3B1E;
-        border: 1px solid rgba(0, 0, 0, .35);
-    }
-    #side-menu .dropdown-menu>li>a {
-        color: #EAD7AA;
-    }
-    #side-menu .dropdown-menu>li>a:hover {
-        background: rgba(0, 0, 0, .25);
-        color: #FFF;
-    }
-    .navbar-static-side ::-webkit-scrollbar {
-        width: 10px;
-    }
-    .navbar-static-side ::-webkit-scrollbar-track {
-        background: #2F421F;
-    }
-    .navbar-static-side ::-webkit-scrollbar-thumb {
-        background: #445C2D;
-        border: 2px solid #2F421F;
-        border-radius: 8px;
-    }
-    .navbar-static-side ::-webkit-scrollbar-thumb:hover {
-        background: #4E6734;
-    }
-    .mini-navbar .navbar-static-side {
-        width: 70px;
-    }
-    .mini-navbar #side-menu>li>a {
-        padding-left: 18px;
-        text-align: left;
-    }
-    .mini-navbar #side-menu>li>a .nav-label {
-        display: none;
-    }
-    .mini-navbar #side-menu>li>a>i {
-        margin-right: 0;
-    }
-    .navbar-static-side #side-menu>li.active>a,
-    .navbar-static-side #side-menu>li.mm-active>a {
-        background: rgba(0, 0, 0, .22) !important;
-        color: #FFFFFF !important;
-        border-left-color: #F9B233 !important;
-    }
-    .navbar-static-side #side-menu .nav-second-level {
-        background: #334522 !important;
-    }
-    .navbar-static-side #side-menu .nav-second-level>li>a {
-        background: transparent !important;
-        color: #EAD7AA !important;
-        border-left: 4px solid transparent !important;
-    }
-    .navbar-static-side #side-menu .nav-second-level>li>a:hover,
-    .navbar-static-side #side-menu .nav-second-level>li.active>a,
-    .navbar-static-side #side-menu .nav-second-level>li.mm-active>a {
-        background: rgba(0, 0, 0, .14) !important;
-        color: #FFFFFF !important;
-        border-left-color: #F9B233 !important;
-    }
-    .navbar-static-side .nav>li.active>a {
-        background-color: rgba(0, 0, 0, .22) !important;
-        color: #FFF !important;
-    }
-    .navbar-default.navbar-static-side,
-    .navbar-default.navbar-static-side .sidebar-collapse,
-    .navbar-default.navbar-static-side #side-menu,
-    .navbar-default.navbar-static-side .nav.metismenu {
-        background: #3A4F26 !important;
-    }
-    .navbar-default.navbar-static-side #side-menu>li.active>a,
-    .navbar-default.navbar-static-side #side-menu>li.mm-active>a {
-        background: rgba(0, 0, 0, .22) !important;
-        color: #fff !important;
-        border-left-color: #F9B233 !important;
-    }
-    .navbar-default.navbar-static-side #side-menu>li.active,
-    .navbar-default.navbar-static-side #side-menu>li.mm-active {
-        background: transparent !important;
-    }
-    .navbar-default.navbar-static-side #side-menu .nav-second-level,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse.in,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-collapse,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-show {
-        background: #334522 !important;
-        border-left: 0 !important;
-    }
-    .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a {
-        background: transparent !important;
-        color: #EAD7AA !important;
-        border-left: 4px solid transparent !important;
-    }
-    .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:hover,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level>li.active>a,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level>li.mm-active>a,
-    .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:focus {
-        background: rgba(0, 0, 0, .14) !important;
-        color: #fff !important;
-        border-left-color: #F9B233 !important;
-    }
-    .navbar-default.navbar-static-side .nav>li.active>a,
-    .navbar-default.navbar-static-side .nav>li>a.active {
-        background: rgba(0, 0, 0, .22) !important;
-        color: #fff !important;
-    }
-    .navbar-default.navbar-static-side .nav {
-        min-height: 100%;
-        background: #3A4F26 !important;
-    }
-
-    /* Banner del dashboard */
-    .welcome-banner {
-        width: 100%;
-        height: 120px;
-        background-image: url("{{ asset('img/fondo2.png') }}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-    }
-    .welcome-banner::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 0;
-    }
-    .welcome-text {
-        position: relative;
-        z-index: 1;
-        color: #3A4F26;
-        font-size: 36px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    #map {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        border: 2px solid #3A4F26;
-    }
-    .table-danger {
-        background-color: #f8d7da !important;
-        color: #842029 !important;
-    }
-
-    /* ============================
-       SOLO ESTILO DEL TEXTO EN LA BARRA (NO CENTRADO)
-       ============================ */
-
-    .welcome-text-nav {
-        font-size: 40px;       /* Escritorio */
-        line-height: 1.2;
-        white-space: nowrap;
-        font-weight: 700;
-        color: #3A4F26;
-        text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    @media (max-width: 768px) {
-        .welcome-text-nav {
-            font-size: 20px;   /* Móvil / tablet */
-            white-space: normal;
-            display: block;
-        }
-    }
-
-    /* RESPONSIVE DEL BANNER DEL DASHBOARD
-       para que NO se salga en tamaño celular */
-    @media (max-width: 768px) {
-        .welcome-banner {
-            height: auto;
-            min-height: 80px;
-            padding: 10px 8px;
-        }
-        .welcome-banner .welcome-text {
-            font-size: 22px;
-            line-height: 1.2;
-            white-space: normal;
-            padding: 0 10px;
-        }
-    }
-    @media (max-width: 480px) {
-        .welcome-banner .welcome-text {
-            font-size: 18px;
-        }
-    }
-
+    <style>
         /* (todos tus estilos tal cual, no toco nada) */
         .navbar-default.navbar-static-side {
             background: #3A4F26;
@@ -727,9 +428,7 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li class="welcome-container">
-                            <span class="welcome-text-nav">
-                                @yield('navbar_title', 'Bienvenido a ApicoSmart')
-                            </span>
+                            <span class="welcome-text">Bienvenido a ApicoSmart</span>
                         </li>
 
                         {{-- tus dropdowns de mensajes/notificaciones/etc --}}
@@ -743,7 +442,6 @@
                                         <a href="profile.html" class="pull-left">
                                             <img alt="image" class="img-circle" src="img/a7.jpg">
                                         </a>
-
                                     </div>
                                 </li>
                                 <li class="divider"></li>
@@ -752,11 +450,9 @@
                                         <a href="profile.html" class="pull-left">
                                             <img alt="image" class="img-circle" src="img/a4.jpg">
                                         </a>
-
                                     </div>
                                 </li>
                                 <li class="divider"></li>
-
                                 <li class="divider"></li>
                                 <li>
                                     <div class="text-center link-block">
@@ -767,6 +463,7 @@
                                 </li>
                             </ul>
                         </li>
+
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                                 <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
@@ -875,7 +572,7 @@
                     showMethod: 'slideDown',
                     timeOut: 4000
                 };
-                //toastr.success('Controla tu colmena, mejora tu miel.', 'Bienvenido a ApicoSmart!');
+                toastr.success('Controla tu colmena, mejora tu miel.', 'Bienvenido a ApicoSmart!');
             }, 1300);
         });
     </script>

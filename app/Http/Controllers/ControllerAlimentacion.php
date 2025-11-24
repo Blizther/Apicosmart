@@ -63,47 +63,32 @@ class ControllerAlimentacion extends Controller
     /**
      * Validación común (store + update)
      */
-   private function validarAlimentacion(Request $request)
-{
-    // 1) VALIDACIÓN BASE (sin límites raros visibles)
-    $request->validate([
-        'tipoAlimento'        => 'required|string|max:100',
-        'cantidad'            => 'required|numeric|min:0.1',
-        'unidadMedida'        => 'required|in:gr,Kg,ml,L',
-        'motivo'              => 'required|string|max:255',
-        'fechaSuministracion' => 'required|date',
-        'idColmena'           => 'required|numeric|min:1|exists:colmena,idColmena',
-        'observaciones'       => 'nullable|string|max:255',
-    ], [
-        'tipoAlimento.required'        => 'El tipo de alimento es obligatorio.',
-        'cantidad.required'            => 'La cantidad es obligatoria.',
-        'cantidad.numeric'             => 'La cantidad debe ser un valor numérico.',
-        'cantidad.min'                 => 'La cantidad debe ser mayor a 0.',
-        'unidadMedida.required'        => 'La unidad de medida es obligatoria.',
-        'unidadMedida.in'              => 'La unidad de medida seleccionada no es válida.',
-        'motivo.required'              => 'El motivo es obligatorio.',
-        'motivo.max'                   => 'El motivo no debe exceder los 255 caracteres.',
-        'fechaSuministracion.required' => 'La fecha de suministración es obligatoria.',
-        'fechaSuministracion.date'     => 'La fecha de suministración debe ser una fecha válida.',
-        'idColmena.required'           => 'La colmena es obligatoria.',
-        'idColmena.exists'             => 'La colmena seleccionada no es válida.',
-        'observaciones.max'            => 'Las observaciones no deben exceder los 255 caracteres.',
-    ]);
+    private function validarAlimentacion(Request $request)
+    {
+        $request->validate([
+            'tipoAlimento'        => 'required|string|max:100',
+            'cantidad'            => 'required|numeric|min:0.1',
+            'unidadMedida'        => 'required|in:gr,Kg,ml,L',
+            'motivo'              => 'required|string|max:255',
+            'fechaSuministracion' => 'required|date',
+            'idColmena'           => 'required|numeric|min:1|exists:colmena,idColmena',
+            'observaciones'       => 'nullable|string|max:255',
+        ], [
+            'tipoAlimento.required'        => 'El tipo de alimento es obligatorio.',
+            'cantidad.required'            => 'La cantidad es obligatoria.',
+            'cantidad.numeric'             => 'La cantidad debe ser un valor numérico.',
+            'cantidad.min'                 => 'La cantidad debe ser mayor a 0.',
+            'unidadMedida.required'        => 'La unidad de medida es obligatoria.',
+            'unidadMedida.in'              => 'La unidad de medida seleccionada no es válida.',
+            'motivo.required'              => 'El motivo es obligatorio.',
+            'motivo.max'                   => 'El motivo no debe exceder los 255 caracteres.',
+            'fechaSuministracion.required' => 'La fecha de suministración es obligatoria.',
+            'fechaSuministracion.date'     => 'La fecha de suministración debe ser una fecha válida.',
+            'idColmena.required'           => 'La colmena es obligatoria.',
+            'idColmena.exists'             => 'La colmena seleccionada no es válida.',
+            'observaciones.max'            => 'Las observaciones no deben exceder los 255 caracteres.',
+        ]);
 
-<<<<<<< HEAD
-    // 2) VALIDACIÓN "REAL" SEGÚN LA UNIDAD DE MEDIDA
-    $cantidad = (float) $request->cantidad;
-    $unidad   = $request->unidadMedida;
-
-    // Límites máximos por evento de alimentación y por colmena,
-    // basados en rangos razonables de manejo apícola
-    $maxPorUnidad = [
-        'gr' => 900, // máximo 900 gramos de torta/proteína en una toma
-        'Kg' => 10,  // máximo 10 kg en una sola alimentación
-        'ml' => 900, // máximo 900 mililitros (≈ 1 litro) en ml
-        'L'  => 5,   // máximo 5 litros de jarabe/agua vitaminada
-    ];
-=======
         $cantidad = (float) $request->cantidad;
         $unidad   = $request->unidadMedida;
 
@@ -113,27 +98,19 @@ class ControllerAlimentacion extends Controller
             'ml' => 2000,
             'L'  => 5,
         ];
->>>>>>> amalia
 
-    if (isset($maxPorUnidad[$unidad]) && $cantidad > $maxPorUnidad[$unidad]) {
+        if (isset($maxPorUnidad[$unidad]) && $cantidad > $maxPorUnidad[$unidad]) {
 
-        $unidadTexto = match ($unidad) {
-            'gr' => 'gramos',
-            'Kg' => 'kilogramos',
-            'ml' => 'mililitros',
-            'L'  => 'litros',
-            default => 'unidad',
-        };
+            $unidadTexto = match ($unidad) {
+                'gr' => 'gramos',
+                'Kg' => 'kilogramos',
+                'ml' => 'mililitros',
+                'L'  => 'litros',
+                default => 'unidad',
+            };
 
-        $max = $maxPorUnidad[$unidad];
+            $max = $maxPorUnidad[$unidad];
 
-<<<<<<< HEAD
-        return back()
-            ->withInput()
-            ->withErrors([
-                'cantidad' => "Para la unidad de medida '{$unidadTexto}', la cantidad máxima permitida es {$max} {$unidadTexto}.",
-            ]);
-=======
             return back()
                 ->withInput()
                 ->withErrors([
@@ -142,24 +119,7 @@ class ControllerAlimentacion extends Controller
         }
 
         return null;
->>>>>>> amalia
     }
-
-    // 3) VALIDACIÓN TÉCNICA POR SI ACASO (protege el numeric(4,1))
-    // Solo se ejecuta si la unidad no estaba en el arreglo o si algún día pones
-    // un máximo mayor que el que soporta la BD.
-    $maxBD = 999.9;
-    if ($cantidad > $maxBD) {
-        return back()
-            ->withInput()
-            ->withErrors([
-                'cantidad' => 'La cantidad ingresada es demasiado alta para ser registrada en el sistema.',
-            ]);
-    }
-
-    return null; // Todo OK
-}
-
 
     // GUARDAR NUEVO
     public function store(Request $request)

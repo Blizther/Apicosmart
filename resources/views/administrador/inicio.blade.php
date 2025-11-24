@@ -313,69 +313,17 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 2px solid #3A4F26;
         }
-
-        /* ============================
-           AJUSTE DEL TÍTULO EN LA BARRA (MISMO DEL USUARIO)
-           ============================ */
-
-        /* Barra superior relativa */
+        /* Centrar el texto "Bienvenido a ApicoSmart" en la barra superior */
         .navbar.navbar-static-top {
             position: relative;
         }
 
-        /* Hacemos flex los elementos de la derecha de la barra */
-        .nav.navbar-top-links.navbar-right {
-            display: flex;
-            align-items: center;
-            margin-right: 15px;
-        }
-
-        /* El contenedor del título ocupa el espacio central */
         .navbar-top-links .welcome-container {
-            flex: 1 1 auto;
-            text-align: center;
-            position: static !important;
-            left: auto !important;
-            top: auto !important;
-            transform: none !important;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
-
-        /* Los demás <li> (salir, tareas, etc.) se quedan a la derecha */
-        .navbar-top-links > li:not(.welcome-container) {
-            flex: 0 0 auto;
-        }
-
-        /* Mismo estilo de título que en el layout de USUARIO */
-        .welcome-text-nav {
-            font-size: 40px;   /* escritorio */
-            line-height: 1.2;
-            white-space: nowrap;
-            font-weight: 700;
-            color: #3A4F26;
-            text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
-            font-family: "Segoe UI", Arial, sans-serif;
-        }
-
-        /* RESPONSIVE NAVBAR (igual que usuario) */
-        @media (max-width: 768px) {
-            .nav.navbar-top-links.navbar-right {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .navbar-top-links .welcome-container {
-                order: -1;
-                width: 100%;
-                margin-bottom: 5px;
-            }
-
-            .welcome-text-nav {
-                font-size: 20px;  /* móvil / tablet pequeña */
-                white-space: normal;
-                display: block;
-            }
-        }
-
     </style>
 
 </head>
@@ -413,7 +361,7 @@
                     <div class="logo-element"></div>
                 </li>
 
-                {{-- ======== MÓDULOS PARA USUARIO Y COLABORADOR ======== --}}
+               {{-- ======== MÓDULOS PARA USUARIO Y COLABORADOR ======== --}}
 
                 {{-- PRODUCTOS: solo para usuario --}}
                 @if(auth()->user()->rol == 'usuario')
@@ -479,6 +427,7 @@
                 </li>
                 @endif
 
+
                 {{-- ======== MÓDULOS SOLO PARA USUARIO (NO COLABORADOR) ======== --}}
                 @if(auth()->user()->rol == 'usuario')
                 <li>
@@ -493,6 +442,7 @@
                     </a>
                 </li>
                 @endif
+
 
                 {{-- ADMINISTRAR USUARIOS: solo admin o usuario --}}
                 @if(auth()->user()->rol === 'administrador' || auth()->user()->rol === 'usuario')
@@ -520,12 +470,12 @@
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
-                    <!-- botón hamburguesa -->
+                    <!-- botón hamburguesa (verde) -->
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="#">
                         <i class="fa fa-bars"></i>
                     </a>
 
-                    <!-- botón casita que lleva al dashboard admin -->
+                    <!-- botón casita (amarillo) que lleva al dashboard admin -->
                     <a class="minimalize-styl-only btn btn-success" href="{{ url('/administrador/inicio') }}">
                         <i class="fa fa-home"></i>
                     </a>
@@ -533,9 +483,7 @@
 
                 <ul class="nav navbar-top-links navbar-right">
                     <li class="welcome-container">
-                        <span class="welcome-text-nav">
-                            @yield('navbar_title', 'Bienvenido a ApicoSmart')
-                        </span>
+                        <span class="welcome-text">Bienvenido a ApicoSmart</span>
                     </li>
 
                     <li>
