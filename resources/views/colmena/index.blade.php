@@ -1,31 +1,25 @@
 @extends('usuario.inicio')
 @section('content')
-<!-- Sale & Revenue Start -->
+
 <div class="container-fluid pt-4 px-4">
 
     <div class="row g-4">
         <div class="col-sm-12">
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+                <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
             @if (session('successdelete'))
-                <div class="alert alert-success">
-                    {{ session('successdelete') }}
-                </div>
+                <div class="alert alert-success">{{ session('successdelete') }}</div>
             @endif
 
             @if (session('successedit'))
-                <div class="alert alert-success">
-                    {{ session('successedit') }}
-                </div>
+                <div class="alert alert-success">{{ session('successedit') }}</div>
             @endif
         </div>
     </div>
 
-    {{-- Botones de agregar: SOLO para usuario, no colaborador --}}
+    {{-- Botones de agregar: SOLO para usuario --}}
     @if(auth()->user()->rol === 'usuario')
     <div class="mb-3">
         <a href="{{ route('colmenas.create') }}" class="btn btn-success">
@@ -59,13 +53,20 @@
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @php $correlativo = 1; @endphp
-                        @foreach ($colmenas as $colmena)
+                        @php
+                            $correlativo = ($colmenas->currentPage() - 1) * $colmenas->perPage() + 1;
+                        @endphp
+
+                        @forelse ($colmenas as $colmena)
                             <tr class="{{ strtolower($colmena->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
                                 <th scope="row">{{ $correlativo }}</th>
+
                                 <td>{{ $colmena->codigo }}</td>
+
                                 <td>{{ $colmena->apiario->nombre }}</td>
+
                                 <td>
                                     @if($colmena->fechaInstalacionFisica)
                                         {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y') }}
@@ -73,25 +74,30 @@
                                         Sin registro
                                     @endif
                                 </td>
+
                                 <td>{{ ucfirst($colmena->estadoOperativo) }}</td>
                                 <td>{{ $colmena->cantidadMarco }}</td>
                                 <td>{{ $colmena->modelo }}</td>
+
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
-                                        {{-- Ver inspecciones: SIEMPRE --}}
-                                        <a href="{{ route('inspeccion.index', $colmena->idColmena) }}" class="btn btn-primary btn-sm">
+                                        {{-- Ver inspecciones --}}
+                                        <a href="{{ route('inspeccion.index', $colmena->idColmena) }}"
+                                           class="btn btn-primary btn-sm">
                                             Ver inspecciones
                                         </a>
 
-                                        {{-- Detalles: SIEMPRE --}}
-                                        <a href="{{ route('colmenas.show', $colmena->idColmena) }}" class="btn btn-info btn-sm">
+                                        {{-- Detalles --}}
+                                        <a href="{{ route('colmenas.show', $colmena->idColmena) }}"
+                                           class="btn btn-info btn-sm">
                                             Detalles
                                         </a>
 
-                                        {{-- Editar y Eliminar: SOLO USUARIO (no colaborador) --}}
+                                        {{-- Editar / Eliminar SOLO usuario --}}
                                         @if(auth()->user()->rol === 'usuario')
-                                            <a href="{{ route('colmenas.edit', $colmena->idColmena) }}" class="btn btn-warning btn-sm">
+                                            <a href="{{ route('colmenas.edit', $colmena->idColmena) }}"
+                                               class="btn btn-warning btn-sm">
                                                 Editar
                                             </a>
 
@@ -100,6 +106,7 @@
                                                   class="m-0 p-0 form-eliminar-colmena">
                                                 @csrf
                                                 @method('DELETE')
+
                                                 <button type="button"
                                                         class="btn btn-danger btn-sm btn-eliminar-colmena"
                                                         data-codigo="{{ $colmena->codigo }}">
@@ -112,9 +119,20 @@
                                 </td>
                             </tr>
                             @php $correlativo++; @endphp
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">
+                                    No hay colmenas registradas.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- PAGINACIÓN --}}
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $colmenas->links() }}
             </div>
         </div>
     </div>
@@ -156,16 +174,13 @@ document.addEventListener('DOMContentLoaded', function () {
 .swal2-apico-popup {
     border-radius: 16px !important;
 }
-/* Mantiene todos los botones de acción alineados horizontalmente */
 td .d-flex form {
     display: inline-flex !important;
     align-items: center;
-    margin: 0;
-    padding: 0;
 }
-
 td .d-flex .btn {
     margin: 0 2px;
 }
 </style>
+
 @endsection
