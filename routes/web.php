@@ -17,6 +17,7 @@ use App\Http\Controllers\ControllerAlimentacion;
 use App\Http\Controllers\ControllerEstadisticas;
 use App\Http\Controllers\ControllerEstadisticasColmenas;
 use App\Http\Controllers\ControllerTareaPendiente;
+use App\Http\Controllers\ControllerPerfil;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -203,3 +204,9 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::post('/mis/dispositivos',       [DispositivoWebController::class, 'store'])->name('mis.dispositivos.store');
     Route::get('/mis/dispositivos/{id}',   [DispositivoWebController::class, 'show'])->name('mis.dispositivos.show');
 });
+Route::get('/verify-email', [AuthController::class, 'verifyEmail'])
+    ->name('verify.email');
+
+    Route::middleware('auth')->group(function () {
+    Route::put('/perfil', [ControllerPerfil::class, 'update'])->name('perfil.update');
+    });

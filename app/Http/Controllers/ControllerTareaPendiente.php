@@ -29,27 +29,23 @@ class ControllerTareaPendiente extends Controller
     {
         $ownerId = $this->getOwnerId();
 
-        // Base: tareas del dueño, no eliminadas, ligadas a colmenas y apiarios activos
         $baseQuery = TareaPendiente::activas()
             ->where('idUser', $ownerId)
             ->whereHas('colmena', function ($q) use ($ownerId) {
                 $q->where('estado', 'activo')
-                  ->where('creadoPor', $ownerId)
-                  ->whereHas('apiario', function ($q2) {
-                      $q2->where('estado', 'activo');
-                  });
+                ->where('creadoPor', $ownerId)
+                ->whereHas('apiario', function ($q2) {
+                    $q2->where('estado', 'activo');
+                });
             });
 
-        // LISTA PRINCIPAL
+        // LISTA PRINCIPAL PAGINADA
         $tareas = (clone $baseQuery)
             ->with('colmena.apiario')
-            // 1) Completadas al final
             ->orderByRaw("CASE WHEN estado = 'completada' THEN 1 ELSE 0 END")
-            // 2) Prioridad: urgente > alta > media > baja
             ->orderByRaw("FIELD(prioridad, 'urgente','alta','media','baja')")
-            // 3) Fecha fin más cercana primero (las NULL al final)
             ->orderByRaw("fechaFin IS NULL, fechaFin ASC")
-            ->get();
+            ->paginate(10);   // <-- PAGINACIÓN
 
         // TOTALES
         $totalPendientes = (clone $baseQuery)
@@ -65,13 +61,14 @@ class ControllerTareaPendiente extends Controller
             ->where('estado', 'vencida')
             ->count();
 
-        return view('tareapendiente.index', [
-            'tareas'          => $tareas,
-            'totalPendientes' => $totalPendientes,
-            'totalUrgentes'   => $totalUrgentes,
-            'totalVencidas'   => $totalVencidas,
-        ]);
+        return view('tareapendiente.index', compact(
+            'tareas',
+            'totalPendientes',
+            'totalUrgentes',
+            'totalVencidas'
+        ));
     }
+
 
     public function create()
     {

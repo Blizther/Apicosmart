@@ -400,10 +400,14 @@
                             </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a href="profile.html">Profile</a></li>
-                            <li><a href="contacts.html">Contacts</a></li>
-                            <li><a href="mailbox.html">Mailbox</a></li>
+                            {{-- NUEVO: editar perfil --}}
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#modalPerfil">
+                                    <i class="fa fa-pencil"></i> Editar perfil
+                                </a>
+                            </li>
                             <li class="divider"></li>
+
                         </ul>
                     </div>
                     <div class="logo-element"></div>
@@ -555,6 +559,13 @@
         </div>
 
         <div>
+            {{-- NUEVO: mensaje success --}}
+            @if(session('success'))
+                <div class="alert alert-success" style="margin:15px;">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             @yield('content')
         </div>
 
@@ -571,6 +582,18 @@
 <script src="{{asset('js/plugins/pace/pace.min.js')}}"></script>
 
 <script src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+
+{{-- NUEVO: incluir modal --}}
+@include('perfil.perfilmodal')
+
+{{-- NUEVO: reabrir modal si hay errores --}}
+@if($errors->any())
+<script>
+    $(function () {
+        $('#modalPerfil').modal('show');
+    });
+</script>
+@endif
 
 @yield('scripts')
 </body>

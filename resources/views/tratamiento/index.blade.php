@@ -58,21 +58,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $correlativo = 1; @endphp
-
-                            @php
-                                $tratamientos = $tratamientos
-                                    ->sortByDesc('fechaAdministracion')
-                                    ->sortByDesc('fechaCreacion');
+                            @php 
+                                // correlativo según página actual
+                                $correlativo = ($tratamientos->currentPage() - 1) * $tratamientos->perPage() + 1; 
                             @endphp
 
-                            @foreach ($tratamientos as $tratamiento)
+                            @forelse ($tratamientos as $tratamiento)
+                                @php
+                                    $colmena = $tratamiento->colmena;
+                                @endphp
+
                                 <tr>
                                     <th scope="row">{{ $correlativo }}</th>
-
-                                    @php
-                                        $colmena = $tratamiento->colmena;
-                                    @endphp
 
                                     <td>
                                         @if($colmena && $colmena->apiario)
@@ -94,15 +91,15 @@
                                         <div class="d-flex justify-content-center gap-2">
                                             {{-- EDITAR: usuario y colaborador --}}
                                             <a href="{{ route('tratamiento.edit', $tratamiento->idTratamiento) }}"
-                                            class="btn btn-sm btn-warning">
+                                               class="btn btn-sm btn-warning">
                                                 Editar
                                             </a>
 
                                             {{-- ELIMINAR: SOLO usuario (apicultor), NO colaborador --}}
                                             @if(auth()->user()->rol === 'usuario')
                                                 <form action="{{ route('tratamiento.destroy', $tratamiento->idTratamiento) }}"
-                                                    method="POST"
-                                                    class="m-0 p-0 form-eliminar-tratamiento">
+                                                      method="POST"
+                                                      class="m-0 p-0 form-eliminar-tratamiento">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button"
@@ -116,13 +113,23 @@
                                             @endif
                                         </div>
                                     </td>
-
-
                                 </tr>
+
                                 @php $correlativo++; @endphp
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">
+                                        No hay tratamientos registrados.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                {{-- Links de paginación --}}
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $tratamientos->links() }}
                 </div>
             </div>
 

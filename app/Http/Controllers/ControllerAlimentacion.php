@@ -42,7 +42,7 @@ class ControllerAlimentacion extends Controller
             })
             ->orderBy('fechaSuministracion', 'desc')
             ->orderBy('idAlimentacion', 'desc')
-            ->get();
+            ->paginate(10); // ✅ paginación
 
         return view('alimentacion.index', compact('alimentaciones'));
     }
@@ -90,6 +90,7 @@ class ControllerAlimentacion extends Controller
         'observaciones.max'            => 'Las observaciones no deben exceder los 255 caracteres.',
     ]);
 
+<<<<<<< HEAD
     // 2) VALIDACIÓN "REAL" SEGÚN LA UNIDAD DE MEDIDA
     $cantidad = (float) $request->cantidad;
     $unidad   = $request->unidadMedida;
@@ -102,6 +103,17 @@ class ControllerAlimentacion extends Controller
         'ml' => 900, // máximo 900 mililitros (≈ 1 litro) en ml
         'L'  => 5,   // máximo 5 litros de jarabe/agua vitaminada
     ];
+=======
+        $cantidad = (float) $request->cantidad;
+        $unidad   = $request->unidadMedida;
+
+        $maxPorUnidad = [
+            'gr' => 10000,
+            'Kg' => 10,
+            'ml' => 2000,
+            'L'  => 5,
+        ];
+>>>>>>> amalia
 
     if (isset($maxPorUnidad[$unidad]) && $cantidad > $maxPorUnidad[$unidad]) {
 
@@ -115,11 +127,22 @@ class ControllerAlimentacion extends Controller
 
         $max = $maxPorUnidad[$unidad];
 
+<<<<<<< HEAD
         return back()
             ->withInput()
             ->withErrors([
                 'cantidad' => "Para la unidad de medida '{$unidadTexto}', la cantidad máxima permitida es {$max} {$unidadTexto}.",
             ]);
+=======
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'cantidad' => "Para la unidad de medida '{$unidadTexto}' la cantidad máxima permitida es {$max}.",
+                ]);
+        }
+
+        return null;
+>>>>>>> amalia
     }
 
     // 3) VALIDACIÓN TÉCNICA POR SI ACASO (protege el numeric(4,1))
@@ -142,12 +165,11 @@ class ControllerAlimentacion extends Controller
     public function store(Request $request)
     {
         if ($respuesta = $this->validarAlimentacion($request)) {
-            return $respuesta; // vuelve con errores si falló la validación extra
+            return $respuesta;
         }
 
         $ownerId = $this->getOwnerId();
 
-        // Asegurar que la colmena pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -162,7 +184,7 @@ class ControllerAlimentacion extends Controller
         $alimentacion->motivo              = $request->motivo;
         $alimentacion->fechaSuministracion = $request->fechaSuministracion;
         $alimentacion->observaciones       = $request->observaciones;
-        $alimentacion->idUsuario           = $ownerId;           // siempre el dueño
+        $alimentacion->idUsuario           = $ownerId;
         $alimentacion->idColmena           = $colmena->idColmena;
         $alimentacion->save();
 
@@ -193,7 +215,7 @@ class ControllerAlimentacion extends Controller
     public function update(Request $request, $id)
     {
         if ($respuesta = $this->validarAlimentacion($request)) {
-            return $respuesta; // vuelve con errores si falló la validación extra
+            return $respuesta;
         }
 
         $ownerId = $this->getOwnerId();
@@ -202,7 +224,6 @@ class ControllerAlimentacion extends Controller
             ->where('idUsuario', $ownerId)
             ->firstOrFail();
 
-        // Validar que la colmena seleccionada pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -225,7 +246,6 @@ class ControllerAlimentacion extends Controller
     // ELIMINAR
     public function destroy($id)
     {
-        // El colaborador NO puede eliminar alimentaciones
         if (Auth::user()->rol === 'colaborador') {
             abort(403, 'No tienes permiso para eliminar registros de alimentación.');
         }

@@ -9,23 +9,16 @@
     <title>@yield('title', 'ApicoSmart')</title>
     <link rel="icon" type="image/png" href="{{ asset('img/abeja.png') }}">
 
-    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+    {{-- CSS base --}}
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
-    <script src="{{asset('js/bootstrap.min.js')}}"></script>
-
     <link href="{{asset('font-awesome/css/font-awesome.css')}}" rel="stylesheet">
-
-    <!-- Toastr style -->
     <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
-
-    <!-- Gritter -->
     <link href="{{asset('js/plugins/gritter/jquery.gritter.css')}}" rel="stylesheet">
-    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <link href="{{asset('css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{ asset('css/custom-apicosmart.css') }}" rel="stylesheet">
 
-    <style>
+    <>
     .navbar-default.navbar-static-side {
         background: #3A4F26;
         box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
@@ -325,8 +318,270 @@
         }
     }
 
+        /* (todos tus estilos tal cual, no toco nada) */
+        .navbar-default.navbar-static-side {
+            background: #3A4F26;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+        }
+        .navbar-static-side .sidebar-collapse {
+            background: #3A4F26;
+        }
+        #side-menu .nav-header {
+            background: linear-gradient(180deg, #3A4F26 0%, #334522 100%);
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, .35);
+        }
+        #side-menu .nav-header .img-circle {
+            border: 3px solid #F9B233;
+            padding: 2px;
+        }
+        #side-menu .nav-header .font-bold,
+        #side-menu .nav-header .text-muted {
+            color: #EDD29C;
+        }
+        #side-menu .nav-header .text-muted {
+            opacity: .85;
+        }
+        #side-menu>li>a {
+            color: #EDD29C;
+            font-size: 16px;
+            background-color: transparent;
+            padding: 12px 20px;
+            border-left: 4px solid transparent;
+            transition:
+                background-color 0.18s ease,
+                color 0.18s ease,
+                border-color 0.18s ease,
+                padding-left 0.18s ease;
+            display: block;
+            text-decoration: none;
+        }
+        #side-menu>li>a>i {
+            color: inherit;
+            width: 18px;
+            text-align: center;
+            margin-right: 8px;
+            opacity: .95;
+            font-size: 25px;
+        }
+        #side-menu>li>a:hover,
+        #side-menu>li>a:focus {
+            background: rgba(0, 0, 0, .12);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+            padding-left: 24px;
+        }
+        #side-menu>li.active>a,
+        #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+            font-weight: 600;
+        }
+        #side-menu .fa.arrow {
+            color: #EDD29C;
+            transition: transform .18s ease, color .18s ease;
+        }
+        #side-menu li.mm-active>a .fa.arrow {
+            transform: rotate(90deg);
+            color: #F9B233;
+        }
+        #side-menu .nav-second-level {
+            background: #334522;
+            padding: 6px 0;
+        }
+        #side-menu .nav-second-level li a {
+            color: #EAD7AA;
+            padding: 9px 20px 9px 44px;
+            font-size: 13.5px;
+            border-left: 4px solid transparent;
+        }
+        #side-menu .nav-second-level li a:hover {
+            background: rgba(0, 0, 0, .14);
+            color: #FFFFFF;
+            border-left-color: #F9B233;
+        }
+        #side-menu>li {
+            border-bottom: 1px solid rgba(0, 0, 0, .18);
+        }
+        #side-menu>li:last-child {
+            border-bottom: none;
+        }
+        #side-menu .nav-label::after {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-left: 8px;
+            background: transparent;
+        }
+        #side-menu li.has-alert>a .nav-label::after {
+            background: #F9B233;
+            box-shadow: 0 0 0 3px rgba(249, 178, 51, .15);
+        }
+        #side-menu .dropdown-menu {
+            background: #2B3B1E;
+            border: 1px solid rgba(0, 0, 0, .35);
+        }
+        #side-menu .dropdown-menu>li>a {
+            color: #EAD7AA;
+        }
+        #side-menu .dropdown-menu>li>a:hover {
+            background: rgba(0, 0, 0, .25);
+            color: #FFF;
+        }
+        .navbar-static-side ::-webkit-scrollbar {
+            width: 10px;
+        }
+        .navbar-static-side ::-webkit-scrollbar-track {
+            background: #2F421F;
+        }
+        .navbar-static-side ::-webkit-scrollbar-thumb {
+            background: #445C2D;
+            border: 2px solid #2F421F;
+            border-radius: 8px;
+        }
+        .navbar-static-side ::-webkit-scrollbar-thumb:hover {
+            background: #4E6734;
+        }
+        .mini-navbar .navbar-static-side {
+            width: 70px;
+        }
+        .mini-navbar #side-menu>li>a {
+            padding-left: 18px;
+            text-align: left;
+        }
+        .mini-navbar #side-menu>li>a .nav-label {
+            display: none;
+        }
+        .mini-navbar #side-menu>li>a>i {
+            margin-right: 0;
+        }
+        .navbar-static-side #side-menu>li.active>a,
+        .navbar-static-side #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22) !important;
+            color: #FFFFFF !important;
+            border-left-color: #F9B233 !important;
+        }
+        .navbar-static-side #side-menu .nav-second-level {
+            background: #334522 !important;
+        }
+        .navbar-static-side #side-menu .nav-second-level>li>a {
+            background: transparent !important;
+            color: #EAD7AA !important;
+            border-left: 4px solid transparent !important;
+        }
+        .navbar-static-side #side-menu .nav-second-level>li>a:hover,
+        .navbar-static-side #side-menu .nav-second-level>li.active>a,
+        .navbar-static-side #side-menu .nav-second-level>li.mm-active>a {
+            background: rgba(0, 0, 0, .14) !important;
+            color: #FFFFFF !important;
+            border-left-color: #F9B233 !important;
+        }
+        .navbar-static-side .nav>li.active>a {
+            background-color: rgba(0, 0, 0, .22) !important;
+            color: #FFF !important;
+        }
+        .navbar-default.navbar-static-side,
+        .navbar-default.navbar-static-side .sidebar-collapse,
+        .navbar-default.navbar-static-side #side-menu,
+        .navbar-default.navbar-static-side .nav.metismenu {
+            background: #3A4F26 !important;
+        }
+        .navbar-default.navbar-static-side #side-menu>li.active>a,
+        .navbar-default.navbar-static-side #side-menu>li.mm-active>a {
+            background: rgba(0, 0, 0, .22) !important;
+            color: #fff !important;
+            border-left-color: #F9B233 !important;
+        }
+        .navbar-default.navbar-static-side #side-menu>li.active,
+        .navbar-default.navbar-static-side #side-menu>li.mm-active {
+            background: transparent !important;
+        }
+        .navbar-default.navbar-static-side #side-menu .nav-second-level,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.collapse.in,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-collapse,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level.mm-show {
+            background: #334522 !important;
+            border-left: 0 !important;
+        }
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a {
+            background: transparent !important;
+            color: #EAD7AA !important;
+            border-left: 4px solid transparent !important;
+        }
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:hover,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li.active>a,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li.mm-active>a,
+        .navbar-default.navbar-static-side #side-menu .nav-second-level>li>a:focus {
+            background: rgba(0, 0, 0, .14) !important;
+            color: #fff !important;
+            border-left-color: #F9B233 !important;
+        }
+        .navbar-default.navbar-static-side .nav>li.active>a,
+        .navbar-default.navbar-static-side .nav>li>a.active {
+            background: rgba(0, 0, 0, .22) !important;
+            color: #fff !important;
+        }
+        .navbar-default.navbar-static-side .nav {
+            min-height: 100%;
+            background: #3A4F26 !important;
+        }
+        .welcome-banner {
+            width: 100%;
+            height: 120px;
+            background-image: url("{{ asset('img/fondo2.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+        .welcome-text {
+            position: relative;
+            z-index: 1;
+            color: #3A4F26;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 3px 3px 6px rgba(249, 178, 51, 0.6);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        #map {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid #3A4F26;
+        }
+        .table-danger {
+            background-color: #f8d7da !important;
+            color: #842029 !important;
+        }
+        .navbar.navbar-static-top {
+            position: relative;
+        }
+        .navbar-top-links .welcome-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
     </style>
-
+    @yield('styles')
 </head>
 
 <body>
@@ -351,9 +606,12 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html"><i class="fa fa-id-card-o"></i> Profile</a></li>
-                                <li><a href="contacts.html"><i class="fa fa-address-book-o"></i> Contacts</a></li>
-                                <li><a href="mailbox.html"><i class="fa fa-envelope-o"></i> Mailbox</a></li>
+                                {{-- editar perfil --}}
+                                <li>
+                                    <a href="#" data-toggle="modal" data-target="#modalPerfil">
+                                        <i class="fa fa-pencil"></i> Editar perfil
+                                    </a>
+                                </li>
                                 <li class="divider"></li>
                             </ul>
                         </div>
@@ -362,7 +620,6 @@
 
                     {{-- ================== MENÚ LATERAL ================== --}}
 
-                    {{-- 1) Productos: SOLO el usuario (apicultor), NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="<?php echo asset('') ?>productos" title="Productos">
@@ -372,7 +629,6 @@
                         </li>
                     @endif
 
-                    {{-- 2) Módulos compartidos: usuario + colaborador --}}
                     @if(auth()->user()->rol == 'usuario' || auth()->user()->rol == 'colaborador')
 
                         <li>
@@ -427,7 +683,6 @@
 
                     @endif
 
-                    {{-- 2.5) Dispositivos: SOLO usuario, NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="{{ route('mis.dispositivos') }}" title="Dispositivos">
@@ -437,7 +692,6 @@
                         </li>
                     @endif
 
-                    {{-- 3) Ventas y reportes: SOLO usuario, NO colaborador --}}
                     @if(auth()->user()->rol == 'usuario')
                         <li>
                             <a href="<?php echo asset('') ?>ventaUsuario" title="Realizar venta">
@@ -452,7 +706,6 @@
                             </a>
                         </li>
 
-                        {{-- Administrar usuarios: solo el apicultor dueño, NO colaborador --}}
                         <li>
                             <a href="{{ route('users.index') }}">
                                 <i class="fa fa-user"></i>
@@ -479,6 +732,7 @@
                             </span>
                         </li>
 
+                        {{-- tus dropdowns de mensajes/notificaciones/etc --}}
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                                 <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
@@ -574,16 +828,26 @@
 
                 </nav>
             </div>
+
             <div>
+                {{-- mensaje success --}}
+                @if(session('success'))
+                    <div class="alert alert-success" style="margin:15px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 @yield('content')
             </div>
 
         </div>
     </div>
 
-    <!-- scripts que ya tenías -->
+    {{-- JS base: 1 sola vez --}}
     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
+
+    {{-- plugins --}}
     <script src="{{asset('js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
     <script src="{{asset('js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
     <script src="{{asset('js/plugins/flot/jquery.flot.js')}}"></script>
@@ -615,6 +879,18 @@
             }, 1300);
         });
     </script>
+
+    {{-- incluir modal --}}
+    @include('perfil.perfilmodal')
+
+    {{-- reabrir modal si hubo error --}}
+    @if($errors->any())
+    <script>
+        $(function () {
+            $('#modalPerfil').modal('show');
+        });
+    </script>
+    @endif
 
     @yield('scripts')
 </body>

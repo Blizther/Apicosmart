@@ -23,14 +23,13 @@ class ControllerColmena extends Controller
                 $q->where('estado', 'activo');
             })
             ->orderBy('idApiario', 'desc')
-            ->get();
+            ->paginate(10); // ✅ paginación
 
         return view('colmena.index', compact('colmenas'));
     }
 
     public function create()
     {
-        // Solo usuario entra aquí (middleware en rutas), pero igual usamos ownerId
         $ownerId = Auth::user()->ownerId();
 
         $apiarios = Apiario::where('creadoPor', $ownerId)
@@ -43,7 +42,6 @@ class ControllerColmena extends Controller
 
     public function store(Request $request)
     {
-        // Validar APIARIO activo
         $apiario = Apiario::where('idApiario', $request->apiario)
             ->where('estado', 'activo')
             ->first();
@@ -52,7 +50,6 @@ class ControllerColmena extends Controller
             return back()->with('error', 'No puedes crear una colmena en un apiario inactivo.');
         }
 
-        // VALIDACIÓN EN ESPAÑOL
         $request->validate([
             'codigo' => 'required|string|max:20',
             'fechaInstalacionFisica' => 'nullable|date',
@@ -63,18 +60,14 @@ class ControllerColmena extends Controller
         ], [
             'codigo.required' => 'El código de la colmena es obligatorio.',
             'codigo.max' => 'El código no debe exceder 20 caracteres.',
-
             'estadoOperativo.required' => 'Debe seleccionar un estado operativo.',
             'estadoOperativo.in' => 'El estado operativo seleccionado no es válido.',
-
             'apiario.required' => 'Debe seleccionar un apiario.',
             'apiario.numeric' => 'El apiario seleccionado no es válido.',
-
             'cantidadMarco.required' => 'Debe ingresar la cantidad de marcos.',
             'cantidadMarco.numeric' => 'La cantidad de marcos debe ser un número.',
             'cantidadMarco.min' => 'La colmena debe tener al menos 1 marco.',
             'cantidadMarco.max' => 'La colmena puede tener como máximo 12 marcos.',
-
             'modelo.max' => 'El modelo no debe exceder 50 caracteres.',
         ]);
 
@@ -87,7 +80,7 @@ class ControllerColmena extends Controller
         $colmena->idApiario = $request->apiario;
         $colmena->cantidadMarco = $request->cantidadMarco;
         $colmena->modelo = $request->modelo;
-        $colmena->creadoPor = Auth::id(); // siempre el usuario dueño (solo él entra aquí)
+        $colmena->creadoPor = Auth::id();
         $colmena->fechaCreacion = date('Y-m-d H:i:s');
         $colmena->estado = 'activo';
         $colmena->save();
@@ -97,7 +90,6 @@ class ControllerColmena extends Controller
 
     public function createLote()
     {
-        // Solo usuario entra aquí (middleware en rutas), pero usamos ownerId
         $ownerId = Auth::user()->ownerId();
 
         $apiarios = Apiario::where('creadoPor', $ownerId)
@@ -112,10 +104,6 @@ class ControllerColmena extends Controller
     {
         $validated = $request->validate([
             'colmenas' => 'required|array|min:1',
-
-            // ❌ Ya no exigimos el código desde el formulario
-            // 'colmenas.*.codigo' => 'required|string|max:20',
-
             'colmenas.*.apiario' => 'required|numeric|min:1',
             'colmenas.*.fechaInstalacionFisica' => 'nullable|date',
             'colmenas.*.cantidadMarco' => 'required|numeric|min:1|max:12',
@@ -124,51 +112,41 @@ class ControllerColmena extends Controller
         ], [
             'colmenas.required' => 'Debe registrar al menos una colmena.',
             'colmenas.array' => 'El formato enviado no es válido.',
-
-            // ❌ Quitamos también el mensaje que daba el error
-            // 'colmenas.*.codigo.required' => 'Cada colmena debe tener un código.',
-            // 'colmenas.*.codigo.max' => 'El código no debe exceder 20 caracteres.',
-
             'colmenas.*.apiario.required' => 'Debe seleccionar un apiario.',
             'colmenas.*.apiario.numeric' => 'El apiario seleccionado no es válido.',
-
             'colmenas.*.cantidadMarco.required' => 'Debe ingresar la cantidad de marcos.',
             'colmenas.*.cantidadMarco.numeric' => 'La cantidad de marcos debe ser numérica.',
             'colmenas.*.cantidadMarco.min' => 'Cada colmena debe tener al menos 1 marco.',
             'colmenas.*.cantidadMarco.max' => 'Cada colmena puede tener como máximo 12 marcos.',
-
             'colmenas.*.modelo.required' => 'Debe ingresar el modelo de la colmena.',
             'colmenas.*.modelo.max' => 'El modelo no debe exceder 50 caracteres.',
         ]);
-
 
         date_default_timezone_set('America/La_Paz');
 
         foreach ($validated['colmenas'] as $col) {
 
-        $apiario = Apiario::where('idApiario', $col['apiario'])
-            ->where('estado', 'activo')
-            ->first();
+            $apiario = Apiario::where('idApiario', $col['apiario'])
+                ->where('estado', 'activo')
+                ->first();
 
-        if (!$apiario) {
-            continue;
+            if (!$apiario) {
+                continue;
+            }
+
+            $codigo = $this->obtenerSiguienteCodigo($col['apiario']);
+
+            Colmena::create([
+                'codigo' => $codigo,
+                'fechaInstalacionFisica' => $col['fechaInstalacionFisica'] ?? null,
+                'estado' => 'activo',
+                'idApiario' => $col['apiario'],
+                'cantidadMarco' => $col['cantidadMarco'],
+                'modelo' => $col['modelo'],
+                'creadoPor' => Auth::id(),
+                'fechaCreacion' => date('Y-m-d H:i:s'),
+            ]);
         }
-
-        // 👉 Generamos el código automáticamente según el apiario
-        $codigo = $this->obtenerSiguienteCodigo($col['apiario']);
-
-        Colmena::create([
-            'codigo' => $codigo,
-            'fechaInstalacionFisica' => $col['fechaInstalacionFisica'] ?? null,
-            'estado' => 'activo',
-            'idApiario' => $col['apiario'],
-            'cantidadMarco' => $col['cantidadMarco'],
-            'modelo' => $col['modelo'],
-            'creadoPor' => Auth::id(), // dueño
-            'fechaCreacion' => date('Y-m-d H:i:s'),
-        ]);
-     }
-
 
         return redirect()->route('colmenas.index')->with('success', 'Colmenas creadas exitosamente.');
     }
@@ -195,14 +173,11 @@ class ControllerColmena extends Controller
         ], [
             'codigo.required' => 'El código es obligatorio.',
             'codigo.max' => 'El código no debe exceder 20 caracteres.',
-
             'cantidadMarco.required' => 'Debe ingresar la cantidad de marcos.',
             'cantidadMarco.numeric' => 'La cantidad debe ser un número.',
             'cantidadMarco.min' => 'Debe tener mínimo 1 marco.',
             'cantidadMarco.max' => 'Máximo permitido: 12 marcos.',
-
             'modelo.max' => 'El modelo no debe exceder 50 caracteres.',
-
             'estadoOperativo.required' => 'Debe seleccionar un estado operativo.',
             'estadoOperativo.in' => 'El estado operativo seleccionado no es válido.',
         ]);
@@ -244,17 +219,16 @@ class ControllerColmena extends Controller
     {
         return view('colmena.agregarinspeccion', ['id' => $id]);
     }
+
     private function obtenerSiguienteCodigo($idApiario)
     {
         $maxCodigo = Colmena::where('idApiario', $idApiario)->max('codigo');
-
-        // Si no hay colmenas aún, empieza en 1
         return (int)($maxCodigo ?? 0) + 1;
     }
+
     public function proximoCodigo($idApiario)
     {
         $codigo = $this->obtenerSiguienteCodigo($idApiario);
         return response()->json(['codigo' => $codigo]);
     }
-
 }

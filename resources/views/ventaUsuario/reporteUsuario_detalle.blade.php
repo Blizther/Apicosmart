@@ -3,7 +3,6 @@
 @section('content')
 
 @php
-    // Cliente: ajusta si tu columna se llama distinto
     $clienteNombre = trim(
         $venta->cliente_nombre
         ?? $venta->clienteNombre
@@ -13,8 +12,8 @@
     );
     if ($clienteNombre === '') $clienteNombre = 'SIN NOMBRE';
 
-    $fechaEmision = date('d/m/Y'); // fecha actual (una vez)
-    $fechaVenta = \Carbon\Carbon::parse($venta->fecha)->format('Y-m-d H:i');
+    $fechaEmision = now()->format('d/m/Y');
+    $fechaVenta = \Carbon\Carbon::parse($venta->fecha)->format('d/m/Y H:i');
 
     $vendedorNombre = trim(($venta->usuario->nombre ?? 'N/D').' '.($venta->usuario->primerApellido ?? ''));
     $vendedorTelefono = $venta->usuario->telefono ?? 'N/D';
@@ -34,58 +33,63 @@
         <div><small class="text-muted">Fecha</small></div>
         <div><strong>{{ \Carbon\Carbon::parse($venta->fecha)->format('Y-m-d') }}</strong></div>
       </div>
-=======
 
         <button id="btnExportarPDF" class="btn btn-primary btn-sm">
             <i class="fa fa-file-pdf-o"></i> Exportar a PDF
         </button>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div class="d-flex gap-2">
+            <a href="{{ url('/reporteUsuario') }}" class="btn btn-sm btn-volver">
+                Volver
+            </a>
 
+            <button id="btnExportarPDF" class="btn btn-sm btn-primary">
+                <i class="fa fa-file-pdf-o"></i> Exportar a PDF
+            </button>
+        </div>
     </div>
 
-    {{-- Panel NOTA centrado ~60% --}}
-    <div class="nota-card mx-auto bg-white">
+    <div class="nota-card mx-auto">
 
-        {{-- HEADER igual al PDF --}}
         <div class="nota-header">
-            
-
-            <div class="nota-header-center">
+            <div class="nota-header-center text-center w-100">
                 <div class="nota-title">NOTA DE VENTA</div>
-                <div class="nota-subline"><strong>No:</strong> {{ $venta->id }}</div>
             </div>
 
             <div class="nota-header-right">
-                <div class="nota-subline"><strong>Fecha emisión:</strong> {{ $fechaEmision }}</div>
+                <div class="nota-subline">
+                    <strong>Fecha emisión:</strong> {{ $fechaEmision }}
+                </div>
             </div>
         </div>
 
         <hr class="nota-hr">
 
-        {{-- Datos básicos igual al PDF (sin duplicar) --}}
-        <div class="nota-datos small">
+        <div class="nota-datos">
             <div><strong>Fecha venta:</strong> {{ $fechaVenta }}</div>
             <div><strong>Cliente:</strong> {{ $clienteNombre }}</div>
             <div><strong>Vendedor:</strong> {{ $vendedorNombre }}</div>
         </div>
 
-        {{-- Tabla productos --}}
         <div class="table-responsive mt-3">
-            <table class="table table-sm align-middle table-nota" id="tablaNotaPDF">
+            <table class="table table-bordered align-middle table-nota table-nota-xs" id="tablaNotaPDF">
                 <thead>
                     <tr>
-                        <th style="width:50px">Nro</th>
+                        <th style="width:28px" class="text-center">Nro</th>
                         <th>Producto</th>
-                        <th class="text-end" style="width:100px">Cantidad</th>
-                        <th class="text-end" style="width:140px">Precio Unit. (Bs.)</th>
-                        <th class="text-end" style="width:140px">Subtotal (Bs.)</th>
+                        <th style="width:70px" class="text-end">Cantidad</th>
+                        <th style="width:90px" class="text-end">Costo Unit (Bs.)</th>
+                        <th style="width:95px" class="text-end">Subtotal (Bs.)</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php($n=1)
                     @foreach($venta->detalles as $d)
                         <tr>
-                            <td>{{ $n++ }}</td>
-                            <td>{{ $d->producto->descripcion ?? "ID {$d->idProducto}" }}</td>
+                            <td class="text-center">{{ $n++ }}</td>
+                            <td class="text-truncate" style="max-width:320px">
+                                {{ $d->producto->descripcion ?? "ID {$d->idProducto}" }}
+                            </td>
                             <td class="text-end">{{ number_format($d->cantidad) }}</td>
                             <td class="text-end">{{ number_format($d->precio_unitario, 2) }}</td>
                             <td class="text-end">{{ number_format($d->subtotal, 2) }}</td>
@@ -93,7 +97,7 @@
                     @endforeach
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr class="fw-bold">
                         <th colspan="4" class="text-end">TOTAL</th>
                         <th class="text-end">{{ number_format($venta->total, 2) }}</th>
                     </tr>
@@ -101,8 +105,7 @@
             </table>
         </div>
 
-        {{-- Pie igual al PDF --}}
-        <div class="nota-footer small text-muted text-center mt-3">
+        <div class="nota-footer text-muted text-center mt-3">
             ApicoSmart | apicosmart@gmail.com | Tel: {{ $vendedorTelefono }}
         </div>
 
@@ -113,78 +116,96 @@
 
 @section('styles')
 <style>
-    /* Panel centrado 60% */
+    /* Panel más grande */
     .nota-card{
-        width: 60%;
-        max-width: 820px;
-        min-width: 320px;
-        padding: 18px 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,.08);
-        border: 1px solid #eee;
+        width: 70%;
+        max-width: 900px;
+        min-width: 360px;
+        padding: 28px 32px;
+        border-radius: 14px;
+        box-shadow: 0 3px 14px rgba(0,0,0,.12);
+        border: 1px solid #cfe9d9;
+        background: #f5fff8;
     }
 
-    /* Header estilo PDF */
     .nota-header{
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 12px;
     }
-    .nota-header-left{
-        width: 70px;
-        flex: 0 0 auto;
-    }
-    .nota-logo{
-        width: 60px !important;
-        max-width: 60px !important;
-        height: 60px !important;
-        max-height: 60px !important;
-        object-fit: contain;
-        border-radius: 6px;
-        display:block;
-    }
-    .nota-header-center{
-        flex: 1 1 auto;
-    }
+
     .nota-header-right{
-        flex: 0 0 auto;
         text-align: right;
         min-width: 180px;
     }
+
     .nota-title{
-        font-weight: 700;
-        font-size: 18px;
+        font-weight: 900;
+        font-size: 30px;
+        letter-spacing: 1px;
+        color: #145c32;
+        text-transform: uppercase;
+        margin-bottom: 8px;
     }
+
     .nota-subline{
         font-size: 13px;
         margin-top: 2px;
     }
+
     .nota-hr{
         margin: 10px 0 8px;
-        border-top: 1px solid #bbb;
+        border-top: 1px solid #8fc7a7;
     }
 
-    /* Datos */
     .nota-datos > div{
-        margin: 4px 0;
+        margin: 6px 0;
+        font-size: 1rem;
     }
 
-    /* Cebra verde clarito */
+    /* ✅ FORZAR encabezados visibles SI O SI */
     .table-nota thead th{
-        background: #198754;
-        color: #fff;
-        border: none;
+        background-color: #198754 !important;
+        color: #ffffff !important;
+        border-color: #198754 !important;
+        font-weight: 700 !important;
+        font-size: 0.90rem !important;
     }
+    .table-nota thead{
+        display: table-header-group !important;
+    }
+
     .table-nota tbody tr:nth-child(odd){
         background: #e9f7ef;
     }
-    .btn-volver {
-    background-color: #ff9800 !important;   /* naranja */
-    color: #ffffff !important;              /* texto blanco */
-    border: none !important;
-    font-weight: 600;
-    } 
+    .table-nota tbody tr:nth-child(even){
+        background: #f7fffb;
+    }
 
+    /* Compacta, pero legible */
+    .table-nota-xs th,
+    .table-nota-xs td{
+        padding: 0.22rem 0.35rem !important;
+        font-size: 0.85rem !important;
+        line-height: 1.25 !important;
+        vertical-align: middle !important;
+    }
+
+    .nota-footer{
+        font-size: 0.85rem;
+    }
+
+    .btn-volver {
+        background-color: #ff9800 !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 700;
+    }
+    .btn-volver:hover{
+        background-color:#e68900 !important;
+        color:#fff !important;
+    }
 </style>
 @endsection
 
@@ -211,8 +232,7 @@ $(document).ready(function() {
             const margenSuperior = 28;
             const margenInferior = 18;
 
-            const notaNo = "{{ $venta->id }}";
-            const fechaEmision = "{{ date('d/m/Y') }}";
+            const fechaEmision = "{{ $fechaEmision }}";
             const fechaVenta = "{{ $fechaVenta }}";
             const cliente = "{{ $clienteNombre }}";
             const vendedor = "{{ $vendedorNombre }}";
@@ -224,8 +244,7 @@ $(document).ready(function() {
                 pdfDoc.text("NOTA DE VENTA",32,14);
 
                 pdfDoc.setFontSize(9);
-                pdfDoc.text(`No: ${notaNo}`, 32, 20);
-                pdfDoc.text(`Fecha emisión: ${fechaEmision}`, 80, 20);
+                pdfDoc.text(`Fecha emisión: ${fechaEmision}`, 32, 20);
 
                 pdfDoc.line(10,24,pageWidth-10,24);
 
@@ -281,7 +300,7 @@ $(document).ready(function() {
 
             const a = document.createElement('a');
             a.href = blobUrl;
-            a.download = `nota_venta_${notaNo}.pdf`;
+            a.download = `nota_venta.pdf`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
