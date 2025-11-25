@@ -210,3 +210,16 @@ Route::get('/verify-email', [AuthController::class, 'verifyEmail'])
     Route::middleware('auth')->group(function () {
     Route::put('/perfil', [ControllerPerfil::class, 'update'])->name('perfil.update');
     });
+    // ==========================================
+// RUTA DE PRUEBA PARA VERIFICAR BROADCASTING
+// ==========================================
+use App\Events\MetricUpdated;
+
+Route::get('/emit', function () {
+    MetricUpdated::dispatch([
+        't' => now()->toDateTimeString(),
+        'y' => rand(1, 100),
+    ]);
+
+    return 'ok';
+});
