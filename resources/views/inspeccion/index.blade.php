@@ -65,10 +65,14 @@
                             <th scope="col" style="width: 12%;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @php $correlativo = 1; @endphp
 
-                        @foreach ($inspecciones as $insp)
+                    <tbody>
+                        @php
+                            // correlativo según página
+                            $correlativo = ($inspecciones->currentPage() - 1) * $inspecciones->perPage() + 1;
+                        @endphp
+
+                        @forelse ($inspecciones as $insp)
                             <tr class="{{ strtolower($insp->estadoOperativo) == 'enferma' ? 'table-danger' : '' }}">
                                 <th scope="row">{{ $correlativo }}</th>
 
@@ -118,9 +122,20 @@
                                 </td>
                             </tr>
                             @php $correlativo++; @endphp
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="12" class="text-center text-muted">
+                                    No hay inspecciones registradas para esta colmena.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- PAGINACIÓN --}}
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $inspecciones->links() }}
             </div>
         </div>
     </div>

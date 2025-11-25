@@ -10,8 +10,10 @@
 <div class="container-fluid pt-4 px-4" id="reporteVentasContenido">
     {{-- Encabezado --}}
     <div class="text-center mb-4">
-        <h4>Reporte de Ventas</h4>
-        <p>Fecha de emisión: {{ date('d/m/Y') }}</p>
+        <h2 class="titulo-reporte">REPORTE DE VENTAS</h2>
+
+        {{-- Fecha de emisión en día/mes/año y hora --}}
+        <p>Fecha de emisión: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
 
     {{-- Mensajes --}}
@@ -44,7 +46,8 @@
                 <button class="btn btn-primary btn-sm" type="submit">Aplicar filtros</button>
             </div>
             <div class="col-sm-3 d-flex align-items-end">
-                <a href="{{ url()->current() }}" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+                {{-- Color igual a aplicar filtros --}}
+                <a href="{{ url()->current() }}" class="btn btn-primary btn-sm">Limpiar</a>
             </div>
         </form>
     </div>
@@ -83,12 +86,12 @@
             <table class="table table-sm align-middle" id="tablaVentasPDF">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Nro</th>
                         <th>Fecha</th>
                         <th class="text-end">Total (Bs.)</th>
                         <th class="text-center">Estado</th>
                         <th class="text-end">Ítems</th>
-                        <th class="text-center">Acciones</th> {{-- 👈 esta columna no irá al PDF --}}
+                        <th class="text-center">Acciones</th> {{-- no va al PDF --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -101,24 +104,25 @@
                         @endphp
                         <tr>
                             <td>{{ $correlativo }}</td>
-                            <td>{{ \Carbon\Carbon::parse($v->fecha)->format('Y-m-d H:i') }}</td>
+                            {{-- ✅ Sin timezone() para no mover la hora --}}
+                            <td>{{ \Carbon\Carbon::parse($v->fecha)->format('d/m/Y H:i') }}</td>
                             <td class="text-end">{{ number_format($v->total, 2) }}</td>
                             <td class="text-center">
                                 <span class="badge bg-{{ $badge }}">{{ $estadoTxt }}</span>
                             </td>
                             <td class="text-end">{{ $itemsCount }}</td>
                             <td class="text-center">
-                                <a class="btn btn-outline-primary btn-sm" href="{{ route('venta.reporte.detalle', $v->id) }}">
+                                <a class="btn btn-naranja btn-sm" href="{{ route('venta.reporte.detalle', $v->id) }}">
                                     Ver detalle
                                 </a>
                             </td>
+
                         </tr>
                         @php $correlativo++; @endphp
                     @empty
                         <tr>
                             <td colspan="6">No hay ventas en el período seleccionado.</td>
                         </tr>
-                        
                     @endforelse
                 </tbody>
             </table>
@@ -147,10 +151,20 @@ $(document).ready(function() {
         logo.onload = function() {
             const margenSuperior = 35;
 
-            // Datos usuario y fecha
+            // Datos usuario
             const nombreUsuario = "{{ auth()->user()->nombre }} {{ explode(' ', auth()->user()->primerApellido)[0] }}";
             const telefono = "{{ auth()->user()->telefono }}";
-            const fecha = "{{ date('d/m/Y') }}";
+
+            // ✅ Fecha y hora desde el sistema (PC/Chrome)
+            const now = new Date();
+            const fecha = now.toLocaleString('es-BO', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
 
             function agregarEncabezado(pdfDoc, paginaActual, totalPaginas) {
                 pdfDoc.addImage(logo, 'JPEG', 10, 5, 20, 20);
@@ -170,14 +184,15 @@ $(document).ready(function() {
             pdf.text(`Total vendido: Bs. {{ number_format($resumen['totalVendido'],2) }}`, 60, margenSuperior);
             pdf.text(`Ítems vendidos: {{ number_format($resumen['itemsVendidos']) }}`, 140, margenSuperior);
 
-            // Preparar datos de tabla para jsPDF-autoTable
+            // Preparar datos de tabla
             const columnas = ["#", "Fecha", "Total (Bs.)", "Estado", "Ítems"];
             const filas = [];
-            indice=1;
+            let indice = 1;
+
             @foreach($ventas as $v)
                 filas.push([
                     indice++,
-                    "{{ \Carbon\Carbon::parse($v->fecha)->format('Y-m-d H:i') }}",
+                    "{{ \Carbon\Carbon::parse($v->fecha)->format('d/m/Y H:i') }}", // ✅ hora real sin conversion
                     "{{ number_format($v->total, 2) }}",
                     "{{ $v->estado==1?'Confirmada':'Anulada' }}",
                     "{{ $v->detalles?->sum('cantidad') ?? 0 }}"
@@ -193,7 +208,6 @@ $(document).ready(function() {
                 alternateRowStyles: { fillColor: [240, 240, 240] },
                 margin: { top: margenSuperior + 8 },
                 didDrawPage: function (data) {
-                    // Se llama en cada página
                     const page = pdf.internal.getCurrentPageInfo().pageNumber;
                     const total = pdf.internal.getNumberOfPages();
                     agregarEncabezado(pdf, page, total);
@@ -205,4 +219,27 @@ $(document).ready(function() {
     });
 });
 </script>
+<style>
+    .btn-naranja {
+        background-color: #ff9800 !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .btn-naranja:hover {
+        background-color: #e68900 !important;
+        color: white !important;
+    }
+    /* Título grande y con color verde igual que NOTA DE VENTA */
+.titulo-reporte {
+    font-size: 25px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f08e05ff;         /* mismo verde de tus títulos */
+    margin-bottom: 10px;
+}
+
+</style>
+
 @endsection

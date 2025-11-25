@@ -17,11 +17,9 @@ class ControllerCosecha extends Controller
         $user = Auth::user();
 
         if ($user->rol === 'colaborador') {
-            // el colaborador trabaja sobre los datos del apicultor
             return (int) $user->idusuario;
         }
 
-        // usuario normal (apicultor)
         return (int) $user->id;
     }
 
@@ -34,11 +32,15 @@ class ControllerCosecha extends Controller
             ->where('estado', 'activo')
             ->whereHas('colmena', function ($query) use ($ownerId) {
                 $query->where('estado', 'activo')
-                      ->where('creadoPor', $ownerId);
+                      ->where('creadoPor', $ownerId)
+                      // ✅ asegura que tenga apiario activo
+                      ->whereHas('apiario', function ($q) {
+                          $q->where('estado', 'activo');
+                      });
             })
             ->orderBy('fechaCosecha', 'desc')
             ->orderBy('idCosecha', 'desc')
-            ->get();
+            ->paginate(10); // ✅ paginación
 
         return view('cosecha.index', compact('cosechas'));
     }
@@ -93,7 +95,6 @@ class ControllerCosecha extends Controller
 
         $ownerId = $this->getOwnerId();
 
-        // Aseguramos que la colmena pertenece al dueño y está activa
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -102,14 +103,13 @@ class ControllerCosecha extends Controller
         date_default_timezone_set('America/La_Paz');
 
         $cosecha = new Cosecha();
-        $cosecha->idUsuario     = $ownerId;                // siempre el dueño
+        $cosecha->idUsuario     = $ownerId;
         $cosecha->peso          = $request->peso;
         $cosecha->estadoMiel    = $request->estadoMiel;
         $cosecha->fechaCosecha  = $request->fechaCosecha;
         $cosecha->idColmena     = $colmena->idColmena;
         $cosecha->observaciones = $request->observaciones;
         $cosecha->estado        = 'activo';
-
         $cosecha->save();
 
         return redirect()
@@ -159,7 +159,6 @@ class ControllerCosecha extends Controller
             })
             ->firstOrFail();
 
-        // Revalidar que la colmena seleccionada pertenece al dueño
         $colmena = Colmena::where('idColmena', $request->idColmena)
             ->where('estado', 'activo')
             ->where('creadoPor', $ownerId)
@@ -170,7 +169,6 @@ class ControllerCosecha extends Controller
         $cosecha->fechaCosecha  = $request->fechaCosecha;
         $cosecha->idColmena     = $colmena->idColmena;
         $cosecha->observaciones = $request->observaciones;
-
         $cosecha->save();
 
         return redirect()

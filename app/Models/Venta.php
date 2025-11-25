@@ -11,7 +11,7 @@ class Venta extends Model
 
     protected $table = 'ventas';
     // timestamps = true por defecto, tu tabla los tiene
-    protected $fillable = ['idUser', 'fecha', 'total', 'estado'];
+    protected $fillable = ['idUser', 'fecha', 'total', 'estado','cliente_nombre'];
 
     // Relación: una venta pertenece a un usuario (vendedor)
      public function detalles()

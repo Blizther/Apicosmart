@@ -195,10 +195,12 @@
 
             <button type="submit">Iniciar Sesión</button>
         </form>
-
-        <div class="opciones">
-            <a href="#">¿Olvidaste tu contraseña?</a>
-        </div>
     </div>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
 </body>
 </html>

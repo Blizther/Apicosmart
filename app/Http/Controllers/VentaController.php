@@ -28,19 +28,16 @@ class VentaController extends Controller
 
         $userId = Auth::id();
 
-        // Verifica propiedad del producto
         $producto = Producto::where('id', $data['producto_id'])
             ->where('idUser', $userId)
             ->firstOrFail();
 
-        // Verifica stock actual
         if ($producto->stock < $data['cantidad']) {
             return back()->withErrors(['stock' => 'Stock insuficiente para este producto.']);
         }
 
         $cart = session('cart', []);
         if (isset($cart[$producto->id])) {
-            // Suma cantidades sin exceder stock actual
             $nueva = $cart[$producto->id]['cantidad'] + $data['cantidad'];
             if ($nueva > $producto->stock) {
                 return back()->withErrors(['stock' => 'La cantidad supera el stock disponible.']);
@@ -57,13 +54,8 @@ class VentaController extends Controller
 
         session(['cart' => $cart]);
         return redirect('/ventaUsuario')->with('ok', 'Producto agregado al carrito.');
-
-
     }
 
-    /**
-     * Actualizar la cantidad de un item del carrito
-     */
     public function cartUpdate(Request $request)
     {
         $data = $request->validate([
@@ -91,9 +83,6 @@ class VentaController extends Controller
         return redirect('/ventaUsuario')->with('ok', 'Carrito actualizado.');
     }
 
-    /**
-     * Quitar item del carrito
-     */
     public function cartRemove(Request $request)
     {
         $data = $request->validate([
@@ -110,79 +99,100 @@ class VentaController extends Controller
         session(['cart' => $cart]);
 
         return redirect('/ventaUsuario')->with('ok', 'Producto quitado del carrito.');
-
-
     }
 
     /**
-     * Checkout: crea registro en ventas y detalles, descuenta stock
-     * Todo validado y en transacción.
+     * Checkout
      */
     public function store(Request $request)
-{
-    $userId = Auth::id();
+    {
+        $userId = Auth::id();
 
-    // Si todavía no vas a guardar datos de cliente/metodo_pago, no los valides
-    // Déjalo así de simple:
-    $request->validate([]); // o elimina esta línea directamente
-
-    $cart = session('cart', []);
-    if (empty($cart)) {
-        return back()->withErrors(['carrito' => 'El carrito está vacío.']);
-    }
-
-    $productoIds = array_keys($cart);
-    $productos = Producto::whereIn('id', $productoIds)
-        ->where('idUser', $userId)
-        ->lockForUpdate()
-        ->get(['id','precio','stock']);
-
-    if ($productos->count() !== count($productoIds)) {
-        return back()->withErrors(['propiedad' => 'Se detectaron ítems que no pertenecen al usuario.']);
-    }
-
-    $total = 0;
-    foreach ($productos as $p) {
-        $cant = $cart[$p->id]['cantidad'];
-        if ($p->stock < $cant) {
-            return back()->withErrors(['stock' => "Stock insuficiente para el producto ID {$p->id}."]);
-        }
-        $total += $p->precio * $cant;
-    }
-
-    DB::beginTransaction();
-    try {
-        // estado: usa número; por ejemplo 1 = confirmada
-        $venta = Venta::create([
-            'idUser' => $userId,
-            'fecha'  => Carbon::now(), // tu columna es timestamp y ya tienes created_at/updated_at aparte
-            'total'  => $total,
-            'estado' => 1,              // ajusta si manejas otro mapping
+        $request->validate([
+            'cliente_nombre' => 'nullable|string|max:150',
+            'metodo_pago'    => 'nullable|string|max:50',
         ]);
 
-        foreach ($productos as $p) {
-            $cant = $cart[$p->id]['cantidad'];
-            $precioUnit = $p->precio;
-            $sub = $precioUnit * $cant;
-
-            Detalle::create([
-                'idVenta'         => $venta->id,
-                'idProducto'      => $p->id,
-                'cantidad'        => $cant,
-                'precio_unitario' => $precioUnit,
-                'subtotal'        => $sub,
-            ]);
-
-            $p->decrement('stock', $cant);
+        // Cliente limpio
+        $cliente = trim($request->input('cliente_nombre', ''));
+        if ($cliente === '') {
+            $cliente = 'SIN NOMBRE';
         }
 
-        DB::commit();
-        session()->forget('cart');
-        return redirect('/ventaUsuario')->with('ok', "Venta #{$venta->id} registrada correctamente.");
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return back()->withErrors(['error' => 'No se pudo completar la venta: '.$e->getMessage()]);
-    }
-}
+        $cart = session('cart', []);
+        if (empty($cart)) {
+            return back()->withErrors(['carrito' => 'El carrito está vacío.']);
+        }
 
+        $productoIds = array_keys($cart);
+        $productos = Producto::whereIn('id', $productoIds)
+            ->where('idUser', $userId)
+            ->lockForUpdate()
+            ->get(['id','precio','stock']);
+
+        if ($productos->count() !== count($productoIds)) {
+            return back()->withErrors(['propiedad' => 'Se detectaron ítems que no pertenecen al usuario.']);
+        }
+
+        $total = 0;
+        foreach ($productos as $p) {
+            $cant = $cart[$p->id]['cantidad'];
+            if ($p->stock < $cant) {
+                return back()->withErrors(['stock' => "Stock insuficiente para el producto ID {$p->id}."]);
+            }
+            $total += $p->precio * $cant;
+        }
+
+        DB::beginTransaction();
+        try {
+
+            /**
+             * ✅ IMPORTANTE:
+             * No usamos Venta::create para el cliente.
+             * Guardamos explícitamente para evitar que quede NULL.
+             */
+            $venta = new Venta();
+            $venta->idUser = $userId;
+            $venta->fecha  = Carbon::now();
+            $venta->total  = $total;
+            $venta->estado = 1;
+            $venta->save();
+
+            // Forzamos guardado del cliente (doble seguro)
+            $venta->cliente_nombre = $cliente;
+            $venta->save();
+
+            // Extra seguro: update directo a BD (si algo raro lo pisa)
+            Venta::where('id', $venta->id)->update([
+                'cliente_nombre' => $cliente
+            ]);
+
+            foreach ($productos as $p) {
+                $cant = $cart[$p->id]['cantidad'];
+                $precioUnit = $p->precio;
+                $sub = $precioUnit * $cant;
+
+                Detalle::create([
+                    'idVenta'         => $venta->id,
+                    'idProducto'      => $p->id,
+                    'cantidad'        => $cant,
+                    'precio_unitario' => $precioUnit,
+                    'subtotal'        => $sub,
+                ]);
+
+                $p->decrement('stock', $cant);
+            }
+
+            DB::commit();
+            session()->forget('cart');
+
+            // ✅ Como quieres: solo mensaje y vuelve a la venta
+            return redirect('/ventaUsuario')
+                ->with('ok', "Venta #{$venta->id} registrada correctamente.");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'No se pudo completar la venta: '.$e->getMessage()]);
+        }
+    }
 }

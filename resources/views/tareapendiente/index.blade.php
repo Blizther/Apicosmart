@@ -36,23 +36,28 @@
                 <table class="table table-bordered align-middle text-center">
                     <thead class="table-secondary">
                         <tr>
-                            <th scope="col" style="width: 5%;">NRO</th>
-                            <th scope="col" style="width: 10%;">Colmena</th>
-                            <th scope="col" style="width: 10%;">Tipo</th>
-                            <th scope="col" style="width: 10%;">Prioridad</th>
-                            <th scope="col" style="width: 10%;">Estado</th>
-                            <th scope="col" style="width: 15%;">Fecha Inicio</th>
-                            <th scope="col" style="width: 15%;">Fecha Fin</th>
-                            <th scope="col" style="width: 15%;">Título</th>
-                            <th scope="col" style="width: 20%;">Descripción</th>
-                            <th scope="col" style="width: 10%;">Acciones</th>
+                            <th scope="col">NRO</th>
+                            <th scope="col">Colmena</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Prioridad</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Inicio</th>
+                            <th scope="col">Fin</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @php $correlativo = 1; @endphp
-                        @foreach ($tareas as $tarea)
+                        @php
+                            $correlativo = ($tareas->currentPage() - 1) * $tareas->perPage() + 1;
+                        @endphp
+
+                        @forelse ($tareas as $tarea)
                             <tr>
                                 <th scope="row">{{ $correlativo }}</th>
+
                                 <td>
                                     @if($tarea->colmena && $tarea->colmena->apiario)
                                         Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}
@@ -66,23 +71,18 @@
                                 <td>{{ ucfirst($tarea->tipo) }}</td>
                                 <td>{{ ucfirst($tarea->prioridad) }}</td>
                                 <td>{{ ucfirst($tarea->estado) }}</td>
-                                <td>
-                                    {{ $tarea->fechaInicio ? \Carbon\Carbon::parse($tarea->fechaInicio)->format('d/m/Y') : '-' }}
-                                </td>
-                                <td>
-                                    {{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}
-                                </td>
+
+                                <td>{{ $tarea->fechaInicio ? \Carbon\Carbon::parse($tarea->fechaInicio)->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}</td>
+
                                 <td>{{ $tarea->titulo }}</td>
                                 <td>{{ $tarea->descripcion }}</td>
+
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        {{-- EDITAR: usuario y colaborador --}}
                                         <a href="{{ route('tarea.edit', $tarea->idTareaPendiente) }}"
-                                           class="btn btn-sm btn-warning">
-                                            Editar
-                                        </a>
+                                           class="btn btn-sm btn-warning">Editar</a>
 
-                                        {{-- ELIMINAR: SOLO USUARIO (apicultor) --}}
                                         @if(auth()->user()->rol === 'usuario')
                                             <form action="{{ route('tarea.destroy', $tarea->idTareaPendiente) }}"
                                                   method="POST"
@@ -91,7 +91,11 @@
                                                 @method('DELETE')
                                                 <button type="button"
                                                         class="btn btn-sm btn-danger btn-eliminar-tarea"
-                                                        data-colmena="@if($tarea->colmena && $tarea->colmena->apiario)Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}@elseif($tarea->colmena)Colmena #{{ $tarea->colmena->codigo }}@else - @endif"
+                                                        data-colmena="@if($tarea->colmena && $tarea->colmena->apiario)
+                                                            Colmena #{{ $tarea->colmena->codigo }} - {{ $tarea->colmena->apiario->nombre }}
+                                                        @elseif($tarea->colmena)
+                                                            Colmena #{{ $tarea->colmena->codigo }}
+                                                        @else - @endif"
                                                         data-fecha="{{ $tarea->fechaFin ? \Carbon\Carbon::parse($tarea->fechaFin)->format('d/m/Y') : '-' }}"
                                                         data-titulo="{{ $tarea->titulo }}">
                                                     Eliminar
@@ -101,44 +105,45 @@
                                     </div>
                                 </td>
                             </tr>
+
                             @php $correlativo++; @endphp
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center text-muted">No hay tareas pendientes registradas.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- PAGINACIÓN --}}
+            <div class="d-flex justify-content-center mt-3">
+                {{ $tareas->links() }}
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{-- SweetAlert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar-tarea');
-
-    botonesEliminar.forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            const form     = this.closest('form');
-            const colmena  = this.getAttribute('data-colmena') || '';
-            const fecha    = this.getAttribute('data-fecha') || '';
-            const titulo   = this.getAttribute('data-titulo') || '';
+    document.querySelectorAll('.btn-eliminar-tarea').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const form   = this.closest('form');
+            const col    = this.dataset.colmena || '';
+            const fecha  = this.dataset.fecha || '';
+            const titulo = this.dataset.titulo || '';
 
             let texto = '¿Desea eliminar esta tarea pendiente?';
-            let detalle = [];
+            let info  = [];
 
-            if (colmena.trim() !== '') {
-                detalle.push(colmena);
-            }
-            if (titulo.trim() !== '') {
-                detalle.push('"' + titulo + '"');
-            }
-            if (fecha.trim() !== '' && fecha !== '-') {
-                detalle.push(fecha);
-            }
+            if (col.trim()) info.push(col);
+            if (titulo.trim()) info.push('"' + titulo + '"');
+            if (fecha.trim() && fecha !== '-') info.push(fecha);
 
-            if (detalle.length > 0) {
-                texto += ' ' + detalle.join(' - ');
-            }
+            if (info.length > 0) texto += ' ' + info.join(' - ');
 
             Swal.fire({
                 title: 'Atención',
@@ -147,23 +152,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#3A4F26',
-                cancelButtonColor: '#F9B233',
-                customClass: { popup: 'swal2-apico-popup' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+            }).then(e => { if (e.isConfirmed) form.submit(); });
         });
     });
 });
 </script>
-
-<style>
-.swal2-apico-popup {
-    border-radius: 16px !important;
-}
-</style>
 
 @endsection
