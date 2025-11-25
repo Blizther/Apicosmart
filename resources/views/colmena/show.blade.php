@@ -23,17 +23,78 @@
             </div>
         </div>
 
-        <div class="col-sm-12">
-            <div class="bg-light rounded h-100 p-4">
-                <h3>Información de la Colmena</h3>
-                <p><strong>Código:</strong> {{ $colmena->codigo }}</p>
-                <p><strong>Apiario:</strong> {{ $colmena->apiario->nombre }}</p>
-                <p><strong>Fecha de Fabricación:</strong> {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y') }}</p>
-                <p><strong>Estado Operativo:</strong> {{ $colmena->estadoOperativo }}</p>
-                <p><strong>Cantidad de Marcos:</strong> {{ $colmena->cantidadMarco }}</p>
-                <p><strong>Modelo:</strong> {{ $colmena->modelo }}</p>
-            </div>
+        @php
+    $ultima = $colmena->dispositivo
+        ? $colmena->dispositivo->lecturas()->latest()->first()
+        : null;
+@endphp
+
+<div class="row g-4">
+
+    {{-- IZQUIERDA: detalles --}}
+    <div class="col-sm-4">
+        <div class="bg-light rounded h-100 p-4">
+            <h3>Información de la Colmena</h3>
+            <p><strong>Código:</strong> {{ $colmena->codigo }}</p>
+            <p><strong>Apiario:</strong> {{ $colmena->apiario->nombre }}</p>
+            <p><strong>Fecha de Fabricación:</strong> {{ \Carbon\Carbon::parse($colmena->fechaInstalacionFisica)->format('d/m/Y') }}</p>
+            <p><strong>Estado Operativo:</strong> {{ $colmena->estadoOperativo }}</p>
+            <p><strong>Cantidad de Marcos:</strong> {{ $colmena->cantidadMarco }}</p>
+            <p><strong>Modelo:</strong> {{ $colmena->modelo }}</p>
         </div>
+    </div>
+
+    {{-- DERECHA: relojes --}}
+    <div class="col-sm-8" id="gauges"
+     data-colmena-id="{{ $colmena->idColmena }}"
+     data-temp="{{ $ultima->temperatura ?? 0 }}"
+     data-hum="{{ $ultima->humedad ?? 0 }}"
+     data-peso="{{ $ultima->peso ?? 0 }}"
+>
+  <div class="row" style="text-align:right;">
+
+    <div class="col-xs-4">
+      <div class="gauge-card">
+        <canvas id="gauge-temp-{{ $colmena->idColmena }}" width="120" height="120"></canvas>
+        <div class="gauge-label">
+          <div class="gauge-value" id="val-temp-{{ $colmena->idColmena }}">
+            {{ $ultima->temperatura ?? '--' }} °C
+          </div>
+          <small>Temperatura</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-4">
+      <div class="gauge-card">
+        <canvas id="gauge-hum-{{ $colmena->idColmena }}" width="120" height="120"></canvas>
+        <div class="gauge-label">
+          <div class="gauge-value" id="val-hum-{{ $colmena->idColmena }}">
+            {{ $ultima->humedad ?? '--' }} %
+          </div>
+          <small>Humedad</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-4">
+      <div class="gauge-card">
+        <canvas id="gauge-peso-{{ $colmena->idColmena }}" width="120" height="120"></canvas>
+        <div class="gauge-label">
+          <div class="gauge-value" id="val-peso-{{ $colmena->idColmena }}">
+            {{ $ultima->peso ?? '--' }} kg
+          </div>
+          <small>Peso</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+</div>
+
 
         <div class="col-sm-6">
             <div class="bg-light rounded h-100 p-4">

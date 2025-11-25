@@ -203,3 +203,16 @@ Route::middleware(['auth', 'rol:usuario'])->group(function () {
     Route::post('/mis/dispositivos',       [DispositivoWebController::class, 'store'])->name('mis.dispositivos.store');
     Route::get('/mis/dispositivos/{id}',   [DispositivoWebController::class, 'show'])->name('mis.dispositivos.show');
 });
+// ==========================================
+// RUTA DE PRUEBA PARA VERIFICAR BROADCASTING
+// ==========================================
+use App\Events\MetricUpdated;
+
+Route::get('/emit', function () {
+    MetricUpdated::dispatch([
+        't' => now()->toDateTimeString(),
+        'y' => rand(1, 100),
+    ]);
+
+    return 'ok';
+});

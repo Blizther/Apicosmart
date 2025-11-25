@@ -290,8 +290,19 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
+        .gauge-card{
+  width:140px;
+  text-align:center;
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+.gauge-label{ margin-top:-6px; }
+.gauge-value{ font-weight:700; font-size:16px; }
 
     </style>
+    @vite(['resources/js/app.js'])
 </head>
 
 <body>
@@ -577,5 +588,11 @@
     </script>
 
     @yield('scripts')
+    <script type="module">
+    window.Echo.channel('metrics')
+        .listen('.metric.updated', (e) => {
+            console.log("📡 EVENTO RECIBIDO:", e.point);
+        });
+</script>
 </body>
 </html>

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\DispositivoFabricado;
 use App\Models\Dispositivo;
 use App\Models\LecturaSensor;
+use App\Services\SensorAlertService;
+use App\Notifications\AlertaSensorNotification;
+use App\Models\User;
+use App\Events\MetricUpdated;
 
 class SensorIngestController extends Controller
 {
@@ -18,7 +22,7 @@ class SensorIngestController extends Controller
      * Body JSON:
      *   { "humedad": 00.00, "peso": 00.000, "temperatura": 00.00 }
      */
-    public function store(Request $req)
+    public function store(Request $req, SensorAlertService $alertService)
     {
         // 1) Credenciales (mismos nombres; sin cambios)
         $serial = $req->header('X-DEVICE-SERIAL', $req->input('serial'));
@@ -65,6 +69,44 @@ class SensorIngestController extends Controller
         $lectura->peso           = array_key_exists('peso', $data)        ? (float)$data['peso']        : null;
         $lectura->temperatura    = array_key_exists('temperatura', $data) ? (float)$data['temperatura'] : null;
         $lectura->save();
+
+
+
+$idColmena = $vinculo->idColmena;
+
+if ($idColmena) {
+    MetricUpdated::dispatch(
+        (int) $idColmena,
+        $lectura->temperatura,
+        $lectura->humedad,
+        $lectura->peso,
+        now()->toDateTimeString()
+    );
+}
+
+
+         // 1) Evaluar umbrales
+    $alertas = $alertService->evaluar($lectura);
+
+    if (!empty($alertas) && $alertService->puedeNotificar($vinculo)) {
+
+        // 2) User asociado al dispositivo
+        $userAsociado = $vinculo->user; // belongsTo idUser
+
+        if ($userAsociado) {
+            // 3) Resolver dueño lógico (si es colaborador, manda al dueño)
+            $ownerId = $userAsociado->ownerId();
+            $owner = User::find($ownerId);
+
+            if ($owner && $owner->email) {
+                $owner->notify(
+                    new AlertaSensorNotification($vinculo, $lectura, $alertas)
+                );
+            }
+        }
+    }
+        
+
 
         return response()->json([
             'ok'         => true,
